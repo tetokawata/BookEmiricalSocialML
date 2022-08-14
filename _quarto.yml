@@ -2,8 +2,8 @@ project:
   type: book
 
 book:
-  title: "BookEmiricalSocialML"
-  author: "Jane Doe"
+  title: "Rによる比較・因果推論・予測研究"
+  author: "川田恵介"
   date: "8/15/2022"
   chapters:
     - index.qmd
