@@ -1,407 +1,240 @@
-# 線形モデルの推定
+# 線形モデルによるパラメータの推定 {#sec-ParameterLinearEstimation}
 
-- 関心のあるパラメータ$\tau(X)=E[Y|d,X]-E[Y|d',X]$を埋め込んだ線形モデルを推定する。
+-   関心のあるパラメータ$\tau(X)=E[Y|d,X]-E[Y|d',X]$を埋め込んだ線形モデルを推定する。
 
-  - 典型的には、$E[Y|D,X]$を線形近似し、推定する。
-  
-$$E[Y|D=d,X=x]=\underbrace{\tau}_{Interest\ parameter}\times d+\underbrace{f(x)}_{Nuisance\ function}$$
-  - $f(X)=\beta_0 + \beta_1 X_1 + ...+\beta_LX_L$ 
+    -   典型的には、$E[Y|D,X]$を線形近似し、推定する。
 
-- $\tau$について点推定だけでなく、信頼区間も推定する。
+$$E[Y|D=d,X=x]=\underbrace{\tau}_{Interest\ parameter}\times d+\underbrace{f(x)}_{Nuisance\ function}$$ - $f(X)=\beta_0 + \beta_1 X_1 + ...+\beta_LX_L$
 
-- Chapter \@ref(appliedOLS) : 前処理なしに線形モデルを推定し、信頼区間を計算する方法を紹介
+-   $\tau$について点推定だけでなく、信頼区間も推定する。
 
-- Chapter \@ref(matching) : 近似モデルの定式化への依存度を下げるために、マッチング法を用いた前処理を導入
+    -   [Section -@sec-ParameterEstimation] 線形モデルを推定し、信頼区間を計算する方法を紹介
 
-- Chapter \@ref(appendix) : 推定結果の表によるまとめ、可視化、および複数の推定結果を効率的に保存する方法を紹介
+    -   [Section -@sec-Matching] 近似モデルの定式化への依存度を下げるために、マッチング法を用いた前処理を導入
+
+    -   [Section -@sec-Appendix]推定結果の表によるまとめ、可視化、および複数の推定結果を効率的に保存する方法を紹介
 
 ## パッケージ & データ
 
 ```{r}
+#| message: false
+#| warning: false
 library(tidyverse)
 library(AER)
 library(estimatr)
 library(MatchIt)
 
-data("NMES1988")
-
-raw <- na.omit(NMES1988)
+data("CPSSW9204")
 ```
 
-## 線形モデルの推定
+## パラメータの推定 {#sec-ParameterEstimation}
 
-- $\tau(x)=\tau,f(x)=\beta_0+\beta_1x_1+...+\beta_Lx_L$と特定化
+-   $\tau(x)=\tau,f(x)=\beta_0+\beta_1x_1+...+\beta_Lx_L$と特定化
 
-- サンプル内MSEを最大化するように推定
+-   サンプル内MSEを最大化するように推定
 
-- robust standard errorを計算するためにestimatrパッケージ[@R-estimatr]を利用
+-   robust standard errorを計算するためにestimatrパッケージ[@R-estimatr]を利用
 
-- lm_robust関数で推定
+-   lm_robust関数で推定
 
 ```{r}
-lm_robust(visits ~ insurance + region + age + afam + gender + school + income + employed + married,
-          data = raw)
+lm_robust(earnings ~ degree + gender + age + year, # Outcome ~ Treatment + Controls
+          data = CPSSW9204)
 ```
 
-- 線形モデルによる推定は、いくつかの問題がある
+-   線形モデルによる推定は、いくつかの問題がある
 
-  - 異なるグループ間で、$X$の分布が異なる場合、回帰式の定式化に強く依存する
-  
-  - 一般に平均効果ではなく、加重平均が推計される
-  
-  - サンプルサイズに比べて、少数のコントロール変数を導入できない
+    -   異なるグループ間で、$X$の分布が異なる場合、回帰式の定式化に強く依存する
 
-- 以下ではマッチング法、機械学手法を用いた頑強な推定を目指す
+    -   一般に平均効果ではなく、加重平均が推計される
+
+    -   サンプルサイズに比べて、少数のコントロール変数を導入できない
+
+-   以下ではマッチング法、機械学手法を用いた頑強な推定を目指す
 
 ### RCTデータへの応用
 
-- 原因変数が完全にランダム化されている場合、因果効果の**識別**を目的に回帰分析を応用する必要はない
+-   原因変数が完全にランダム化されている場合、因果効果の**識別**を目的に回帰分析を応用する必要はない
 
-- 因果効果の**推定**の改善、効率性向上、を目的として線形モデルの利用は議論されてきた。[@freedman2008regressiona; @freedman2008regressionb]
+-   因果効果の**推定**の改善、効率性向上、を目的として線形モデルの利用は議論されてきた。
 
-- [@lin2013agnostic]は、以下のような交差項を導入したモデルを用いることで、平均の差の推定に比べて、漸近的効率性が悪化することはない（同等か改善する）ことを示した
+-   @lin2013 は、以下のような交差項を導入したモデルを用いることで、平均の差の推定に比べて、漸近的効率性が悪化することはない（同等か改善する）ことを示した
 
 $$E[Y|D,X]=\beta_{D}\times D+\beta_1\times X_1+...+\beta_L\times X_L$$
 
 $$+\underbrace{\beta_{1D}\times D\times X_1+...+\beta_{LD}\times D\times X_L}_{交差項}$$
 
-## マッチング法による修正 
+-   lm_lin関数で推定可能
 
-- 回帰を行う事前準備としてマッチング法を利用する
+```{r}
+lm_lin(earnings ~ degree, # Outcome ~ Treatment
+       ~ gender + age + year, # ~ Controls
+       data = CPSSW9204)
+```
 
-  - 重回帰が持つ関数形への依存度を減らせる [@ho2007matching]
-  
-  - MathItパッケージ [@MatchIt2011]を利用
+## マッチング法による修正 {#sec-Matching}
 
-- 多数のマッチング法が実装されている
+-   回帰を行う事前準備としてマッチング法を利用する
+
+    -   重回帰が持つ関数形への依存度を減らせる [@ho2007matching]
+
+    -   MathItパッケージ [@MatchIt2011]を利用
+
+-   多数のマッチング法が実装されている
 
 ### Exact matching
 
-- $X$が完全に同じサンプル同士をマッチングする
+-   Coarsened exact matching[@iacus2012causal]の実装
 
-- 原因変数の分布に偏りがある場合（本例ではコントロールグループが少ない）、少ないグループ内での平均効果(Average treatment effect for treat または control)の推定を目指すことでマッチできないサンプルを減らすことが期待できる。
+    -   連続変数をカテゴリー変数化することで、マッチングできるサンプルサイズを増やすことが期待できる
 
 ```{r}
-fit.m <- matchit(insurance ~ region + age + afam + gender + school+ married + employed,
-                 data = raw,
-                 method = "exact",
-                 estimand = "ATC"
+fit.m <- matchit(degree ~ gender + age + year,
+                 data = CPSSW9204,
+                 method = "CEM"
                  )
 ```
 
-- この例では、incomeもコントロール変数に加えた場合、Exact matching不可能（一つもマッチングできない）
-
-- マッチング結果の表示
+-   マッチング結果の表示
 
 ```{r}
-summary(fit.m)
+fit.m
 ```
 
-- Sample sizesにて、マッチングできなかったサンプル数（985のコントロールグループ中、667サンプルがマッチングできなかった）が確認できる
+-   Sample sizesにて、マッチングできなかったサンプル数（985のコントロールグループ中、667サンプルがマッチングできなかった）が確認できる
 
-
-- マッチング結果の図示
+-   マッチング結果の図示
 
 ```{r}
 fit.m |> 
   summary() |> 
-  plot(xlim = c(0,2))
+  plot(abs = FALSE)
 ```
 
-- マッチング結果を変数として含んだデータを作成
+-   マッチング結果を変数として含んだデータを作成
 
 ```{r}
 df <- match.data(fit.m)
 ```
 
-- "subclass": マッチングしたグループ
+-   "subclass": マッチングしたグループ
 
-- "weights"：マッチング後の推計に用いるウェイト
+-   "weights"：マッチング後の推計に用いるウェイト
 
-- マッチングしたデータを用いた推定
+-   マッチングしたデータを用いた推定
 
-  - 新たに作成されるweight (defaltではweights)を用いた、加重推定で実装
+    -   新たに作成されるweight (defaltではweights)を用いた、加重推定で実装
 
 ```{r}
-lm_robust(visits ~ insurance,
+lm_robust(earnings ~ degree + gender + age + year,
           df,
-          weights = weights)
+          weights = weights,
+          clusters = subclass)
 ```
-
-
-### Coarsened exact matching
-
-- Coarsened exact matching[@iacus2012causal]の実装
-
-  - 連続変数をカテゴリー変数化することで、マッチングできるサンプルサイズを増やすことが期待できる
-
-```{r}
-fit.m <- matchit(insurance ~ region + age + afam + gender + school+ married + employed + income,
-                 data = raw,
-                 method = "cem",
-                 estimand = "ATC")
-```
-
-- マッチング結果
-
-```{r}
-summary(fit.m)
-```
-
-- 可視化
-
-```{r}
-fit.m |> 
-  summary() |> 
-  plot(xlim = c(0,2))
-```
-
-- Exact matching以外のマッチング法では、マッチングされたサンプル内でも$X$の違いが残る
-
-  - マッチングされたサンプル内で回帰分析を行うことで、再調整する
-
-```{r}
-df <- match.data(fit.m)
-
-lm_robust(visits ~ insurance + region + age + afam + gender + school+ married + employed + income,
-          df,
-          weights = weights)
-```
-
 
 ### Propensity score with subclassification
 
-- Coarsened exact matchingでもマッチングできないサンプルが多数出てくる可能性
+-   Coarsened exact matchingでもマッチングできないサンプルが多数出てくる可能性
 
-  - とくに$X$が大量にある場合
+    -   とくに$X$が大量にある場合
 
-- 1次元の距離指標を用いて、マッチングを行う
+-   1次元の距離指標を用いて、マッチングを行う
 
-  - 距離指標としては、Mahalanobis' Distance、Propensity scoreなど
-  
-- ここではPropensity score $p_d(X)$を用いる
+    -   距離指標としては、Mahalanobis' Distance、Propensity scoreなど
+
+-   ここではPropensity score $p_d(X)$を用いる
 
 $$p_d(X)\equiv \Pr[D=d|X]$$
 
-  - 属性$X$のユニットの中で、原因変数の値が$d$である人の割合
-  
-  - 未知の場合、データから推定する必要がある
+-   属性$X$のユニットの中で、原因変数の値が$d$である人の割合
 
-- 推定された傾向スコアを用いたStratification マッチング
+-   未知の場合、データから推定する必要がある
 
-  -　ロジットにて傾向スコアを推定
+-   推定された傾向スコアを用いたStratification マッチング
+
+    -　ロジットにて傾向スコアを推定
 
 ```{r}
-fit.m <- matchit(insurance ~ region + age + afam + gender + school+ married + employed + income,
-                 data = raw,
+fit.m <- matchit(degree ~ gender + age + year,
+                 data = CPSSW9204,
                  method = "subclass",
-                 estimand = "ATC"
+                 estimand = "ATE"
                  )
 ```
 
-- マッチング結果
+-   マッチング結果
 
 ```{r}
 summary(fit.m)
 ```
 
-- マッチング結果の図示
+-   マッチング結果の図示
 
 ```{r}
 fit.m |> 
   summary() |> 
-  plot(xlim = c(0,2))
+  plot(abs = FALSE)
 ```
 
-- マッチングしたデータを用いた推定
+-   マッチングしたデータを用いた推定
 
 ```{r}
-df <- match.data(fit.m) # マッチング結果を含んだ
-
-lm_robust(visits ~ insurance + region + age + afam + gender + school+ married + employed,
+lm_robust(earnings ~ degree + gender + age + year,
           df,
-          weights = weights)
+          weights = weights,
+          clusters = subclass)
 ```
 
-
-### Nearest neighbor matching
-
-- 傾向スコアを用いた最近旁マッチング
-
-  - 傾向スコアがもっとも似ているサンプルとマッチングする
-  
-  - デフォルトでは、Replacement無しのマッチングを行う
-
-```{r}
-fit.m <- matchit(insurance ~ region + age + afam + gender + school+ married + employed + income,
-                 data = raw,
-                 method = "nearest",
-                 estimand = "ATC"
-                 )
-```
-
-- マッチング結果
-
-```{r}
-summary(fit.m)
-```
-
-
-- マッチング結果の図示
-
-```{r}
-fit.m |> 
-  summary() |> 
-  plot(xlim = c(0,2))
-```
-
-- マッチングしたデータを用いた推定
-
-  - replacement無しの場合ｍマッチングしたペア(subclass)でクラスタリングしたrobust standard errorの利用を推奨 [@abadie2021robust]
-
-```{r}
-df <- match.data(fit.m) # マッチング結果を含んだ
-
-lm_robust(visits ~ insurance + region + age + afam + gender + school+ married + employed + income,
-          df,
-          clusters = subclass,
-          weights = weights)
-```
-
-## 付録：推定結果の保存と表示
-
-### 推計結果表
-
-- tidy関数により推定結果data.frameに変化することで、kable関数(knitrパッケージ)による推計結果表の整形、geom_pointrange関数による可視化が可能
-
-- 点推定値(estimate)、標準誤差(std.error)のみを残した推計結果表
-
-```{r}
-library(knitr)
-
-lm_robust(visits ~ insurance + region + age + afam + gender + school,
-            data = raw
-            ) |> 
-  tidy() |> 
-  select(term, estimate, std.error) |> 
-  kable(digits = 2)
-```
-
-```{r}
-lm_robust(visits ~ insurance + region + age + afam + gender + school,
-            data = raw
-            ) |> 
-  tidy() |> 
-  select(term, estimate, std.error) |> 
-  filter(term == "insuranceyes") |> 
-  kable(digits = 2)
-```
-
+## 付録：推定結果の保存と表示 {#sec-Appendix}
 
 ### Dot-and-Whisker plotによる可視化
 
-- Dot-and-Whisker図により点推定量と信頼区間を可視化
+-   Dot-and-Whisker図により点推定量と信頼区間を可視化
 
 ```{r}
-lm_robust(visits ~ insurance + region + age + afam + gender + school,
-            data = raw) |> 
+fit.m <- matchit(degree ~ gender + age + year,
+                 data = CPSSW9204,
+                 method = "CEM"
+                 )
+
+df <- match.data(fit.m)
+
+Result1 <- lm_robust(earnings ~ degree + gender + age + year,
+            data = df) |> 
   tidy() |> 
-  filter(term != "(Intercept)"
+  filter(term == "degreebachelor"
          ) |> 
+  mutate(Method = "OLS")
+
+Result1 |> 
   ggplot(aes(y = term,
              x = estimate,
              xmin = conf.low,
              xmax = conf.high)
          ) +
   geom_pointrange() +
-  geom_vline(xintercept = 0)
+  geom_vline(xintercept = 0) +
+  theme_bw()
 ```
 
-
-### サブサンプル分析結果の整理と可視化
-
-- 条件付き平均効果$=E[Y_i(d)-Y_i(d')|X_i=x]$
-
-  - 因果効果の異質性を議論する上で、有力な要約値
-  
-  - 少数の$x$を分析者が事前設定する場合、$x$についてサブサンプルを作成し、推定すればOK
-  
-- tidyverseパッケージに含まれるnest/unnest関数を用いれば、整理したサブサンプル分析が可能でかつ、容易に可視化/表化できる
-
-  - 推定結果を入子リスト形式に保存し、通常のデータフレーム形式に展開、可視化/表化する手順踏む
-  
-  - 関数をリストの構成要素に逐次適用する汎関数(map)を利用することで、同じデータフレーム内に結果を保存できる
-  
-- 以下では"region"ごとに条件付き平均効果を推定する
-
 ```{r}
-regression <-
-  function(df){
-    lm_robust(visits ~ insurance + age + afam + gender + school + income + employed + married,
-              data = df) |> 
-      tidy() |> 
-      filter(term == "insuranceyes")
-  } # 推計し、関心のあるパラメータのみからなるデータフレーム化する関数
+Result2 <- lm_robust(earnings ~ degree + gender + age,
+            data = df,
+            weights = weights,
+            clusters = subclass) |> 
+  tidy() |> 
+  filter(term == "degreebachelor"
+         ) |> 
+  mutate(Method = "Matching + OLS")
 
-result <- 
-  raw |> 
-  group_by(region) |> # regoinごとにサブグループ化
-  nest() |> # regionごとに入子データを作成
-  mutate(model = map(data,regression)) |> # 推定し、モデルとして結果をほぞpン
-  unnest() |> # 入子構造を解消
-  distinct(region,
-           estimate,
-           conf.low,
-           conf.high) # regionごとの結果表を作成
-```
-
-- データフレームなので、容易に可視化できる
-
-```{r}
-result |> 
-  ggplot(aes(x = estimate,
-             y = region,
+Result1 |> 
+  bind_rows(Result2) |> 
+  ggplot(aes(y = Method,
+             x = estimate,
              xmin = conf.low,
              xmax = conf.high)
          ) +
   geom_pointrange() +
-  geom_vline(xintercept = 0)
+  geom_vline(xintercept = 0) +
+  theme_bw()
 ```
-
-
-### 複数の推定結果の整理と可視化
-
-- listで保存し、data.frameに展開、という手順はより一般に複数の推定結果を整理することに使える
-
-```{r}
-list <- list() # 空のリストを作成
-
-list[[1]] <- 
-  lm_robust(visits ~ insurance + age + afam + gender + school + income + employed + married +region,
-            data = raw) |> 
-  tidy() |> 
-  filter(term == "insuranceyes") # 推定結果をリストに保存
-
-list[[2]] <- 
-  lm_robust(nvisits ~ insurance + age + afam + gender + school + income + employed + married +region,
-            data = raw) |> 
-  tidy() |> 
-  filter(term == "insuranceyes") # 別の結果を保存
-
-names(list) <- c("visits","nvisits") # 名づけ
-
-result <-
-  enframe(list) |> 
-  unnest() # データフレーム化
-
-result |> 
-  ggplot(aes(y = name,
-             x = estimate,
-             xmin = conf.low,
-             xmax = conf.high
-             )
-         ) +
-  geom_pointrange() # 可視化
-```
-
-

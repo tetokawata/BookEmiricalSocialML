@@ -12,3 +12,5 @@
 - データインポート、整理、可視化を行う関数群を統合的に提供するtidyverseパッケージの利用
 
 - Example dataとしては、AERパッケージに含まれるNMES1988(the US National Medical Expenditure Survey)を利用
+
+- [Section -@sec-ParameterLinearEstimation] 線形モデルを用いたパラメータ推定
