@@ -9,9 +9,23 @@
   {
     "objectID": "intro.html",
     "href": "intro.html",
-    "title": "1  Introduction",
+    "title": "1  準備",
     "section": "",
-    "text": "See Knuth (1984) for additional discussion of literate programming.\n\n1 + 1\n\n[1] 2\n\n\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+    "text": "本ページでは、tidyverseパッケージの利用を前提とし、pipe演算子を用いたコード例を示す"
+  },
+  {
+    "objectID": "intro.html#tidyverse",
+    "href": "intro.html#tidyverse",
+    "title": "1  準備",
+    "section": "1.1 tidyverse",
+    "text": "1.1 tidyverse\n\nデータ整備・可視化等の関数群を提供する（メタ）パッケージ\n\n公式ページ"
+  },
+  {
+    "objectID": "intro.html#nativeなpipe演算子",
+    "href": "intro.html#nativeなpipe演算子",
+    "title": "1  準備",
+    "section": "1.2 nativeなpipe演算子",
+    "text": "1.2 nativeなpipe演算子\n\nR version 4.1からpipe演算子が、追加パッケージなしで利用可能になった\n\nTools -> Global option -> Code -> “Use native pipe operator” をチェックする\nCtr + Shift + mがショートカット\n現状、magrittrパッケージが提供するpipe (%>%)に比べて、機能が限定されている\n\npipe演算子：二つの入力X1,X2から出力Yを得る関数fについて、pipe演算子を用いると、Y <- X1 |> f(X2)と書き換えられる\npipe演算子を使わない場合、ある出力結果を入力として用いるためには、複数のobjectを作成する必要があり煩雑\n\n\nn <- rnorm(100) # 標準正規分布から100個値を取得し、nと名付ける\n\nhist(n)　# nを用いてヒストグラムを描画\n\n\n\n\n\npipe演算子を使うと以下のようになる\n\n\nrnorm(100) |> \n  hist()"
   },
   {
     "objectID": "summary.html",
@@ -19,12 +33,5 @@
     "title": "2  Summary",
     "section": "",
     "text": "1 + 1\n\n[1] 2"
-  },
-  {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
   }
 ]
