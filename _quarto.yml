@@ -8,8 +8,14 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - ParameterEstimation.qmd
     - summary.qmd
     - references.qmd
+
+execute:
+  freeze: auto
+  message: false
+  warning: false
 
 bibliography: references.bib
 
