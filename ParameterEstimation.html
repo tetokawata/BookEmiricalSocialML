@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Rによる比較・因果推論・予測研究 - 2&nbsp; 線形モデルの推定</title>
+<title>Rによる比較・因果推論・予測研究 - 2&nbsp; 線形モデルによるパラメータの推定</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -78,6 +78,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -129,7 +148,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルの推定</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -164,12 +183,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ParameterEstimation.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルの推定</span></a>
+  <a href="./ParameterEstimation.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">記述統計</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -187,23 +206,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link active" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">2.1</span> パッケージ &amp; データ</a></li>
-  <li><a href="#線形モデルの推定" id="toc-線形モデルの推定" class="nav-link" data-scroll-target="#線形モデルの推定"> <span class="header-section-number">2.2</span> 線形モデルの推定</a>
+  <li><a href="#sec-ParameterEstimation" id="toc-sec-ParameterEstimation" class="nav-link" data-scroll-target="#sec-ParameterEstimation"> <span class="header-section-number">2.2</span> パラメータの推定</a>
   <ul class="collapse">
   <li><a href="#rctデータへの応用" id="toc-rctデータへの応用" class="nav-link" data-scroll-target="#rctデータへの応用"> <span class="header-section-number">2.2.1</span> RCTデータへの応用</a></li>
   </ul></li>
-  <li><a href="#マッチング法による修正" id="toc-マッチング法による修正" class="nav-link" data-scroll-target="#マッチング法による修正"> <span class="header-section-number">2.3</span> マッチング法による修正</a>
+  <li><a href="#sec-Matching" id="toc-sec-Matching" class="nav-link" data-scroll-target="#sec-Matching"> <span class="header-section-number">2.3</span> マッチング法による修正</a>
   <ul class="collapse">
   <li><a href="#exact-matching" id="toc-exact-matching" class="nav-link" data-scroll-target="#exact-matching"> <span class="header-section-number">2.3.1</span> Exact matching</a></li>
-  <li><a href="#coarsened-exact-matching" id="toc-coarsened-exact-matching" class="nav-link" data-scroll-target="#coarsened-exact-matching"> <span class="header-section-number">2.3.2</span> Coarsened exact matching</a></li>
-  <li><a href="#propensity-score-with-subclassification" id="toc-propensity-score-with-subclassification" class="nav-link" data-scroll-target="#propensity-score-with-subclassification"> <span class="header-section-number">2.3.3</span> Propensity score with subclassification</a></li>
-  <li><a href="#nearest-neighbor-matching" id="toc-nearest-neighbor-matching" class="nav-link" data-scroll-target="#nearest-neighbor-matching"> <span class="header-section-number">2.3.4</span> Nearest neighbor matching</a></li>
+  <li><a href="#propensity-score-with-subclassification" id="toc-propensity-score-with-subclassification" class="nav-link" data-scroll-target="#propensity-score-with-subclassification"> <span class="header-section-number">2.3.2</span> Propensity score with subclassification</a></li>
   </ul></li>
-  <li><a href="#付録推定結果の保存と表示" id="toc-付録推定結果の保存と表示" class="nav-link" data-scroll-target="#付録推定結果の保存と表示"> <span class="header-section-number">2.4</span> 付録：推定結果の保存と表示</a>
+  <li><a href="#sec-Appendix" id="toc-sec-Appendix" class="nav-link" data-scroll-target="#sec-Appendix"> <span class="header-section-number">2.4</span> 付録：推定結果の保存と表示</a>
   <ul class="collapse">
-  <li><a href="#推計結果表" id="toc-推計結果表" class="nav-link" data-scroll-target="#推計結果表"> <span class="header-section-number">2.4.1</span> 推計結果表</a></li>
-  <li><a href="#dot-and-whisker-plotによる可視化" id="toc-dot-and-whisker-plotによる可視化" class="nav-link" data-scroll-target="#dot-and-whisker-plotによる可視化"> <span class="header-section-number">2.4.2</span> Dot-and-Whisker plotによる可視化</a></li>
-  <li><a href="#サブサンプル分析結果の整理と可視化" id="toc-サブサンプル分析結果の整理と可視化" class="nav-link" data-scroll-target="#サブサンプル分析結果の整理と可視化"> <span class="header-section-number">2.4.3</span> サブサンプル分析結果の整理と可視化</a></li>
-  <li><a href="#複数の推定結果の整理と可視化" id="toc-複数の推定結果の整理と可視化" class="nav-link" data-scroll-target="#複数の推定結果の整理と可視化"> <span class="header-section-number">2.4.4</span> 複数の推定結果の整理と可視化</a></li>
+  <li><a href="#dot-and-whisker-plotによる可視化" id="toc-dot-and-whisker-plotによる可視化" class="nav-link" data-scroll-target="#dot-and-whisker-plotによる可視化"> <span class="header-section-number">2.4.1</span> Dot-and-Whisker plotによる可視化</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -213,7 +227,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルの推定</span></h1>
+<h1 class="title"><span id="sec-ParameterLinearEstimation" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></span></h1>
 </div>
 
 
@@ -233,14 +247,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>典型的には、<span class="math inline">\(E[Y|D,X]\)</span>を線形近似し、推定する。</li>
 </ul></li>
 </ul>
-<p><span class="math display">\[E[Y|D=d,X=x]=\underbrace{\tau}_{Interest\ parameter}\times d+\underbrace{f(x)}_{Nuisance\ function}\]</span></p>
+<p><span class="math display">\[E[Y|D=d,X=x]=\underbrace{\tau}_{Interest\ parameter}\times d+\underbrace{f(x)}_{Nuisance\ function}\]</span> - <span class="math inline">\(f(X)=\beta_0 + \beta_1 X_1 + ...+\beta_LX_L\)</span></p>
 <ul>
-<li><p><span class="math inline">\(f(X)=\beta_0 + \beta_1 X_1 + ...+\beta_LX_L\)</span></p></li>
 <li><p><span class="math inline">\(\tau\)</span>について点推定だけでなく、信頼区間も推定する。</p>
 <ul>
-<li><p>前処理なしに線形モデルを推定し、信頼区間を計算する方法を紹介</p></li>
-<li><p>近似モデルの定式化への依存度を下げるために、マッチング法を用いた前処理を導入</p></li>
-<li><p>推定結果の表によるまとめ、可視化、および複数の推定結果を効率的に保存する方法を紹介</p></li>
+<li><p><a href="#sec-ParameterEstimation">Section&nbsp;<span>2.2</span></a> 線形モデルを推定し、信頼区間を計算する方法を紹介</p></li>
+<li><p><a href="#sec-Matching">Section&nbsp;<span>2.3</span></a> 近似モデルの定式化への依存度を下げるために、マッチング法を用いた前処理を導入</p></li>
+<li><p><a href="#sec-Appendix">Section&nbsp;<span>2.4</span></a>推定結果の表によるまとめ、可視化、および複数の推定結果を効率的に保存する方法を紹介</p></li>
 </ul></li>
 </ul>
 <section id="パッケージ-データ" class="level2" data-number="2.1">
@@ -251,13 +264,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(estimatr)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"NMES1988"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>raw <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(NMES1988)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="線形モデルの推定" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="線形モデルの推定"><span class="header-section-number">2.2</span> 線形モデルの推定</h2>
+<section id="sec-ParameterEstimation" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-ParameterEstimation"><span class="header-section-number">2.2</span> パラメータの推定</h2>
 <ul>
 <li><p><span class="math inline">\(\tau(x)=\tau,f(x)=\beta_0+\beta_1x_1+...+\beta_Lx_L\)</span>と特定化</p></li>
 <li><p>サンプル内MSEを最大化するように推定</p></li>
@@ -265,35 +276,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>lm_robust関数で推定</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school <span class="sc">+</span> income <span class="sc">+</span> employed <span class="sc">+</span> married,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> raw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(earnings <span class="sc">~</span> degree <span class="sc">+</span> gender <span class="sc">+</span> age <span class="sc">+</span> year, <span class="co"># Outcome ~ Treatment + Controls</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> CPSSW9204)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                   Estimate Std. Error    t value     Pr(&gt;|t|)    CI Lower
-(Intercept)      4.32086605 1.30928537  3.3001713 9.739642e-04  1.75400683
-insuranceyes     0.96591490 0.24785140  3.8971533 9.877947e-05  0.48000123
-regionnortheast  0.34814737 0.30392728  1.1454957 2.520663e-01 -0.24770327
-regionmidwest   -0.40583622 0.25526934 -1.5898354 1.119439e-01 -0.90629278
-regionwest       0.57163030 0.30418463  1.8792215 6.028038e-02 -0.02472489
-age              0.04293421 0.15977094  0.2687235 7.881551e-01 -0.27029737
-afamyes         -0.39294341 0.34701206 -1.1323624 2.575439e-01 -1.07326195
-gendermale      -0.46726544 0.22050124 -2.1191057 3.413748e-02 -0.89955902
-school           0.08475793 0.03108035  2.7270588 6.415540e-03  0.02382479
-income          -0.04678801 0.03712934 -1.2601357 2.076873e-01 -0.11958023
-employedyes     -0.34186375 0.42407955 -0.8061312 4.202108e-01 -1.17327342
-marriedyes      -0.29559842 0.23244624 -1.2716851 2.035523e-01 -0.75131020
-                   CI Upper   DF
-(Intercept)      6.88772528 4394
-insuranceyes     1.45182856 4394
-regionnortheast  0.94399802 4394
-regionmidwest    0.09462034 4394
-regionwest       1.16798549 4394
-age              0.35616578 4394
-afamyes          0.28737512 4394
-gendermale      -0.03497187 4394
-school           0.14569108 4394
-income           0.02600421 4394
-employedyes      0.48954591 4394
-marriedyes       0.16011336 4394</code></pre>
+<pre><code>                 Estimate Std. Error    t value      Pr(&gt;|t|)   CI Lower
+(Intercept)    -1.3734240 0.56012981  -2.451974  1.421837e-02 -2.4713435
+degreebachelor  5.6693812 0.11409767  49.688844  0.000000e+00  5.4457365
+genderfemale   -2.5584302 0.10555849 -24.237085 2.042463e-127 -2.7653371
+age             0.3999398 0.01870067  21.386388 4.880841e-100  0.3632843
+year2004        4.7218644 0.10448036  45.193798  0.000000e+00  4.5170708
+                 CI Upper    DF
+(Intercept)    -0.2755044 15583
+degreebachelor  5.8930259 15583
+genderfemale   -2.3515232 15583
+age             0.4365953 15583
+year2004        4.9266581 15583</code></pre>
 </div>
 </div>
 <ul>
@@ -309,15 +306,43 @@ marriedyes       0.16011336 4394</code></pre>
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="rctデータへの応用"><span class="header-section-number">2.2.1</span> RCTデータへの応用</h3>
 <ul>
 <li><p>原因変数が完全にランダム化されている場合、因果効果の<strong>識別</strong>を目的に回帰分析を応用する必要はない</p></li>
-<li><p>因果効果の<strong>推定</strong>の改善、効率性向上、を目的として線形モデルの利用は議論されてきた。<span class="citation" data-cites="freedman2008regressiona freedman2008regressionb">(<a href="references.html#ref-freedman2008regressiona" role="doc-biblioref"><strong>freedman2008regressiona?</strong></a>; <a href="references.html#ref-freedman2008regressionb" role="doc-biblioref"><strong>freedman2008regressionb?</strong></a>)</span></p></li>
-<li><p><span class="citation" data-cites="lin2013agnostic">(<a href="references.html#ref-lin2013agnostic" role="doc-biblioref"><strong>lin2013agnostic?</strong></a>)</span>は、以下のような交差項を導入したモデルを用いることで、平均の差の推定に比べて、漸近的効率性が悪化することはない（同等か改善する）ことを示した</p></li>
+<li><p>因果効果の<strong>推定</strong>の改善、効率性向上、を目的として線形モデルの利用は議論されてきた。</p></li>
+<li><p><span class="citation" data-cites="lin2013">Lin (<a href="references.html#ref-lin2013" role="doc-biblioref">2013</a>)</span> は、以下のような交差項を導入したモデルを用いることで、平均の差の推定に比べて、漸近的効率性が悪化することはない（同等か改善する）ことを示した</p></li>
 </ul>
 <p><span class="math display">\[E[Y|D,X]=\beta_{D}\times D+\beta_1\times X_1+...+\beta_L\times X_L\]</span></p>
 <p><span class="math display">\[+\underbrace{\beta_{1D}\times D\times X_1+...+\beta_{LD}\times D\times X_L}_{交差項}\]</span></p>
+<ul>
+<li>lm_lin関数で推定可能</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_lin</span>(earnings <span class="sc">~</span> degree, <span class="co"># Outcome ~ Treatment</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>       <span class="sc">~</span> gender <span class="sc">+</span> age <span class="sc">+</span> year, <span class="co"># ~ Controls</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> CPSSW9204)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                Estimate Std. Error     t value      Pr(&gt;|t|)
+(Intercept)                   11.8445518 0.05886786 201.2057631  0.000000e+00
+degreebachelor                 5.6534529 0.11317582  49.9528355  0.000000e+00
+genderfemale_c                -2.5004885 0.11301520 -22.1252401 7.932323e-107
+age_c                          0.2554277 0.02057814  12.4125730  3.276989e-35
+year2004_c                     3.7186028 0.11834727  31.4211113 3.546993e-210
+degreebachelor:genderfemale_c -0.1059052 0.22219513  -0.4766317  6.336311e-01
+degreebachelor:age_c           0.3271382 0.03945813   8.2907675  1.216210e-16
+degreebachelor:year2004_c      2.3273241 0.22003125  10.5772436  4.657042e-26
+                                CI Lower   CI Upper    DF
+(Intercept)                   11.7291640 11.9599396 15580
+degreebachelor                 5.4316151  5.8752907 15580
+genderfemale_c                -2.7220114 -2.2789655 15580
+age_c                          0.2150921  0.2957633 15580
+year2004_c                     3.4866284  3.9505772 15580
+degreebachelor:genderfemale_c -0.5414335  0.3296230 15580
+degreebachelor:age_c           0.2497957  0.4044807 15580
+degreebachelor:year2004_c      1.8960373  2.7586110 15580</code></pre>
+</div>
+</div>
 </section>
 </section>
-<section id="マッチング法による修正" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="マッチング法による修正"><span class="header-section-number">2.3</span> マッチング法による修正</h2>
+<section id="sec-Matching" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-Matching"><span class="header-section-number">2.3</span> マッチング法による修正</h2>
 <ul>
 <li><p>回帰を行う事前準備としてマッチング法を利用する</p>
 <ul>
@@ -329,101 +354,28 @@ marriedyes       0.16011336 4394</code></pre>
 <section id="exact-matching" class="level3" data-number="2.3.1">
 <h3 data-number="2.3.1" class="anchored" data-anchor-id="exact-matching"><span class="header-section-number">2.3.1</span> Exact matching</h3>
 <ul>
-<li><p><span class="math inline">\(X\)</span>が完全に同じサンプル同士をマッチングする</p></li>
-<li><p>原因変数の分布に偏りがある場合（本例ではコントロールグループが少ない）、少ないグループ内での平均効果(Average treatment effect for treat または control)の推定を目指すことでマッチできないサンプルを減らすことが期待できる。</p></li>
+<li><p>Coarsened exact matching<span class="citation" data-cites="iacus2012causal">(<a href="references.html#ref-iacus2012causal" role="doc-biblioref"><strong>iacus2012causal?</strong></a>)</span>の実装</p>
+<ul>
+<li>連続変数をカテゴリー変数化することで、マッチングできるサンプルサイズを増やすことが期待できる</li>
+</ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="ot">&lt;-</span> <span class="fu">matchit</span>(insurance <span class="sc">~</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school<span class="sc">+</span> married <span class="sc">+</span> employed,</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> raw,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"exact"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATC"</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                 )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="ot">&lt;-</span> <span class="fu">matchit</span>(degree <span class="sc">~</span> gender <span class="sc">+</span> age <span class="sc">+</span> year,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> CPSSW9204,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"CEM"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                 )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li><p>この例では、incomeもコントロール変数に加えた場合、Exact matching不可能（一つもマッチングできない）</p></li>
-<li><p>マッチング結果の表示</p></li>
+<li>マッチング結果の表示</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit.m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-matchit(formula = insurance ~ region + age + afam + gender + 
-    school + married + employed, data = raw, method = "exact", 
-    estimand = "ATC")
-
-Summary of Balance for All Data:
-                Means Treated Means Control Std. Mean Diff. Var. Ratio
-regionnortheast        0.1938        0.1766          0.0450          .
-regionmidwest          0.2882        0.1736          0.3026          .
-regionwest             0.1818        0.1787          0.0082          .
-regionother            0.3362        0.4711         -0.2703          .
-age                    7.3737        7.5021         -0.1849     0.7752
-afamno                 0.9380        0.6914          0.5340          .
-afamyes                0.0620        0.3086         -0.5340          .
-genderfemale           0.5849        0.6365         -0.1073          .
-gendermale             0.4151        0.3635          0.1073          .
-school                10.9547        7.9827          0.7549     0.7464
-marriedno              0.4028        0.6315         -0.4740          .
-marriedyes             0.5972        0.3685          0.4740          .
-employedno             0.8857        0.9350         -0.2001          .
-employedyes            0.1143        0.0650          0.2001          .
-                eCDF Mean eCDF Max
-regionnortheast    0.0172   0.0172
-regionmidwest      0.1146   0.1146
-regionwest         0.0031   0.0031
-regionother        0.1349   0.1349
-age                0.0357   0.0936
-afamno             0.2467   0.2467
-afamyes            0.2467   0.2467
-genderfemale       0.0516   0.0516
-gendermale         0.0516   0.0516
-school             0.1564   0.3248
-marriedno          0.2287   0.2287
-marriedyes         0.2287   0.2287
-employedno         0.0493   0.0493
-employedyes        0.0493   0.0493
-
-
-Summary of Balance for Matched Data:
-                Means Treated Means Control Std. Mean Diff. Var. Ratio
-regionnortheast        0.2107        0.2107               0          .
-regionmidwest          0.2201        0.2201               0          .
-regionwest             0.1384        0.1384               0          .
-regionother            0.4308        0.4308               0          .
-age                    7.3296        7.3296               0     0.9998
-afamno                 0.9434        0.9434               0          .
-afamyes                0.0566        0.0566               0          .
-genderfemale           0.6887        0.6887               0          .
-gendermale             0.3113        0.3113               0          .
-school                 9.9277        9.9277               0     0.9998
-marriedno              0.5283        0.5283               0          .
-marriedyes             0.4717        0.4717               0          .
-employedno             0.9560        0.9560               0          .
-employedyes            0.0440        0.0440               0          .
-                eCDF Mean eCDF Max Std. Pair Dist.
-regionnortheast         0        0               0
-regionmidwest           0        0               0
-regionwest              0        0               0
-regionother             0        0               0
-age                     0        0               0
-afamno                  0        0               0
-afamyes                 0        0               0
-genderfemale            0        0               0
-gendermale              0        0               0
-school                  0        0               0
-marriedno               0        0               0
-marriedyes              0        0               0
-employedno              0        0               0
-employedyes             0        0               0
-
-Sample Sizes:
-              Control Treated
-All               985 3421.  
-Matched (ESS)     318  338.39
-Matched           318  624.  
-Unmatched         667 2797.  
-Discarded           0    0.  </code></pre>
+<pre><code>A matchit object
+ - method: Coarsened exact matching
+ - number of obs.: 15588 (original), 15588 (matched)
+ - target estimand: ATT
+ - covariates: gender, age, year</code></pre>
 </div>
 </div>
 <ul>
@@ -431,18 +383,18 @@ Discarded           0    0.  </code></pre>
 <li><p>マッチング結果の図示</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">abs =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <ul>
 <li>マッチング結果を変数として含んだデータを作成</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">match.data</span>(fit.m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">match.data</span>(fit.m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><p>“subclass”: マッチングしたグループ</p></li>
@@ -453,175 +405,28 @@ Discarded           0    0.  </code></pre>
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance,</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>          df,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">weights =</span> weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(earnings <span class="sc">~</span> degree <span class="sc">+</span> gender <span class="sc">+</span> age <span class="sc">+</span> year,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>          df,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">weights =</span> weights,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">clusters =</span> subclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>             Estimate Std. Error   t value     Pr(&gt;|t|)  CI Lower CI Upper  DF
-(Intercept)  4.707547  0.2978972 15.802589 4.605531e-50 4.1229266 5.292168 940
-insuranceyes 1.481104  0.4842812  3.058355 2.288589e-03 0.5307064 2.431501 940</code></pre>
+<pre><code>                 Estimate Std. Error     t value     Pr(&gt;|t|)   CI Lower
+(Intercept)    -0.9406001 1.06964454  -0.8793577 3.900258e-01 -3.1770482
+degreebachelor  5.6973701 0.29536430  19.2892987 8.424314e-21  5.0987422
+genderfemale   -2.5534913 0.19585455 -13.0376918 1.521310e-14 -2.9520114
+age             0.3855614 0.03430666  11.2386741 8.520762e-10  0.3137177
+year2004        4.6549789 0.18737754  24.8427793 1.299149e-23  4.2743968
+                 CI Upper       DF
+(Intercept)     1.2958479 19.29879
+degreebachelor  6.2959981 36.70388
+genderfemale   -2.1549711 32.88904
+age             0.4574051 18.84870
+year2004        5.0355610 34.52932</code></pre>
 </div>
 </div>
 </section>
-<section id="coarsened-exact-matching" class="level3" data-number="2.3.2">
-<h3 data-number="2.3.2" class="anchored" data-anchor-id="coarsened-exact-matching"><span class="header-section-number">2.3.2</span> Coarsened exact matching</h3>
-<ul>
-<li><p>Coarsened exact matching<span class="citation" data-cites="iacus2012causal">(<a href="references.html#ref-iacus2012causal" role="doc-biblioref"><strong>iacus2012causal?</strong></a>)</span>の実装</p>
-<ul>
-<li>連続変数をカテゴリー変数化することで、マッチングできるサンプルサイズを増やすことが期待できる</li>
-</ul></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="ot">&lt;-</span> <span class="fu">matchit</span>(insurance <span class="sc">~</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school<span class="sc">+</span> married <span class="sc">+</span> employed <span class="sc">+</span> income,</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> raw,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"cem"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li>マッチング結果</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-matchit(formula = insurance ~ region + age + afam + gender + 
-    school + married + employed + income, data = raw, method = "cem", 
-    estimand = "ATC")
-
-Summary of Balance for All Data:
-                Means Treated Means Control Std. Mean Diff. Var. Ratio
-regionnortheast        0.1938        0.1766          0.0450          .
-regionmidwest          0.2882        0.1736          0.3026          .
-regionwest             0.1818        0.1787          0.0082          .
-regionother            0.3362        0.4711         -0.2703          .
-age                    7.3737        7.5021         -0.1849     0.7752
-afamno                 0.9380        0.6914          0.5340          .
-afamyes                0.0620        0.3086         -0.5340          .
-genderfemale           0.5849        0.6365         -0.1073          .
-gendermale             0.4151        0.3635          0.1073          .
-school                10.9547        7.9827          0.7549     0.7464
-marriedno              0.4028        0.6315         -0.4740          .
-marriedyes             0.5972        0.3685          0.4740          .
-employedno             0.8857        0.9350         -0.2001          .
-employedyes            0.1143        0.0650          0.2001          .
-income                 2.7759        1.6630          0.5889     2.7193
-                eCDF Mean eCDF Max
-regionnortheast    0.0172   0.0172
-regionmidwest      0.1146   0.1146
-regionwest         0.0031   0.0031
-regionother        0.1349   0.1349
-age                0.0357   0.0936
-afamno             0.2467   0.2467
-afamyes            0.2467   0.2467
-genderfemale       0.0516   0.0516
-gendermale         0.0516   0.0516
-school             0.1564   0.3248
-marriedno          0.2287   0.2287
-marriedyes         0.2287   0.2287
-employedno         0.0493   0.0493
-employedyes        0.0493   0.0493
-income             0.1920   0.3244
-
-
-Summary of Balance for Matched Data:
-                Means Treated Means Control Std. Mean Diff. Var. Ratio
-regionnortheast        0.1663        0.1663         -0.0000          .
-regionmidwest          0.2026        0.2026         -0.0000          .
-regionwest             0.1471        0.1471         -0.0000          .
-regionother            0.4840        0.4840         -0.0000          .
-age                    7.3175        7.3117          0.0084     0.9786
-afamno                 0.8486        0.8486          0.0000          .
-afamyes                0.1514        0.1514         -0.0000          .
-genderfemale           0.6652        0.6652         -0.0000          .
-gendermale             0.3348        0.3348         -0.0000          .
-school                 9.2821        9.2601          0.0056     0.9798
-marriedno              0.5458        0.5458         -0.0000          .
-marriedyes             0.4542        0.4542         -0.0000          .
-employedno             0.9659        0.9659          0.0000          .
-employedyes            0.0341        0.0341         -0.0000          .
-income                 1.6947        1.4311          0.1395     0.9181
-                eCDF Mean eCDF Max Std. Pair Dist.
-regionnortheast    0.0000   0.0000          0.0000
-regionmidwest      0.0000   0.0000          0.0000
-regionwest         0.0000   0.0000          0.0000
-regionother        0.0000   0.0000          0.0000
-age                0.0040   0.0237          0.1533
-afamno             0.0000   0.0000          0.0000
-afamyes            0.0000   0.0000          0.0000
-genderfemale       0.0000   0.0000          0.0000
-gendermale         0.0000   0.0000          0.0000
-school             0.0018   0.0158          0.0211
-marriedno          0.0000   0.0000          0.0000
-marriedyes         0.0000   0.0000          0.0000
-employedno         0.0000   0.0000          0.0000
-employedyes        0.0000   0.0000          0.0000
-income             0.0845   0.1898          0.3971
-
-Sample Sizes:
-              Control Treated
-All               985 3421.  
-Matched (ESS)     469  438.65
-Matched           469 1196.  
-Unmatched         516 2225.  
-Discarded           0    0.  </code></pre>
-</div>
-</div>
-<ul>
-<li>可視化</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="sc">|&gt;</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<ul>
-<li><p>Exact matching以外のマッチング法では、マッチングされたサンプル内でも<span class="math inline">\(X\)</span>の違いが残る</p>
-<ul>
-<li>マッチングされたサンプル内で回帰分析を行うことで、再調整する</li>
-</ul></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">match.data</span>(fit.m)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school<span class="sc">+</span> married <span class="sc">+</span> employed <span class="sc">+</span> income,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>          df,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">weights =</span> weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                   Estimate Std. Error     t value     Pr(&gt;|t|)    CI Lower
-(Intercept)      0.07031894  3.1830746  0.02209152 9.823776e-01 -6.17296408
-insuranceyes     1.63803136  0.4111893  3.98364310 7.081498e-05  0.83152463
-regionnortheast  0.37332676  0.6686084  0.55836385 5.766716e-01 -0.93808186
-regionmidwest   -1.01255860  0.4957411 -2.04251498 4.125884e-02 -1.98490525
-regionwest       1.46720871  0.9811751  1.49535874 1.350117e-01 -0.45726821
-age              0.54604701  0.4139224  1.31920151 1.872845e-01 -0.26582038
-afamyes         -1.09566719  0.8327555 -1.31571289 1.884529e-01 -2.72903401
-gendermale      -0.77640463  0.5006594 -1.55076411 1.211496e-01 -1.75839805
-school           0.16064654  0.1041628  1.54226418 1.232008e-01 -0.04365837
-marriedyes      -0.16566757  0.5419170 -0.30570652 7.598666e-01 -1.22858372
-employedyes     -1.47819362  1.1718433 -1.26142599 2.073334e-01 -3.77664729
-income          -0.36310301  0.1778814 -2.04126501 4.138301e-02 -0.71199956
-                   CI Upper   DF
-(Intercept)      6.31360197 1653
-insuranceyes     2.44453809 1653
-regionnortheast  1.68473538 1653
-regionmidwest   -0.04021195 1653
-regionwest       3.39168562 1653
-age              1.35791440 1653
-afamyes          0.53769963 1653
-gendermale       0.20558879 1653
-school           0.36495144 1653
-marriedyes       0.89724858 1653
-employedyes      0.82026004 1653
-income          -0.01420647 1653</code></pre>
-</div>
-</div>
-</section>
-<section id="propensity-score-with-subclassification" class="level3" data-number="2.3.3">
-<h3 data-number="2.3.3" class="anchored" data-anchor-id="propensity-score-with-subclassification"><span class="header-section-number">2.3.3</span> Propensity score with subclassification</h3>
+<section id="propensity-score-with-subclassification" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="propensity-score-with-subclassification"><span class="header-section-number">2.3.2</span> Propensity score with subclassification</h3>
 <ul>
 <li><p>Coarsened exact matchingでもマッチングできないサンプルが多数出てくる可能性</p>
 <ul>
@@ -641,536 +446,166 @@ income          -0.01420647 1653</code></pre>
 <p>-　ロジットにて傾向スコアを推定</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="ot">&lt;-</span> <span class="fu">matchit</span>(insurance <span class="sc">~</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school<span class="sc">+</span> married <span class="sc">+</span> employed <span class="sc">+</span> income,</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> raw,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"subclass"</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATC"</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                 )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="ot">&lt;-</span> <span class="fu">matchit</span>(degree <span class="sc">~</span> gender <span class="sc">+</span> age <span class="sc">+</span> year,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> CPSSW9204,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"subclass"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATE"</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                 )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>マッチング結果</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-matchit(formula = insurance ~ region + age + afam + gender + 
-    school + married + employed + income, data = raw, method = "subclass", 
-    estimand = "ATC")
+matchit(formula = degree ~ gender + age + year, data = CPSSW9204, 
+    method = "subclass", estimand = "ATE")
 
 Summary of Balance for All Data:
-                Means Treated Means Control Std. Mean Diff. Var. Ratio
-distance               0.8230        0.6148          0.8783     0.3568
-regionnortheast        0.1938        0.1766          0.0450          .
-regionmidwest          0.2882        0.1736          0.3026          .
-regionwest             0.1818        0.1787          0.0082          .
-regionother            0.3362        0.4711         -0.2703          .
-age                    7.3737        7.5021         -0.1849     0.7752
-afamno                 0.9380        0.6914          0.5340          .
-afamyes                0.0620        0.3086         -0.5340          .
-genderfemale           0.5849        0.6365         -0.1073          .
-gendermale             0.4151        0.3635          0.1073          .
-school                10.9547        7.9827          0.7549     0.7464
-marriedno              0.4028        0.6315         -0.4740          .
-marriedyes             0.5972        0.3685          0.4740          .
-employedno             0.8857        0.9350         -0.2001          .
-employedyes            0.1143        0.0650          0.2001          .
-income                 2.7759        1.6630          0.5889     2.7193
-                eCDF Mean eCDF Max
-distance           0.2750   0.4285
-regionnortheast    0.0172   0.0172
-regionmidwest      0.1146   0.1146
-regionwest         0.0031   0.0031
-regionother        0.1349   0.1349
-age                0.0357   0.0936
-afamno             0.2467   0.2467
-afamyes            0.2467   0.2467
-genderfemale       0.0516   0.0516
-gendermale         0.0516   0.0516
-school             0.1564   0.3248
-marriedno          0.2287   0.2287
-marriedyes         0.2287   0.2287
-employedno         0.0493   0.0493
-employedyes        0.0493   0.0493
-income             0.1920   0.3244
+             Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+distance            0.4310        0.4180          0.2320     1.1147    0.0648
+gendermale          0.5291        0.6167         -0.1779          .    0.0877
+genderfemale        0.4709        0.3833          0.1779          .    0.0877
+age                29.6460       29.7982         -0.0534     1.0019    0.0152
+year1992            0.4487        0.5164         -0.1358          .    0.0677
+year2004            0.5513        0.4836          0.1358          .    0.0677
+             eCDF Max
+distance       0.1109
+gendermale     0.0877
+genderfemale   0.0877
+age            0.0288
+year1992       0.0677
+year2004       0.0677
 
 Summary of Balance Across Subclasses
-                Means Treated Means Control Std. Mean Diff. Var. Ratio
-distance               0.6264        0.6148          0.0486     0.9752
-regionnortheast        0.1752        0.1766         -0.0039          .
-regionmidwest          0.1941        0.1736          0.0542          .
-regionwest             0.1915        0.1787          0.0335          .
-regionother            0.4392        0.4711         -0.0638          .
-age                    7.4961        7.5021         -0.0087     0.8894
-afamno                 0.6956        0.6914          0.0092          .
-afamyes                0.3044        0.3086         -0.0092          .
-genderfemale           0.5977        0.6365         -0.0807          .
-gendermale             0.4023        0.3635          0.0807          .
-school                 8.0956        7.9827          0.0287     1.0967
-marriedno              0.6000        0.6315         -0.0653          .
-marriedyes             0.4000        0.3685          0.0653          .
-employedno             0.9157        0.9350         -0.0782          .
-employedyes            0.0843        0.0650          0.0782          .
-income                 1.9086        1.6630          0.1300     1.3758
-                eCDF Mean eCDF Max
-distance           0.0133   0.0457
-regionnortheast    0.0015   0.0015
-regionmidwest      0.0205   0.0205
-regionwest         0.0128   0.0128
-regionother        0.0319   0.0319
-age                0.0133   0.0339
-afamno             0.0042   0.0042
-afamyes            0.0042   0.0042
-genderfemale       0.0388   0.0388
-gendermale         0.0388   0.0388
-school             0.0109   0.0311
-marriedno          0.0315   0.0315
-marriedyes         0.0315   0.0315
-employedno         0.0193   0.0193
-employedyes        0.0193   0.0193
-income             0.0622   0.1485
+             Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+distance            0.4239        0.4232          0.0118     1.0127    0.0041
+gendermale          0.5787        0.5812         -0.0050          .    0.0025
+genderfemale        0.4213        0.4188          0.0050          .    0.0025
+age                29.7479       29.7332          0.0052     0.9890    0.0035
+year1992            0.4828        0.4902         -0.0148          .    0.0074
+year2004            0.5172        0.5098          0.0148          .    0.0074
+             eCDF Max
+distance       0.0130
+gendermale     0.0025
+genderfemale   0.0025
+age            0.0079
+year1992       0.0074
+year2004       0.0074
 
 Sample Sizes:
               Control Treated
-All               985 3421.  
-Matched (ESS)     985  999.44
-Matched           985 3421.  
-Unmatched           0    0.  
-Discarded           0    0.  </code></pre>
+All           8986.   6602.  
+Matched (ESS) 8881.41 6483.64
+Matched       8986.   6602.  
+Unmatched        0.      0.  
+Discarded        0.      0.  </code></pre>
 </div>
 </div>
 <ul>
 <li>マッチング結果の図示</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="sc">|&gt;</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="sc">|&gt;</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">abs =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <ul>
 <li>マッチングしたデータを用いた推定</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">match.data</span>(fit.m) <span class="co"># マッチング結果を含んだ</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school<span class="sc">+</span> married <span class="sc">+</span> employed,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>          df,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">weights =</span> weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(earnings <span class="sc">~</span> degree <span class="sc">+</span> gender <span class="sc">+</span> age <span class="sc">+</span> year,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>          df,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">weights =</span> weights,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">clusters =</span> subclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                   Estimate Std. Error    t value    Pr(&gt;|t|)    CI Lower
-(Intercept)      2.69483196 1.56827266  1.7183440 0.085804312 -0.37977270
-insuranceyes     0.86429413 0.30326930  2.8499229 0.004393338  0.26973348
-regionnortheast  0.32880379 0.47161144  0.6971921 0.485719430 -0.59579228
-regionmidwest   -0.72444843 0.38788012 -1.8677122 0.061868702 -1.48488891
-regionwest       0.36858393 0.43102618  0.8551312 0.392525130 -0.47644456
-age              0.32472400 0.19637511  1.6535904 0.098282174 -0.06027016
-afamyes         -0.73188348 0.46736086 -1.5659923 0.117422424 -1.64814626
-gendermale      -1.02017368 0.34142463 -2.9879909 0.002823707 -1.68953801
-school           0.05542150 0.04126024  1.3432182 0.179270695 -0.02546936
-marriedyes      -0.07195191 0.30991060 -0.2321699 0.816416863 -0.67953285
-employedyes     -0.54902900 0.45865317 -1.1970461 0.231353145 -1.44822033
-                   CI Upper   DF
-(Intercept)      5.76943662 4395
-insuranceyes     1.45885478 4395
-regionnortheast  1.25339987 4395
-regionmidwest    0.03599205 4395
-regionwest       1.21361243 4395
-age              0.70971816 4395
-afamyes          0.18437930 4395
-gendermale      -0.35080936 4395
-school           0.13631236 4395
-marriedyes       0.53562902 4395
-employedyes      0.35016234 4395</code></pre>
-</div>
-</div>
-</section>
-<section id="nearest-neighbor-matching" class="level3" data-number="2.3.4">
-<h3 data-number="2.3.4" class="anchored" data-anchor-id="nearest-neighbor-matching"><span class="header-section-number">2.3.4</span> Nearest neighbor matching</h3>
-<ul>
-<li><p>傾向スコアを用いた最近旁マッチング</p>
-<ul>
-<li><p>傾向スコアがもっとも似ているサンプルとマッチングする</p></li>
-<li><p>デフォルトでは、Replacement無しのマッチングを行う</p></li>
-</ul></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="ot">&lt;-</span> <span class="fu">matchit</span>(insurance <span class="sc">~</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school<span class="sc">+</span> married <span class="sc">+</span> employed <span class="sc">+</span> income,</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> raw,</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">"ATC"</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                 )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li>マッチング結果</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-matchit(formula = insurance ~ region + age + afam + gender + 
-    school + married + employed + income, data = raw, method = "nearest", 
-    estimand = "ATC")
-
-Summary of Balance for All Data:
-                Means Treated Means Control Std. Mean Diff. Var. Ratio
-distance               0.8230        0.6148          0.8783     0.3568
-regionnortheast        0.1938        0.1766          0.0450          .
-regionmidwest          0.2882        0.1736          0.3026          .
-regionwest             0.1818        0.1787          0.0082          .
-regionother            0.3362        0.4711         -0.2703          .
-age                    7.3737        7.5021         -0.1849     0.7752
-afamno                 0.9380        0.6914          0.5340          .
-afamyes                0.0620        0.3086         -0.5340          .
-genderfemale           0.5849        0.6365         -0.1073          .
-gendermale             0.4151        0.3635          0.1073          .
-school                10.9547        7.9827          0.7549     0.7464
-marriedno              0.4028        0.6315         -0.4740          .
-marriedyes             0.5972        0.3685          0.4740          .
-employedno             0.8857        0.9350         -0.2001          .
-employedyes            0.1143        0.0650          0.2001          .
-income                 2.7759        1.6630          0.5889     2.7193
-                eCDF Mean eCDF Max
-distance           0.2750   0.4285
-regionnortheast    0.0172   0.0172
-regionmidwest      0.1146   0.1146
-regionwest         0.0031   0.0031
-regionother        0.1349   0.1349
-age                0.0357   0.0936
-afamno             0.2467   0.2467
-afamyes            0.2467   0.2467
-genderfemale       0.0516   0.0516
-gendermale         0.0516   0.0516
-school             0.1564   0.3248
-marriedno          0.2287   0.2287
-marriedyes         0.2287   0.2287
-employedno         0.0493   0.0493
-employedyes        0.0493   0.0493
-income             0.1920   0.3244
-
-
-Summary of Balance for Matched Data:
-                Means Treated Means Control Std. Mean Diff. Var. Ratio
-distance               0.6835        0.6148          0.2897     0.5687
-regionnortheast        0.1939        0.1766          0.0453          .
-regionmidwest          0.1878        0.1736          0.0375          .
-regionwest             0.1949        0.1787          0.0424          .
-regionother            0.4234        0.4711         -0.0956          .
-age                    7.4870        7.5021         -0.0218     0.8702
-afamno                 0.8010        0.6914          0.2374          .
-afamyes                0.1990        0.3086         -0.2374          .
-genderfemale           0.6173        0.6365         -0.0401          .
-gendermale             0.3827        0.3635          0.0401          .
-school                 8.5736        7.9827          0.1501     0.8404
-marriedno              0.5909        0.6315         -0.0842          .
-marriedyes             0.4091        0.3685          0.0842          .
-employedno             0.9228        0.9350         -0.0494          .
-employedyes            0.0772        0.0650          0.0494          .
-income                 1.7858        1.6630          0.0650     0.7674
-                eCDF Mean eCDF Max Std. Pair Dist.
-distance           0.0309   0.1827          0.2898
-regionnortheast    0.0173   0.0173          0.7800
-regionmidwest      0.0142   0.0142          0.7130
-regionwest         0.0162   0.0162          0.7897
-regionother        0.0477   0.0477          0.9173
-age                0.0133   0.0365          1.0470
-afamno             0.1096   0.1096          0.4879
-afamyes            0.1096   0.1096          0.4879
-genderfemale       0.0193   0.0193          0.9224
-gendermale         0.0193   0.0193          0.9224
-school             0.0318   0.0924          0.7555
-marriedno          0.0406   0.0406          0.8292
-marriedyes         0.0406   0.0406          0.8292
-employedno         0.0122   0.0122          0.5437
-employedyes        0.0122   0.0122          0.5437
-income             0.0615   0.1472          0.7354
-
-Sample Sizes:
-          Control Treated
-All           985    3421
-Matched       985     985
-Unmatched       0    2436
-Discarded       0       0</code></pre>
-</div>
-</div>
-<ul>
-<li>マッチング結果の図示</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="sc">|&gt;</span> </span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<ul>
-<li><p>マッチングしたデータを用いた推定</p>
-<ul>
-<li>replacement無しの場合ｍマッチングしたペア(subclass)でクラスタリングしたrobust standard errorの利用を推奨 <span class="citation" data-cites="abadie2021robust">(<a href="references.html#ref-abadie2021robust" role="doc-biblioref"><strong>abadie2021robust?</strong></a>)</span></li>
-</ul></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">match.data</span>(fit.m) <span class="co"># マッチング結果を含んだ</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school<span class="sc">+</span> married <span class="sc">+</span> employed <span class="sc">+</span> income,</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>          df,</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">clusters =</span> subclass,</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">weights =</span> weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                   Estimate Std. Error    t value     Pr(&gt;|t|)    CI Lower
-(Intercept)      4.28376769 1.80365512  2.3750481 0.0179117218  0.74034506
-insuranceyes     0.88089215 0.27930681  3.1538513 0.0016606844  0.33277940
-regionnortheast  0.11745650 0.43169716  0.2720808 0.7856724490 -0.73071167
-regionmidwest   -1.09402106 0.34563753 -3.1652265 0.0016483956 -1.77317575
-regionwest       0.67689981 0.41977554  1.6125280 0.1074679565 -0.14780947
-age              0.15738399 0.21874416  0.7194889 0.4721765473 -0.27238904
-afamyes         -0.65822959 0.31824549 -2.0683077 0.0391049262 -1.28343451
-gendermale      -1.12983896 0.30900225 -3.6564101 0.0002772051 -1.73664207
-school           0.04179621 0.03992562  1.0468521 0.2957240492 -0.03666544
-marriedyes       0.26953526 0.28939461  0.9313762 0.3520209096 -0.29877535
-employedyes     -0.28682948 0.69900943 -0.4103371 0.6821000780 -1.66715900
-income          -0.18287346 0.07454076 -2.4533350 0.0158456243 -0.33072080
-                   CI Upper       DF
-(Intercept)      7.82719031 515.2437
-insuranceyes     1.42900489 973.5096
-regionnortheast  0.96562467 498.9836
-regionmidwest   -0.41486638 478.5757
-regionwest       1.50160909 508.1414
-age              0.58715703 499.0168
-afamyes         -0.03302466 519.9827
-gendermale      -0.52303586 627.8155
-school           0.12025787 454.6173
-marriedyes       0.83784587 621.0176
-employedyes      1.09350005 162.2410
-income          -0.03502611 102.2246</code></pre>
+<pre><code>                 Estimate Std. Error     t value     Pr(&gt;|t|)   CI Lower
+(Intercept)    -0.9406001 1.06964454  -0.8793577 3.900258e-01 -3.1770482
+degreebachelor  5.6973701 0.29536430  19.2892987 8.424314e-21  5.0987422
+genderfemale   -2.5534913 0.19585455 -13.0376918 1.521310e-14 -2.9520114
+age             0.3855614 0.03430666  11.2386741 8.520762e-10  0.3137177
+year2004        4.6549789 0.18737754  24.8427793 1.299149e-23  4.2743968
+                 CI Upper       DF
+(Intercept)     1.2958479 19.29879
+degreebachelor  6.2959981 36.70388
+genderfemale   -2.1549711 32.88904
+age             0.4574051 18.84870
+year2004        5.0355610 34.52932</code></pre>
 </div>
 </div>
 </section>
 </section>
-<section id="付録推定結果の保存と表示" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="付録推定結果の保存と表示"><span class="header-section-number">2.4</span> 付録：推定結果の保存と表示</h2>
-<section id="推計結果表" class="level3" data-number="2.4.1">
-<h3 data-number="2.4.1" class="anchored" data-anchor-id="推計結果表"><span class="header-section-number">2.4.1</span> 推計結果表</h3>
-<ul>
-<li><p>tidy関数により推定結果data.frameに変化することで、kable関数(knitrパッケージ)による推計結果表の整形、geom_pointrange関数による可視化が可能</p></li>
-<li><p>点推定値(estimate)、標準誤差(std.error)のみを残した推計結果表</p></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> raw</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>            ) <span class="sc">|&gt;</span> </span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error) <span class="sc">|&gt;</span> </span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="table table-sm table-striped">
-<thead>
-<tr class="header">
-<th style="text-align: left;">term</th>
-<th style="text-align: right;">estimate</th>
-<th style="text-align: right;">std.error</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">3.65</td>
-<td style="text-align: right;">1.23</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">insuranceyes</td>
-<td style="text-align: right;">0.90</td>
-<td style="text-align: right;">0.25</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">regionnortheast</td>
-<td style="text-align: right;">0.36</td>
-<td style="text-align: right;">0.30</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">regionmidwest</td>
-<td style="text-align: right;">-0.40</td>
-<td style="text-align: right;">0.25</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">regionwest</td>
-<td style="text-align: right;">0.55</td>
-<td style="text-align: right;">0.30</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">age</td>
-<td style="text-align: right;">0.12</td>
-<td style="text-align: right;">0.15</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">afamyes</td>
-<td style="text-align: right;">-0.35</td>
-<td style="text-align: right;">0.34</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">gendermale</td>
-<td style="text-align: right;">-0.63</td>
-<td style="text-align: right;">0.21</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">school</td>
-<td style="text-align: right;">0.07</td>
-<td style="text-align: right;">0.03</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school,</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> raw</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>            ) <span class="sc">|&gt;</span> </span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error) <span class="sc">|&gt;</span> </span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"insuranceyes"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table class="table table-sm table-striped">
-<thead>
-<tr class="header">
-<th style="text-align: left;">term</th>
-<th style="text-align: right;">estimate</th>
-<th style="text-align: right;">std.error</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">insuranceyes</td>
-<td style="text-align: right;">0.9</td>
-<td style="text-align: right;">0.25</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="dot-and-whisker-plotによる可視化" class="level3" data-number="2.4.2">
-<h3 data-number="2.4.2" class="anchored" data-anchor-id="dot-and-whisker-plotによる可視化"><span class="header-section-number">2.4.2</span> Dot-and-Whisker plotによる可視化</h3>
+<section id="sec-Appendix" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-Appendix"><span class="header-section-number">2.4</span> 付録：推定結果の保存と表示</h2>
+<section id="dot-and-whisker-plotによる可視化" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="dot-and-whisker-plotによる可視化"><span class="header-section-number">2.4.1</span> Dot-and-Whisker plotによる可視化</h3>
 <ul>
 <li>Dot-and-Whisker図により点推定量と信頼区間を可視化</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> region <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school,</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> raw) <span class="sc">|&gt;</span> </span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">|&gt;</span> </span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> term,</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> estimate,</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmin =</span> conf.low,</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmax =</span> conf.high)</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">+</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="ot">&lt;-</span> <span class="fu">matchit</span>(degree <span class="sc">~</span> gender <span class="sc">+</span> age <span class="sc">+</span> year,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> CPSSW9204,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">"CEM"</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                 )</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">match.data</span>(fit.m)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>Result1 <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(earnings <span class="sc">~</span> degree <span class="sc">+</span> gender <span class="sc">+</span> age <span class="sc">+</span> year,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df) <span class="sc">|&gt;</span> </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"degreebachelor"</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">|&gt;</span> </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Method =</span> <span class="st">"OLS"</span>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>Result1 <span class="sc">|&gt;</span> </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> term,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> estimate,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmin =</span> conf.low,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmax =</span> conf.high)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">+</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section>
-<section id="サブサンプル分析結果の整理と可視化" class="level3" data-number="2.4.3">
-<h3 data-number="2.4.3" class="anchored" data-anchor-id="サブサンプル分析結果の整理と可視化"><span class="header-section-number">2.4.3</span> サブサンプル分析結果の整理と可視化</h3>
-<ul>
-<li><p>条件付き平均効果<span class="math inline">\(=E[Y_i(d)-Y_i(d')|X_i=x]\)</span></p>
-<ul>
-<li><p>因果効果の異質性を議論する上で、有力な要約値</p></li>
-<li><p>少数の<span class="math inline">\(x\)</span>を分析者が事前設定する場合、<span class="math inline">\(x\)</span>についてサブサンプルを作成し、推定すればOK</p></li>
-</ul></li>
-<li><p>tidyverseパッケージに含まれるnest/unnest関数を用いれば、整理したサブサンプル分析が可能でかつ、容易に可視化/表化できる</p>
-<ul>
-<li><p>推定結果を入子リスト形式に保存し、通常のデータフレーム形式に展開、可視化/表化する手順踏む</p></li>
-<li><p>関数をリストの構成要素に逐次適用する汎関数(map)を利用することで、同じデータフレーム内に結果を保存できる</p></li>
-</ul></li>
-<li><p>以下では”region”ごとに条件付き平均効果を推定する</p></li>
-</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>regression <span class="ot">&lt;-</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(df){</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school <span class="sc">+</span> income <span class="sc">+</span> employed <span class="sc">+</span> married,</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> df) <span class="sc">|&gt;</span> </span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"insuranceyes"</span>)</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  } <span class="co"># 推計し、関心のあるパラメータのみからなるデータフレーム化する関数</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> </span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  raw <span class="sc">|&gt;</span> </span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">|&gt;</span> <span class="co"># regoinごとにサブグループ化</span></span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span> <span class="co"># regionごとに入子データを作成</span></span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">map</span>(data,regression)) <span class="sc">|&gt;</span> <span class="co"># 推定し、モデルとして結果をほぞpン</span></span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>() <span class="sc">|&gt;</span> <span class="co"># 入子構造を解消</span></span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(region,</span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>           estimate,</span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>           conf.low,</span>
-<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>           conf.high) <span class="co"># regionごとの結果表を作成</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li>データフレームなので、容易に可視化できる</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>result <span class="sc">|&gt;</span> </span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> estimate,</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> region,</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmin =</span> conf.low,</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmax =</span> conf.high)</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">+</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>Result2 <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(earnings <span class="sc">~</span> degree <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> df,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">weights =</span> weights,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">clusters =</span> subclass) <span class="sc">|&gt;</span> </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"degreebachelor"</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">|&gt;</span> </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Method =</span> <span class="st">"Matching + OLS"</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>Result1 <span class="sc">|&gt;</span> </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(Result2) <span class="sc">|&gt;</span> </span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> Method,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> estimate,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmin =</span> conf.low,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmax =</span> conf.high)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">+</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="複数の推定結果の整理と可視化" class="level3" data-number="2.4.4">
-<h3 data-number="2.4.4" class="anchored" data-anchor-id="複数の推定結果の整理と可視化"><span class="header-section-number">2.4.4</span> 複数の推定結果の整理と可視化</h3>
-<ul>
-<li>listで保存し、data.frameに展開、という手順はより一般に複数の推定結果を整理することに使える</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>list <span class="ot">&lt;-</span> <span class="fu">list</span>() <span class="co"># 空のリストを作成</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>list[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> </span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm_robust</span>(visits <span class="sc">~</span> insurance <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school <span class="sc">+</span> income <span class="sc">+</span> employed <span class="sc">+</span> married <span class="sc">+</span>region,</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> raw) <span class="sc">|&gt;</span> </span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"insuranceyes"</span>) <span class="co"># 推定結果をリストに保存</span></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>list[[<span class="dv">2</span>]] <span class="ot">&lt;-</span> </span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm_robust</span>(nvisits <span class="sc">~</span> insurance <span class="sc">+</span> age <span class="sc">+</span> afam <span class="sc">+</span> gender <span class="sc">+</span> school <span class="sc">+</span> income <span class="sc">+</span> employed <span class="sc">+</span> married <span class="sc">+</span>region,</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> raw) <span class="sc">|&gt;</span> </span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"insuranceyes"</span>) <span class="co"># 別の結果を保存</span></span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(list) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"visits"</span>,<span class="st">"nvisits"</span>) <span class="co"># 名づけ</span></span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span></span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">enframe</span>(list) <span class="sc">|&gt;</span> </span>
-<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>() <span class="co"># データフレーム化</span></span>
-<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>result <span class="sc">|&gt;</span> </span>
-<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> name,</span>
-<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> estimate,</span>
-<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmin =</span> conf.low,</span>
-<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmax =</span> conf.high</span>
-<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>             )</span>
-<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">+</span></span>
-<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="co"># 可視化</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+<p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-lin2013" class="csl-entry" role="doc-biblioentry">
+Lin, Winston. 2013. <span>“Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining Freedman<span>’</span>s Critique.”</span> <em>The Annals of Applied Statistics</em> 7 (1): 295–318. <a href="https://doi.org/10.1214/12-AOAS583">https://doi.org/10.1214/12-AOAS583</a>.
+</div>
+</div>
 </section>
 </section>
 
@@ -1280,7 +715,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./summary.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">記述統計</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
