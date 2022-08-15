@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Rによる比較・因果推論・予測研究",
+    "section": "",
+    "text": "定量的な比較、（反実仮想）因果推定、予測分析をRによって行う方法を紹介\n経済学におけるデータ分析の大部分は、複数の変数間での関係性の理解・利用を目的としている。 本ページでは、ある結果変数\\(Y\\)と独立変数（群）\\(X=X_1,...,X_L\\)の関係性に焦点を当てる。 また\\(Y\\)と\\(X\\)がともに観察でき、関心のある母集団からランダムサンプリングされたデータが入手出来ている。\n具体的な分析目標を大きく（予測）\\(Y\\)の予測関数の推定、（比較）異なる\\(X\\)間での\\(Y\\)の比較、（因果効果）\\(X\\)の変化が\\(Y\\)に与える因果効果の推定、に大別し、それぞれについて簡単な説明とRのサンプルコードの提供\nデータインポート、整理、可視化を行う関数群を統合的に提供するtidyverseパッケージの利用\nExample dataとしては、AERパッケージに含まれるNMES1988(the US National Medical Expenditure Survey)を利用"
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "See Knuth (1984) for additional discussion of literate programming.\n\n1 + 1\n\n[1] 2\n\n\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  },
+  {
+    "objectID": "summary.html",
+    "href": "summary.html",
+    "title": "2  Summary",
+    "section": "",
+    "text": "1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  }
+]
