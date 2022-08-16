@@ -212,7 +212,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#sec-Matching" id="toc-sec-Matching" class="nav-link" data-scroll-target="#sec-Matching"> <span class="header-section-number">2.3</span> マッチング法による修正</a>
   <ul class="collapse">
-  <li><a href="#exact-matching" id="toc-exact-matching" class="nav-link" data-scroll-target="#exact-matching"> <span class="header-section-number">2.3.1</span> Exact matching</a></li>
+  <li><a href="#coarsened-exact-matching" id="toc-coarsened-exact-matching" class="nav-link" data-scroll-target="#coarsened-exact-matching"> <span class="header-section-number">2.3.1</span> Coarsened exact matching</a></li>
   <li><a href="#propensity-score-with-subclassification" id="toc-propensity-score-with-subclassification" class="nav-link" data-scroll-target="#propensity-score-with-subclassification"> <span class="header-section-number">2.3.2</span> Propensity score with subclassification</a></li>
   </ul></li>
   <li><a href="#sec-Appendix" id="toc-sec-Appendix" class="nav-link" data-scroll-target="#sec-Appendix"> <span class="header-section-number">2.4</span> 付録：推定結果の保存と表示</a>
@@ -272,7 +272,7 @@ div.csl-indent {
 <ul>
 <li><p><span class="math inline">\(\tau(x)=\tau,f(x)=\beta_0+\beta_1x_1+...+\beta_Lx_L\)</span>と特定化</p></li>
 <li><p>サンプル内MSEを最大化するように推定</p></li>
-<li><p>robust standard errorを計算するためにestimatrパッケージ<span class="citation" data-cites="R-estimatr">(<a href="references.html#ref-R-estimatr" role="doc-biblioref"><strong>R-estimatr?</strong></a>)</span>を利用</p></li>
+<li><p>robust standard errorを計算するためにestimatrパッケージを利用</p></li>
 <li><p>lm_robust関数で推定</p></li>
 </ul>
 <div class="cell">
@@ -306,7 +306,7 @@ year2004        4.9266581 15583</code></pre>
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="rctデータへの応用"><span class="header-section-number">2.2.1</span> RCTデータへの応用</h3>
 <ul>
 <li><p>原因変数が完全にランダム化されている場合、因果効果の<strong>識別</strong>を目的に回帰分析を応用する必要はない</p></li>
-<li><p>因果効果の<strong>推定</strong>の改善、効率性向上、を目的として線形モデルの利用は議論されてきた。</p></li>
+<li><p>因果効果の<strong>推定</strong>の改善、効率性向上、を目的とした線形モデルの利用は議論されてきた</p></li>
 <li><p><span class="citation" data-cites="lin2013">Lin (<a href="references.html#ref-lin2013" role="doc-biblioref">2013</a>)</span> は、以下のような交差項を導入したモデルを用いることで、平均の差の推定に比べて、漸近的効率性が悪化することはない（同等か改善する）ことを示した</p></li>
 </ul>
 <p><span class="math display">\[E[Y|D,X]=\beta_{D}\times D+\beta_1\times X_1+...+\beta_L\times X_L\]</span></p>
@@ -346,15 +346,15 @@ degreebachelor:year2004_c      1.8960373  2.7586110 15580</code></pre>
 <ul>
 <li><p>回帰を行う事前準備としてマッチング法を利用する</p>
 <ul>
-<li><p>重回帰が持つ関数形への依存度を減らせる <span class="citation" data-cites="ho2007matching">(<a href="references.html#ref-ho2007matching" role="doc-biblioref"><strong>ho2007matching?</strong></a>)</span></p></li>
-<li><p>MathItパッケージ <span class="citation" data-cites="MatchIt2011">(<a href="references.html#ref-MatchIt2011" role="doc-biblioref"><strong>MatchIt2011?</strong></a>)</span>を利用</p></li>
+<li><p>重回帰が持つ関数形への依存度を減らせる <span class="citation" data-cites="ho2007">(<a href="references.html#ref-ho2007" role="doc-biblioref">Ho et al. 2007</a>)</span></p></li>
+<li><p>MathItパッケージを利用</p></li>
 </ul></li>
 <li><p>多数のマッチング法が実装されている</p></li>
 </ul>
-<section id="exact-matching" class="level3" data-number="2.3.1">
-<h3 data-number="2.3.1" class="anchored" data-anchor-id="exact-matching"><span class="header-section-number">2.3.1</span> Exact matching</h3>
+<section id="coarsened-exact-matching" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="coarsened-exact-matching"><span class="header-section-number">2.3.1</span> Coarsened exact matching</h3>
 <ul>
-<li><p>Coarsened exact matching<span class="citation" data-cites="iacus2012causal">(<a href="references.html#ref-iacus2012causal" role="doc-biblioref"><strong>iacus2012causal?</strong></a>)</span>の実装</p>
+<li><p>Coarsened exact matching <span class="citation" data-cites="iacus2012">(<a href="references.html#ref-iacus2012" role="doc-biblioref">Iacus, King, and Porro 2012</a>)</span>の実装</p>
 <ul>
 <li>連続変数をカテゴリー変数化することで、マッチングできるサンプルサイズを増やすことが期待できる</li>
 </ul></li>
@@ -602,6 +602,12 @@ year2004        5.0355610 34.52932</code></pre>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-ho2007" class="csl-entry" role="doc-biblioentry">
+Ho, Daniel E., Kosuke Imai, Gary King, and Elizabeth A. Stuart. 2007. <span>“Matching as Nonparametric Preprocessing for Reducing Model Dependence in Parametric Causal Inference.”</span> <em>Political Analysis</em> 15 (3): 199–236. <a href="https://doi.org/10.1093/pan/mpl013">https://doi.org/10.1093/pan/mpl013</a>.
+</div>
+<div id="ref-iacus2012" class="csl-entry" role="doc-biblioentry">
+Iacus, Stefano M., Gary King, and Giuseppe Porro. 2012. <span>“Causal Inference Without Balance Checking: Coarsened Exact Matching.”</span> <em>Political Analysis</em> 20 (1): 1–24. <a href="https://doi.org/10.1093/pan/mpr013">https://doi.org/10.1093/pan/mpr013</a>.
+</div>
 <div id="ref-lin2013" class="csl-entry" role="doc-biblioentry">
 Lin, Winston. 2013. <span>“Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining Freedman<span>’</span>s Critique.”</span> <em>The Annals of Applied Statistics</em> 7 (1): 295–318. <a href="https://doi.org/10.1214/12-AOAS583">https://doi.org/10.1214/12-AOAS583</a>.
 </div>

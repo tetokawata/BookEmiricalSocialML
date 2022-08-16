@@ -181,7 +181,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link active" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">3.1</span> パッケージ &amp; データ</a></li>
+  <li><a href="#sec-Table" id="toc-sec-Table" class="nav-link" data-scroll-target="#sec-Table"> <span class="header-section-number">3.2</span> 記述統計評</a></li>
+  <li><a href="#sec-Figure" id="toc-sec-Figure" class="nav-link" data-scroll-target="#sec-Figure"> <span class="header-section-number">3.3</span> 記述統計評</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -202,15 +210,499 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>In summary, this book has no content whatsoever.</p>
+<ul>
+<li><p><a href="#sec-Table">Section&nbsp;<span>3.2</span></a> 線形モデルを推定し、信頼区間を計算する方法を紹介</p></li>
+<li><p><a href="#sec-Figure">Section&nbsp;<span>3.3</span></a> 近似モデルの定式化への依存度を下げるために、マッチング法を用いた前処理を導入</p></li>
+</ul>
+<section id="パッケージ-データ" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">3.1</span> パッケージ &amp; データ</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cobalt)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="sec-Table" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-Table"><span class="header-section-number">3.2</span> 記述統計評</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>CPSSW9204 <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> <span class="st">"degree"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="pdzjnhzedt" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#pdzjnhzedt .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#pdzjnhzedt .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#pdzjnhzedt .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#pdzjnhzedt .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#pdzjnhzedt .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#pdzjnhzedt .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#pdzjnhzedt .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#pdzjnhzedt .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pdzjnhzedt .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pdzjnhzedt .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#pdzjnhzedt .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#pdzjnhzedt .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#pdzjnhzedt .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pdzjnhzedt .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#pdzjnhzedt .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#pdzjnhzedt .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pdzjnhzedt .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#pdzjnhzedt .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pdzjnhzedt .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#pdzjnhzedt .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pdzjnhzedt .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pdzjnhzedt .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pdzjnhzedt .gt_left {
+  text-align: left;
+}
+
+#pdzjnhzedt .gt_center {
+  text-align: center;
+}
+
+#pdzjnhzedt .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pdzjnhzedt .gt_font_normal {
+  font-weight: normal;
+}
+
+#pdzjnhzedt .gt_font_bold {
+  font-weight: bold;
+}
+
+#pdzjnhzedt .gt_font_italic {
+  font-style: italic;
+}
+
+#pdzjnhzedt .gt_super {
+  font-size: 65%;
+}
+
+#pdzjnhzedt .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#pdzjnhzedt .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#pdzjnhzedt .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#pdzjnhzedt .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#pdzjnhzedt .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#pdzjnhzedt .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>highschool</strong>, N = 8,986<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>bachelor</strong>, N = 6,602<sup class="gt_footnote_marks">1</sup></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">year</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1992</td>
+<td class="gt_row gt_center">4,640 (52%)</td>
+<td class="gt_row gt_center">2,962 (45%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2004</td>
+<td class="gt_row gt_center">4,346 (48%)</td>
+<td class="gt_row gt_center">3,640 (55%)</td></tr>
+    <tr><td class="gt_row gt_left">earnings</td>
+<td class="gt_row gt_center">11 (8, 14)</td>
+<td class="gt_row gt_center">16 (12, 21)</td></tr>
+    <tr><td class="gt_row gt_left">gender</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">male</td>
+<td class="gt_row gt_center">5,542 (62%)</td>
+<td class="gt_row gt_center">3,493 (53%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">female</td>
+<td class="gt_row gt_center">3,444 (38%)</td>
+<td class="gt_row gt_center">3,109 (47%)</td></tr>
+    <tr><td class="gt_row gt_left">age</td>
+<td class="gt_row gt_center">30 (27, 32)</td>
+<td class="gt_row gt_center">30 (27, 32)</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="3"><sup class="gt_footnote_marks">1</sup> n (%); Median (IQR)</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-Figure" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="sec-Figure"><span class="header-section-number">3.3</span> 記述統計評</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.tab</span>(degree <span class="sc">~</span> gender <span class="sc">+</span> age <span class="sc">+</span> year,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                CPSSW9204) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="summary_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
