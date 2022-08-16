@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Rによる比較・因果推論・予測研究",
     "section": "",
-    "text": "定量的な比較、（反実仮想）因果推定、予測分析をRによって行う方法を紹介\n経済学におけるデータ分析の大部分は、複数の変数間での関係性の理解・利用を目的としている。 本ページでは、ある結果変数\\(Y\\)と独立変数（群）\\(X=X_1,...,X_L\\)の関係性に焦点を当てる。 また\\(Y\\)と\\(X\\)がともに観察でき、関心のある母集団からランダムサンプリングされたデータが入手出来ている。\n具体的な分析目標を大きく（予測）\\(Y\\)の予測関数の推定、（比較）異なる\\(X\\)間での\\(Y\\)の比較、（因果効果）\\(X\\)の変化が\\(Y\\)に与える因果効果の推定、に大別し、それぞれについて簡単な説明とRのサンプルコードの提供\nデータインポート、整理、可視化を行う関数群を統合的に提供するtidyverseパッケージの利用\nExample dataとしては、AERパッケージに含まれるNMES1988(the US National Medical Expenditure Survey)を利用\nSection 2 線形モデルを用いたパラメータ推定\nSection 3 Treatmentグループ別の記述統計"
+    "text": "定量的な比較、（反実仮想）因果推定、予測分析をRによって行う方法を紹介\n経済学におけるデータ分析の大部分は、複数の変数間での関係性の理解・利用を目的としている。 本ページでは、ある結果変数\\(Y\\)と独立変数（群）\\(X=X_1,...,X_L\\)の関係性に焦点を当てる。 また\\(Y\\)と\\(X\\)がともに観察でき、関心のある母集団からランダムサンプリングされたデータが入手出来ている。\n具体的な分析目標を大きく（予測）\\(Y\\)の予測関数の推定、（比較）異なる\\(X\\)間での\\(Y\\)の比較、（因果効果）\\(X\\)の変化が\\(Y\\)に与える因果効果の推定、に大別し、それぞれについて簡単な説明とRのサンプルコードの提供\nデータインポート、整理、可視化を行う関数群を統合的に提供するtidyverseパッケージの利用\nExample dataとしては、AERパッケージに含まれるNMES1988(the US National Medical Expenditure Survey)を利用\nSection 2 線形モデルを用いたパラメータ推定\nSection 4 Treatmentグループ別の記述統計"
   },
   {
     "objectID": "intro.html",
@@ -63,32 +63,67 @@
     "text": "2.4 付録：推定結果の保存と表示\n\n2.4.1 Dot-and-Whisker plotによる可視化\n\nDot-and-Whisker図により点推定量と信頼区間を可視化\n\n\nfit.m <- matchit(degree ~ gender + age + year,\n                 data = CPSSW9204,\n                 method = \"CEM\"\n                 )\n\ndf <- match.data(fit.m)\n\nResult1 <- lm_robust(earnings ~ degree + gender + age + year,\n            data = df) |> \n  tidy() |> \n  filter(term == \"degreebachelor\"\n         ) |> \n  mutate(Method = \"OLS\")\n\nResult1 |> \n  ggplot(aes(y = term,\n             x = estimate,\n             xmin = conf.low,\n             xmax = conf.high)\n         ) +\n  geom_pointrange() +\n  geom_vline(xintercept = 0) +\n  theme_bw()\n\n\n\n\n\nResult2 <- lm_robust(earnings ~ degree + gender + age,\n            data = df,\n            weights = weights,\n            clusters = subclass) |> \n  tidy() |> \n  filter(term == \"degreebachelor\"\n         ) |> \n  mutate(Method = \"Matching + OLS\")\n\nResult1 |> \n  bind_rows(Result2) |> \n  ggplot(aes(y = Method,\n             x = estimate,\n             xmin = conf.low,\n             xmax = conf.high)\n         ) +\n  geom_pointrange() +\n  geom_vline(xintercept = 0) +\n  theme_bw()\n\n\n\n\n\n\n\n\nHo, Daniel E., Kosuke Imai, Gary King, and Elizabeth A. Stuart. 2007. “Matching as Nonparametric Preprocessing for Reducing Model Dependence in Parametric Causal Inference.” Political Analysis 15 (3): 199–236. https://doi.org/10.1093/pan/mpl013.\n\n\nIacus, Stefano M., Gary King, and Giuseppe Porro. 2012. “Causal Inference Without Balance Checking: Coarsened Exact Matching.” Political Analysis 20 (1): 1–24. https://doi.org/10.1093/pan/mpr013.\n\n\nImbens, Guido W. 2015. “Matching Methods in Practice: Three Examples.” The Journal of Human Resources 50 (2): 373–419. https://www.jstor.org/stable/24735990.\n\n\nLin, Winston. 2013. “Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining Freedman’s Critique.” The Annals of Applied Statistics 7 (1): 295–318. https://doi.org/10.1214/12-AOAS583."
   },
   {
+    "objectID": "Prediction.html",
+    "href": "Prediction.html",
+    "title": "3  予測",
+    "section": "",
+    "text": "データと同じ母集団から新しくランダムサンプリングされ、\\(X\\)のみが観察できるサンプルについて\\(Y\\)の値を予測する。\n\nデータ分割を用いたモデル評価を行う"
+  },
+  {
+    "objectID": "Prediction.html#sec-Purpose",
+    "href": "Prediction.html#sec-Purpose",
+    "title": "3  予測",
+    "section": "3.1 問題設定",
+    "text": "3.1 問題設定\n\n事前に定義する損失関数の期待値を最小化するような、予測関数\\(f(X)\\)の推定を目指す。\n\n以下ではMean squared error(MSE)を損失関数として用いる。所与の\\(f(X)\\)、母分布に従う確率変数\\(Y,X\\)についてMSEは以下のように定義される。\n\n\n\\[MSE = E_{X,Y}[(Y_i-f(X_i))^2]\\]\n\n一般にMSEは以下のように書き換えられます。\n\n\\[MSE = \\underbrace{E_{X,Y}[(Y_i-\\bar{Y}(X_i))^2]}_{Irreducible\\ error}+\\underbrace{E_{X,Y}[(\\bar{Y}(X_i)-f(X_i))^2]}_{Reducible\\ error}\\]\nただし\\(\\bar{Y}(X_i)=E[Y_i|X_i]\\)。 上記式から以下が確認できる。\n\n最善の予測関数は条件付き母平均\\(\\bar{Y}(X_i)\\)(Reducible error = 0)\n最善の予測関数のもとでも削減不可能なエラー(Irreducible error)が存在\n予測関数の推定 \\(=\\) Reducible errorの削減 \\(=\\) 条件付き母平均との乖離(MSE)の削減\n\n\n3.1.1 Bias-Variance tradeoff\n\n実際の\\(f(X_i)\\)はランダムサンプリングされたデータから推定される。このためデータの入手前の段階では、確率分布を持つ。\n\nReducible errorは一般に以下のように書き換えられます。\n\n\n\\[E_{Y,X,f(X)}[(\\bar{Y}(X_i)-f(X_i))^2]\\]\n\\[=\\underbrace{(E_{Y,X,f(X)}[\\bar{Y}(X_i)-\\bar{f}(X_i)])^2}_{Bias}+\\underbrace{E_{Y,X,f(X)}[(\\bar{f}(X_i)-f(X_i))^2]}_{Variance}.\\]\nただし\\(\\bar{f}(X_i)=f(X_i)\\)。\n\n上記式は推定される予測関数が平均的にどの程度条件付き母平均を近似できているのか(Biasがどの程度小さいのか)だけでなく、予測関数の分布がどの程度散らばっているのか（VArianceがどの程度大木のか）、についても考慮する必要性を示す。\n\n母平均\\(\\bar Y(X_i)\\)が単純な既知の関数形に従い、かつサンプルサイズが大きい場合、OLS推定された\\(f(X_i)\\)は\\(Bias=0\\)かつ小さなVarianceを達成する。\nしかしながら社会科学における多くの応用においては、\\(\\bar Y(X_i)\\)は未知かつ複雑であることが予想され、その複雑さに対してサンプルサイズが小さいことが想定される。\nこのような状況では、OLSやサブサンプル平均により推定された予測モデルは、Bias-Variance tradeoffに直面する。\n少ないパラメータ（短い回帰式、少ないサブサンプル分割）を推定する場合、大きなBiasを持つ\n多くのパラメータ（長い回帰式、多いサブサンプル分割）を推定する場合、大きなVarianceを持つ。\n\nBias-variance tradeoffを分析者が解くこと（最善のモデル設定を行うこと）は困難です。LASSO/Ridge/Random Forestなどの手法は、bias-variance問題をよりデータ主導型かつ現実的な計算時間の手法で解決することを目指す。"
+  },
+  {
+    "objectID": "Prediction.html#パッケージ-データ",
+    "href": "Prediction.html#パッケージ-データ",
+    "title": "3  予測",
+    "section": "3.2 パッケージ & データ",
+    "text": "3.2 パッケージ & データ\n\nlibrary(tidyverse)\nlibrary(recipes)\n\nlibrary(AER)\n\nlibrary(SuperLearner)\n\nlibrary(glmnet) # LASSO/Ridge\n\nlibrary(ranger) # Bagging/Random Forest\n\n\ndata(\"CPSSW9204\")\n\nset.seed(123)\n\nY <- CPSSW9204$earnings\n\nX <- recipe(~ year + degree + gender + age,\n            CPSSW9204) |> \n  step_dummy(all_nominal_predictors()) |> \n  prep() |> \n  bake(CPSSW9204)"
+  },
+  {
+    "objectID": "Prediction.html#推定",
+    "href": "Prediction.html#推定",
+    "title": "3  予測",
+    "section": "3.3 推定",
+    "text": "3.3 推定\n\nFit <- SuperLearner(X = X,\n                    Y = Y,\n                    SL.library = c(\"SL.mean\",\n                                   \"SL.lm\",\n                                   \"SL.glmnet\",\n                                   \"SL.ranger\",\n                                   \"SL.rpartPrune\"\n                                   )\n                    )\n\nFit\n\n\nCall:  \nSuperLearner(Y = Y, X = X, SL.library = c(\"SL.mean\", \"SL.lm\", \"SL.glmnet\",  \n    \"SL.ranger\", \"SL.rpartPrune\")) \n\n                      Risk      Coef\nSL.mean_All       60.98328 0.0000000\nSL.lm_All         44.42732 0.2536105\nSL.glmnet_All     44.42801 0.0000000\nSL.ranger_All     43.98232 0.4425442\nSL.rpartPrune_All 44.17820 0.3038453"
+  },
+  {
+    "objectID": "Prediction.html#性能比較",
+    "href": "Prediction.html#性能比較",
+    "title": "3  予測",
+    "section": "3.4 性能比較",
+    "text": "3.4 性能比較\n\nFitCV <- CV.SuperLearner(X = X,\n                    Y = Y,\n                    SL.library = c(\"SL.mean\",\n                                   \"SL.lm\",\n                                   \"SL.glmnet\",\n                                   \"SL.ranger\",\n                                   \"SL.rpartPrune\"\n                                   ),\n                    V = 2\n                   )\n\nsummary(FitCV)\n\n\nCall:  \nCV.SuperLearner(Y = Y, X = X, V = 2, SL.library = c(\"SL.mean\", \"SL.lm\", \"SL.glmnet\",  \n    \"SL.ranger\", \"SL.rpartPrune\")) \n\nRisk is based on: Mean Squared Error\n\nAll risk estimates are based on V =  2 \n\n         Algorithm    Ave      se    Min    Max\n     Super Learner 43.973 0.85562 42.646 45.300\n       Discrete SL 44.013 0.86378 42.515 45.512\n       SL.mean_All 61.001 1.18199 59.741 62.262\n         SL.lm_All 44.477 0.86279 43.188 45.766\n     SL.glmnet_All 44.477 0.86414 43.183 45.772\n     SL.ranger_All 44.013 0.86378 42.515 45.512\n SL.rpartPrune_All 44.182 0.85211 42.869 45.494"
+  },
+  {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "3  記述統計",
+    "title": "4  記述統計",
     "section": "",
-    "text": "Section 3.2 線形モデルを推定し、信頼区間を計算する方法を紹介\nSection 3.3 近似モデルの定式化への依存度を下げるために、マッチング法を用いた前処理を導入"
+    "text": "Section 4.2 線形モデルを推定し、信頼区間を計算する方法を紹介\nSection 4.3 近似モデルの定式化への依存度を下げるために、マッチング法を用いた前処理を導入"
   },
   {
     "objectID": "summary.html#パッケージ-データ",
     "href": "summary.html#パッケージ-データ",
-    "title": "3  記述統計",
-    "section": "3.1 パッケージ & データ",
-    "text": "3.1 パッケージ & データ\n\nlibrary(tidyverse)\nlibrary(AER)\nlibrary(cobalt)\nlibrary(gtsummary)\n\ndata(\"CPSSW9204\")\n\n\ngtsummary\ncobalt"
+    "title": "4  記述統計",
+    "section": "4.1 パッケージ & データ",
+    "text": "4.1 パッケージ & データ\n\nlibrary(tidyverse)\nlibrary(AER)\nlibrary(cobalt)\nlibrary(gtsummary)\n\ndata(\"CPSSW9204\")\n\n\ngtsummary\ncobalt"
   },
   {
     "objectID": "summary.html#sec-Table",
     "href": "summary.html#sec-Table",
-    "title": "3  記述統計",
-    "section": "3.2 記述統計評",
-    "text": "3.2 記述統計評\n\nCPSSW9204 |> \n  tbl_summary(by = \"degree\")\n\n\n\n\n\n  \n  \n    \n      Characteristic\n      highschool, N = 8,9861\n      bachelor, N = 6,6021\n    \n  \n  \n    year\n\n\n    1992\n4,640 (52%)\n2,962 (45%)\n    2004\n4,346 (48%)\n3,640 (55%)\n    earnings\n11 (8, 14)\n16 (12, 21)\n    gender\n\n\n    male\n5,542 (62%)\n3,493 (53%)\n    female\n3,444 (38%)\n3,109 (47%)\n    age\n30 (27, 32)\n30 (27, 32)\n  \n  \n  \n    \n      1 n (%); Median (IQR)"
+    "title": "4  記述統計",
+    "section": "4.2 記述統計評",
+    "text": "4.2 記述統計評\n\nCPSSW9204 |> \n  tbl_summary(by = \"degree\")\n\n\n\n\n\n  \n  \n    \n      Characteristic\n      highschool, N = 8,9861\n      bachelor, N = 6,6021\n    \n  \n  \n    year\n\n\n    1992\n4,640 (52%)\n2,962 (45%)\n    2004\n4,346 (48%)\n3,640 (55%)\n    earnings\n11 (8, 14)\n16 (12, 21)\n    gender\n\n\n    male\n5,542 (62%)\n3,493 (53%)\n    female\n3,444 (38%)\n3,109 (47%)\n    age\n30 (27, 32)\n30 (27, 32)\n  \n  \n  \n    \n      1 n (%); Median (IQR)"
   },
   {
     "objectID": "summary.html#sec-Figure",
     "href": "summary.html#sec-Figure",
-    "title": "3  記述統計",
-    "section": "3.3 記述統計評",
-    "text": "3.3 記述統計評\n\nbal.tab(degree ~ gender + age + year,\n                CPSSW9204) |> \n  plot()"
+    "title": "4  記述統計",
+    "section": "4.3 記述統計評",
+    "text": "4.3 記述統計評\n\nbal.tab(degree ~ gender + age + year,\n                CPSSW9204) |> \n  plot()"
   },
   {
     "objectID": "references.html",
