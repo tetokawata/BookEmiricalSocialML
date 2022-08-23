@@ -102,7 +102,7 @@
     "href": "PreProcess.html#recipes",
     "title": "4  付録: データ整備",
     "section": "4.2 recipes",
-    "text": "4.2 recipes\n\nRawX <- select(CPSSW9204,\n               year,\n               gender,\n               age)\n\nX <- recipe(earnings ~ degree + year + gender + age,\n            CPSSW9204) |> # 推定式を定義\n  update_role(degree,\n              new_role = \"treatment\") |> # degreeをtreatmentに指定\n  step_unknown(all_nominal_predictors()) |> # 非数値変数について、欠損値を\"unknown\"に変更\n  step_other(all_nominal_predictors()) |> # 非数値変数について、小規模グループを\"other\"に変更\n  step_dummy(all_nominal_predictors()) |> # 非数値変数をダミー変数に変換\n  step_indicate_na(all_numeric_predictors()) |> # 数値変数について、欠損ダミーを作成\n  step_impute_median(all_numeric_predictors()) |> # 数値変数について、欠損値に中央値を補完\n  step_nzv(all_numeric_predictors()) |> # 数値変数について、 変動が少ない変数を除外\n  step_corr(all_numeric_predictors()) |> # 相関が強い変数を除去\n  prep() |> \n  bake(CPSSW9204)"
+    "text": "4.2 recipes\n\nX <- recipe(earnings ~ degree + year + gender + age,\n            CPSSW9204) |> # 推定式を定義\n  update_role(degree,\n              new_role = \"treatment\") |> # degreeをtreatmentに指定\n  step_unknown(all_nominal_predictors()) |> # 非数値変数について、欠損値を\"unknown\"に変更\n  step_other(all_nominal_predictors()) |> # 非数値変数について、小規模グループを\"other\"に変更\n  step_dummy(all_nominal_predictors()) |> # 非数値変数をダミー変数に変換\n  step_indicate_na(all_numeric_predictors()) |> # 数値変数について、欠損ダミーを作成\n  step_impute_median(all_numeric_predictors()) |> # 数値変数について、欠損値に中央値を補完\n  step_nzv(all_numeric_predictors()) |> # 数値変数について、 変動が少ない変数を除外\n  step_corr(all_numeric_predictors()) |> # 相関が強い変数を除去\n  prep() |> \n  bake(CPSSW9204)"
   },
   {
     "objectID": "references.html",

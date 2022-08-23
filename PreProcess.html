@@ -231,24 +231,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="recipes" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="recipes"><span class="header-section-number">4.2</span> recipes</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>RawX <span class="ot">&lt;-</span> <span class="fu">select</span>(CPSSW9204,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>               year,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>               gender,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>               age)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">recipe</span>(earnings <span class="sc">~</span> degree <span class="sc">+</span> year <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            CPSSW9204) <span class="sc">|&gt;</span> <span class="co"># 推定式を定義</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_role</span>(degree,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">new_role =</span> <span class="st">"treatment"</span>) <span class="sc">|&gt;</span> <span class="co"># degreeをtreatmentに指定</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数について、欠損値を"unknown"に変更</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_other</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数について、小規模グループを"other"に変更</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数をダミー変数に変換</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_indicate_na</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、欠損ダミーを作成</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、欠損値に中央値を補完</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_nzv</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、 変動が少ない変数を除外</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_corr</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 相関が強い変数を除去</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">recipe</span>(earnings <span class="sc">~</span> degree <span class="sc">+</span> year <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>            CPSSW9204) <span class="sc">|&gt;</span> <span class="co"># 推定式を定義</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_role</span>(degree,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">new_role =</span> <span class="st">"treatment"</span>) <span class="sc">|&gt;</span> <span class="co"># degreeをtreatmentに指定</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数について、欠損値を"unknown"に変更</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_other</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数について、小規模グループを"other"に変更</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数をダミー変数に変換</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_indicate_na</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、欠損ダミーを作成</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、欠損値に中央値を補完</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_nzv</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、 変動が少ない変数を除外</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_corr</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 相関が強い変数を除去</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
