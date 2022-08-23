@@ -100,30 +100,30 @@
   {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "4  記述統計",
+    "title": "4  付録: 記述統計",
     "section": "",
-    "text": "Section 4.2 線形モデルを推定し、信頼区間を計算する方法を紹介\nSection 4.3 近似モデルの定式化への依存度を下げるために、マッチング法を用いた前処理を導入"
+    "text": "関心のあるグループ \\((D)\\) ごとに記述統計をまとめる\nSection 4.2 記述統計表を作成\nSection 4.3 変数の分布がバランスしているかどうか、図示する"
   },
   {
     "objectID": "summary.html#パッケージ-データ",
     "href": "summary.html#パッケージ-データ",
-    "title": "4  記述統計",
+    "title": "4  付録: 記述統計",
     "section": "4.1 パッケージ & データ",
-    "text": "4.1 パッケージ & データ\n\nlibrary(tidyverse)\nlibrary(AER)\nlibrary(cobalt)\nlibrary(gtsummary)\n\ndata(\"CPSSW9204\")\n\n\ngtsummary\ncobalt"
+    "text": "4.1 パッケージ & データ\n\nlibrary(tidyverse)\nlibrary(AER)\nlibrary(cobalt)\nlibrary(gtsummary)\n\ndata(\"CPSSW9204\")\n\n\ngtsummary : 記述統計表作成\ncobalt : 図作成"
   },
   {
     "objectID": "summary.html#sec-Table",
     "href": "summary.html#sec-Table",
-    "title": "4  記述統計",
+    "title": "4  付録: 記述統計",
     "section": "4.2 記述統計評",
-    "text": "4.2 記述統計評\n\nCPSSW9204 |> \n  tbl_summary(by = \"degree\")\n\n\n\n\n\n  \n  \n    \n      Characteristic\n      highschool, N = 8,9861\n      bachelor, N = 6,6021\n    \n  \n  \n    year\n\n\n    1992\n4,640 (52%)\n2,962 (45%)\n    2004\n4,346 (48%)\n3,640 (55%)\n    earnings\n11 (8, 14)\n16 (12, 21)\n    gender\n\n\n    male\n5,542 (62%)\n3,493 (53%)\n    female\n3,444 (38%)\n3,109 (47%)\n    age\n30 (27, 32)\n30 (27, 32)\n  \n  \n  \n    \n      1 n (%); Median (IQR)"
+    "text": "4.2 記述統計評\n\n\\(D=degree\\) ごとに以下を表示\n\n連続変数については、 “中央値(下位25%, 上位25%)”\nカテゴリー変数について、 “サンプルサイズ(割合)”\n\n\n\nCPSSW9204 |> \n  tbl_summary(by = \"degree\")\n\n\n\n\n\n  \n  \n    \n      Characteristic\n      highschool, N = 8,9861\n      bachelor, N = 6,6021\n    \n  \n  \n    year\n\n\n    1992\n4,640 (52%)\n2,962 (45%)\n    2004\n4,346 (48%)\n3,640 (55%)\n    earnings\n11 (8, 14)\n16 (12, 21)\n    gender\n\n\n    male\n5,542 (62%)\n3,493 (53%)\n    female\n3,444 (38%)\n3,109 (47%)\n    age\n30 (27, 32)\n30 (27, 32)\n  \n  \n  \n    \n      1 n (%); Median (IQR)"
   },
   {
     "objectID": "summary.html#sec-Figure",
     "href": "summary.html#sec-Figure",
-    "title": "4  記述統計",
+    "title": "4  付録: 記述統計",
     "section": "4.3 記述統計評",
-    "text": "4.3 記述統計評\n\nbal.tab(degree ~ gender + age + year,\n                CPSSW9204) |> \n  plot()"
+    "text": "4.3 記述統計評\n\nYの平均差/Yの標準偏差を報告 (Imbens (2015) などで推奨)\n\n\nbal.tab(degree ~ gender + age + year,\n                CPSSW9204,\n        binary = \"std\", continuous = \"std\") |> \n  plot()\n\n\n\n\n\n女性かつ近年、かつ年齢が若い方が大卒比率が高い\n\n\n\n\n\nImbens, Guido W. 2015. “Matching Methods in Practice: Three Examples.” The Journal of Human Resources 50 (2): 373–419. https://www.jstor.org/stable/24735990."
   },
   {
     "objectID": "references.html",
