@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Rによる比較・因果推論・予測研究 - 4&nbsp; 予測</title>
+<title>Rによる比較・因果推論・予測研究 - 3&nbsp; 予測</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -88,8 +88,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./PreProcess.html" rel="next">
-<link href="./summary.html" rel="prev">
+<link href="./summary.html" rel="next">
+<link href="./ParameterEstimation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -129,7 +129,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">予測</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -169,12 +169,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  <a href="./Prediction.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Prediction.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">予測</span></a>
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -196,20 +196,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-Purpose" id="toc-sec-Purpose" class="nav-link active" data-scroll-target="#sec-Purpose"> <span class="header-section-number">4.1</span> 問題設定</a>
+  <li><a href="#sec-Purpose" id="toc-sec-Purpose" class="nav-link active" data-scroll-target="#sec-Purpose"> <span class="header-section-number">3.1</span> 問題設定</a></li>
+  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">3.2</span> パッケージ &amp; データ</a></li>
+  <li><a href="#推定" id="toc-推定" class="nav-link" data-scroll-target="#推定"> <span class="header-section-number">3.3</span> 推定</a>
   <ul class="collapse">
-  <li><a href="#bias-variance-tradeoff" id="toc-bias-variance-tradeoff" class="nav-link" data-scroll-target="#bias-variance-tradeoff"> <span class="header-section-number">4.1.1</span> Bias-Variance tradeoff</a></li>
-  </ul></li>
-  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">4.2</span> パッケージ &amp; データ</a></li>
-  <li><a href="#推定" id="toc-推定" class="nav-link" data-scroll-target="#推定"> <span class="header-section-number">4.3</span> 推定</a>
-  <ul class="collapse">
-  <li><a href="#推定タスクの定義" id="toc-推定タスクの定義" class="nav-link" data-scroll-target="#推定タスクの定義"> <span class="header-section-number">4.3.1</span> 推定タスクの定義</a></li>
-  <li><a href="#推定方法の定義" id="toc-推定方法の定義" class="nav-link" data-scroll-target="#推定方法の定義"> <span class="header-section-number">4.3.2</span> 推定方法の定義</a></li>
-  <li><a href="#sample-splirt" id="toc-sample-splirt" class="nav-link" data-scroll-target="#sample-splirt"> <span class="header-section-number">4.3.3</span> Sample Splirt</a></li>
-  <li><a href="#推定-1" id="toc-推定-1" class="nav-link" data-scroll-target="#推定-1"> <span class="header-section-number">4.3.4</span> 推定</a></li>
-  <li><a href="#予測" id="toc-予測" class="nav-link" data-scroll-target="#予測"> <span class="header-section-number">4.3.5</span> 予測</a></li>
-  <li><a href="#評価" id="toc-評価" class="nav-link" data-scroll-target="#評価"> <span class="header-section-number">4.3.6</span> 評価</a></li>
-  <li><a href="#性能比較" id="toc-性能比較" class="nav-link" data-scroll-target="#性能比較"> <span class="header-section-number">4.3.7</span> 性能比較</a></li>
+  <li><a href="#推定タスクの定義" id="toc-推定タスクの定義" class="nav-link" data-scroll-target="#推定タスクの定義"> <span class="header-section-number">3.3.1</span> 推定タスクの定義</a></li>
+  <li><a href="#推定方法の定義" id="toc-推定方法の定義" class="nav-link" data-scroll-target="#推定方法の定義"> <span class="header-section-number">3.3.2</span> 推定方法の定義</a></li>
+  <li><a href="#サンプル分割の定義" id="toc-サンプル分割の定義" class="nav-link" data-scroll-target="#サンプル分割の定義"> <span class="header-section-number">3.3.3</span> サンプル分割の定義</a></li>
+  <li><a href="#評価指標の定義" id="toc-評価指標の定義" class="nav-link" data-scroll-target="#評価指標の定義"> <span class="header-section-number">3.3.4</span> 評価指標の定義</a></li>
+  <li><a href="#sample-splirt" id="toc-sample-splirt" class="nav-link" data-scroll-target="#sample-splirt"> <span class="header-section-number">3.3.5</span> Sample Splirt</a></li>
+  <li><a href="#性能比較" id="toc-性能比較" class="nav-link" data-scroll-target="#性能比較"> <span class="header-section-number">3.3.6</span> 性能比較</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -219,7 +215,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-Prediction" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">予測</span></span></h1>
+<h1 class="title"><span id="sec-Prediction" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></span></h1>
 </div>
 
 
@@ -239,51 +235,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>データ分割を用いたモデル評価を行う</li>
 </ul></li>
 </ul>
-<section id="sec-Purpose" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="sec-Purpose"><span class="header-section-number">4.1</span> 問題設定</h2>
+<section id="sec-Purpose" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="sec-Purpose"><span class="header-section-number">3.1</span> 問題設定</h2>
 <ul>
 <li><p>事前に定義する損失関数の期待値を最小化するような、予測関数<span class="math inline">\(f(X)\)</span>の推定を目指す。</p>
 <ul>
-<li>以下ではMean squared error(MSE)を損失関数として用いる。所与の<span class="math inline">\(f(X)\)</span>、母分布に従う確率変数<span class="math inline">\(Y,X\)</span>についてMSEは以下のように定義される。</li>
+<li>以下ではMean squared error(MSE)を損失関数として用いる。確率変数<span class="math inline">\(Y,X\)</span>について予測問題は以下のように定義できる</li>
 </ul></li>
 </ul>
-<p><span class="math display">\[MSE = E_{X,Y}[(Y_i-f(X_i))^2]\]</span></p>
+<p><span class="math display">\[\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]f(x)dx\]</span></p>
 <ul>
-<li>一般にMSEは以下のように書き換えられます。</li>
+<li>一般に以下のように書き換えられる</li>
 </ul>
-<p><span class="math display">\[MSE = \underbrace{E_{X,Y}[(Y_i-\bar{Y}(X_i))^2]}_{Irreducible\ error}+\underbrace{E_{X,Y}[(\bar{Y}(X_i)-f(X_i))^2]}_{Reducible\ error}\]</span></p>
-<p>ただし<span class="math inline">\(\bar{Y}(X_i)=E[Y_i|X_i]\)</span>。 上記式から以下が確認できる。</p>
+<p><span class="math display">\[\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]f(x)dx\]</span>$</p>
+<p>ただし <span class="math inline">\(\mu(x)=E[Y_i|X_i=x]\)</span></p>
 <ul>
-<li><p>最善の予測関数は条件付き母平均<span class="math inline">\(\bar{Y}(X_i)\)</span>(Reducible error = 0)</p></li>
-<li><p>最善の予測関数のもとでも削減不可能なエラー(Irreducible error)が存在</p></li>
-<li><p>予測関数の推定 <span class="math inline">\(=\)</span> Reducible errorの削減 <span class="math inline">\(=\)</span> 条件付き母平均との乖離(MSE)の削減</p></li>
-</ul>
-<section id="bias-variance-tradeoff" class="level3" data-number="4.1.1">
-<h3 data-number="4.1.1" class="anchored" data-anchor-id="bias-variance-tradeoff"><span class="header-section-number">4.1.1</span> Bias-Variance tradeoff</h3>
-<ul>
-<li><p>実際の<span class="math inline">\(f(X_i)\)</span>はランダムサンプリングされたデータから推定される。このためデータの入手前の段階では、確率分布を持つ。</p>
-<ul>
-<li>Reducible errorは一般に以下のように書き換えられます。</li>
-</ul></li>
-</ul>
-<p><span class="math display">\[E_{Y,X,f(X)}[(\bar{Y}(X_i)-f(X_i))^2]\]</span></p>
-<p><span class="math display">\[=\underbrace{(E_{Y,X,f(X)}[\bar{Y}(X_i)-\bar{f}(X_i)])^2}_{Bias}+\underbrace{E_{Y,X,f(X)}[(\bar{f}(X_i)-f(X_i))^2]}_{Variance}.\]</span></p>
-<p>ただし<span class="math inline">\(\bar{f}(X_i)=f(X_i)\)</span>。</p>
-<ul>
-<li><p>上記式は推定される予測関数が平均的にどの程度条件付き母平均を近似できているのか(Biasがどの程度小さいのか)だけでなく、予測関数の分布がどの程度散らばっているのか（VArianceがどの程度大木のか）、についても考慮する必要性を示す。</p>
-<ul>
-<li><p>母平均<span class="math inline">\(\bar Y(X_i)\)</span>が単純な既知の関数形に従い、かつサンプルサイズが大きい場合、OLS推定された<span class="math inline">\(f(X_i)\)</span>は<span class="math inline">\(Bias=0\)</span>かつ小さなVarianceを達成する。</p></li>
-<li><p>しかしながら社会科学における多くの応用においては、<span class="math inline">\(\bar Y(X_i)\)</span>は未知かつ複雑であることが予想され、その複雑さに対してサンプルサイズが小さいことが想定される。</p></li>
-<li><p>このような状況では、OLSやサブサンプル平均により推定された予測モデルは、Bias-Variance tradeoffに直面する。</p></li>
-<li><p>少ないパラメータ（短い回帰式、少ないサブサンプル分割）を推定する場合、大きなBiasを持つ</p></li>
-<li><p>多くのパラメータ（長い回帰式、多いサブサンプル分割）を推定する場合、大きなVarianceを持つ。</p></li>
-</ul></li>
-<li><p>Bias-variance tradeoffを分析者が解くこと（最善のモデル設定を行うこと）は困難です。LASSO/Ridge/Random Forestなどの手法は、bias-variance問題をよりデータ主導型かつ現実的な計算時間の手法で解決することを目指す。</p></li>
+<li>上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forestを実装する。</li>
 </ul>
 </section>
-</section>
-<section id="パッケージ-データ" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">4.2</span> パッケージ &amp; データ</h2>
+<section id="パッケージ-データ" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">3.2</span> パッケージ &amp; データ</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
@@ -302,16 +273,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="推定" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="推定"><span class="header-section-number">4.3</span> 推定</h2>
-<section id="推定タスクの定義" class="level3" data-number="4.3.1">
-<h3 data-number="4.3.1" class="anchored" data-anchor-id="推定タスクの定義"><span class="header-section-number">4.3.1</span> 推定タスクの定義</h3>
+<section id="推定" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="推定"><span class="header-section-number">3.3</span> 推定</h2>
+<section id="推定タスクの定義" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="推定タスクの定義"><span class="header-section-number">3.3.1</span> 推定タスクの定義</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Task <span class="ot">&lt;-</span> <span class="fu">as_task_regr</span>(Data, <span class="at">target =</span> <span class="st">"earnings"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="推定方法の定義" class="level3" data-number="4.3.2">
-<h3 data-number="4.3.2" class="anchored" data-anchor-id="推定方法の定義"><span class="header-section-number">4.3.2</span> 推定方法の定義</h3>
+<section id="推定方法の定義" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="推定方法の定義"><span class="header-section-number">3.3.2</span> 推定方法の定義</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>LearnerLASSO <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.cv_glmnet"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -320,60 +291,79 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>LearnerRF <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="sample-splirt" class="level3" data-number="4.3.3">
-<h3 data-number="4.3.3" class="anchored" data-anchor-id="sample-splirt"><span class="header-section-number">4.3.3</span> Sample Splirt</h3>
+<section id="サンプル分割の定義" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="サンプル分割の定義"><span class="header-section-number">3.3.3</span> サンプル分割の定義</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Train <span class="ot">&lt;-</span> <span class="fu">sample</span>(Task<span class="sc">$</span>row_ids, <span class="fl">0.8</span> <span class="sc">*</span> Task<span class="sc">$</span>nrow)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Test <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(Task<span class="sc">$</span>row_ids, Train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ResampleCV <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="推定-1" class="level3" data-number="4.3.4">
-<h3 data-number="4.3.4" class="anchored" data-anchor-id="推定-1"><span class="header-section-number">4.3.4</span> 推定</h3>
+<section id="評価指標の定義" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="評価指標の定義"><span class="header-section-number">3.3.4</span> 評価指標の定義</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>LearnerLASSO<span class="sc">$</span><span class="fu">train</span>(Task,</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">row_ids =</span> Train)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>LearnerOLS<span class="sc">$</span><span class="fu">train</span>(Task,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">row_ids =</span> Train)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>LearnerRF<span class="sc">$</span><span class="fu">train</span>(Task,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">row_ids =</span> Train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>MesurementR2 <span class="ot">&lt;-</span>  <span class="fu">msr</span>(<span class="st">"regr.rsq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="予測" class="level3" data-number="4.3.5">
-<h3 data-number="4.3.5" class="anchored" data-anchor-id="予測"><span class="header-section-number">4.3.5</span> 予測</h3>
+<section id="sample-splirt" class="level3" data-number="3.3.5">
+<h3 data-number="3.3.5" class="anchored" data-anchor-id="sample-splirt"><span class="header-section-number">3.3.5</span> Sample Splirt</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>PredictLASSO <span class="ot">&lt;-</span> LearnerLASSO<span class="sc">$</span><span class="fu">predict</span>(Task, <span class="at">row_ids =</span> Train)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>PredictOLS <span class="ot">&lt;-</span> LearnerOLS<span class="sc">$</span><span class="fu">predict</span>(Task, <span class="at">row_ids =</span> Train)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>PredictRF <span class="ot">&lt;-</span> LearnerRF<span class="sc">$</span><span class="fu">predict</span>(Task, <span class="at">row_ids =</span> Train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>FitOLS <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerOLS, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [21:07:35.927] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/10) 
+INFO  [21:07:35.951] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/10) 
+INFO  [21:07:35.962] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/10) 
+INFO  [21:07:35.971] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 4/10) 
+INFO  [21:07:35.983] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 5/10) 
+INFO  [21:07:35.992] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 6/10) 
+INFO  [21:07:36.000] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 7/10) 
+INFO  [21:07:36.012] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 8/10) 
+INFO  [21:07:36.021] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 9/10) 
+INFO  [21:07:36.063] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 10/10) </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>FitLASSO <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerLASSO, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [21:07:36.323] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/10) 
+INFO  [21:07:36.559] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/10) 
+INFO  [21:07:36.656] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/10) 
+INFO  [21:07:36.741] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 4/10) 
+INFO  [21:07:36.826] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 5/10) 
+INFO  [21:07:37.002] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 6/10) 
+INFO  [21:07:37.083] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 7/10) 
+INFO  [21:07:37.173] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 8/10) 
+INFO  [21:07:37.353] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 9/10) 
+INFO  [21:07:37.432] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 10/10) </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>FitRF <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerRF, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [21:07:37.634] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/10) 
+INFO  [21:07:38.399] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/10) 
+INFO  [21:07:39.159] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/10) 
+INFO  [21:07:39.910] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 4/10) 
+INFO  [21:07:40.665] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 5/10) 
+INFO  [21:07:41.434] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 6/10) 
+INFO  [21:07:42.189] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 7/10) 
+INFO  [21:07:42.947] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 8/10) 
+INFO  [21:07:43.705] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 9/10) 
+INFO  [21:07:44.462] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 10/10) </code></pre>
+</div>
 </div>
 </section>
-<section id="評価" class="level3" data-number="4.3.6">
-<h3 data-number="4.3.6" class="anchored" data-anchor-id="評価"><span class="header-section-number">4.3.6</span> 評価</h3>
+<section id="性能比較" class="level3" data-number="3.3.6">
+<h3 data-number="3.3.6" class="anchored" data-anchor-id="性能比較"><span class="header-section-number">3.3.6</span> 性能比較</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>MesurementR2 <span class="ot">&lt;-</span> <span class="fu">msr</span>(<span class="st">"regr.rsq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="性能比較" class="level3" data-number="4.3.7">
-<h3 data-number="4.3.7" class="anchored" data-anchor-id="性能比較"><span class="header-section-number">4.3.7</span> 性能比較</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>PredictOLS<span class="sc">$</span><span class="fu">score</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>FitOLS<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> regr.rsq 
-0.2725683 </code></pre>
+0.2697722 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>PredictLASSO<span class="sc">$</span><span class="fu">score</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>FitLASSO<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> regr.rsq 
-0.2573052 </code></pre>
+0.2575834 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>PredictRF<span class="sc">$</span><span class="fu">score</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>FitRF<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> regr.rsq 
-0.2824878 </code></pre>
+0.2774852 </code></pre>
 </div>
 </div>
 
@@ -481,13 +471,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./summary.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span>
+      <a href="./ParameterEstimation.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./PreProcess.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: データ整備</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./summary.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
