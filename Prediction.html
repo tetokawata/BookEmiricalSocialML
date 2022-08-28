@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Rによる比較・因果推論・予測研究 - 3&nbsp; 予測</title>
+<title>Rによる比較・因果推論・予測研究 (ver 0.01) - 3&nbsp; 予測</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -88,7 +88,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./summary.html" rel="next">
+<link href="./CausalMachineLearning.html" rel="next">
 <link href="./ParameterEstimation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -142,7 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Rによる比較・因果推論・予測研究</a> 
+      <a href="./">Rによる比較・因果推論・予測研究 (ver 0.01)</a> 
     </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -174,12 +174,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -201,11 +206,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#推定" id="toc-推定" class="nav-link" data-scroll-target="#推定"> <span class="header-section-number">3.3</span> 推定</a>
   <ul class="collapse">
   <li><a href="#推定タスクの定義" id="toc-推定タスクの定義" class="nav-link" data-scroll-target="#推定タスクの定義"> <span class="header-section-number">3.3.1</span> 推定タスクの定義</a></li>
-  <li><a href="#推定方法の定義" id="toc-推定方法の定義" class="nav-link" data-scroll-target="#推定方法の定義"> <span class="header-section-number">3.3.2</span> 推定方法の定義</a></li>
+  <li><a href="#個別推定方法の定義" id="toc-個別推定方法の定義" class="nav-link" data-scroll-target="#個別推定方法の定義"> <span class="header-section-number">3.3.2</span> 個別推定方法の定義</a></li>
   <li><a href="#サンプル分割の定義" id="toc-サンプル分割の定義" class="nav-link" data-scroll-target="#サンプル分割の定義"> <span class="header-section-number">3.3.3</span> サンプル分割の定義</a></li>
   <li><a href="#評価指標の定義" id="toc-評価指標の定義" class="nav-link" data-scroll-target="#評価指標の定義"> <span class="header-section-number">3.3.4</span> 評価指標の定義</a></li>
-  <li><a href="#sample-splirt" id="toc-sample-splirt" class="nav-link" data-scroll-target="#sample-splirt"> <span class="header-section-number">3.3.5</span> Sample Splirt</a></li>
-  <li><a href="#性能比較" id="toc-性能比較" class="nav-link" data-scroll-target="#性能比較"> <span class="header-section-number">3.3.6</span> 性能比較</a></li>
+  <li><a href="#交差推定" id="toc-交差推定" class="nav-link" data-scroll-target="#交差推定"> <span class="header-section-number">3.3.5</span> 交差推定</a></li>
+  <li><a href="#ベンチマークテスト" id="toc-ベンチマークテスト" class="nav-link" data-scroll-target="#ベンチマークテスト"> <span class="header-section-number">3.3.6</span> ベンチマーク・テスト</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -250,7 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math display">\[\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]f(x)dx\]</span>$</p>
 <p>ただし <span class="math inline">\(\mu(x)=E[Y_i|X_i=x]\)</span></p>
 <ul>
-<li>上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forestを実装する。</li>
+<li>上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forest、およびそれらのSuperLearnerを実装する。</li>
 </ul>
 </section>
 <section id="パッケージ-データ" class="level2" data-number="3.2">
@@ -258,13 +263,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3verse)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3verse) <span class="co"># 機械学習のメタパッケージ</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3pipelines) <span class="co"># SuperLearnerを実装する</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Data <span class="ot">&lt;-</span> <span class="fu">recipe</span>(earnings<span class="sc">~</span> year <span class="sc">+</span> degree <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            CPSSW9204) <span class="sc">|&gt;</span> </span>
@@ -281,8 +286,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Task <span class="ot">&lt;-</span> <span class="fu">as_task_regr</span>(Data, <span class="at">target =</span> <span class="st">"earnings"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="推定方法の定義" class="level3" data-number="3.3.2">
-<h3 data-number="3.3.2" class="anchored" data-anchor-id="推定方法の定義"><span class="header-section-number">3.3.2</span> 推定方法の定義</h3>
+<section id="個別推定方法の定義" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="個別推定方法の定義"><span class="header-section-number">3.3.2</span> 個別推定方法の定義</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>LearnerLASSO <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.cv_glmnet"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -290,80 +295,346 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>LearnerRF <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="superlearnerの定義" class="level4" data-number="3.3.2.1">
+<h4 data-number="3.3.2.1" class="anchored" data-anchor-id="superlearnerの定義"><span class="header-section-number">3.3.2.1</span> SuperLearnerの定義</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>BaseLearner <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  LearnerOLS,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  LearnerLASSO,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  LearnerRF</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>) <span class="co"># 個別推定アルゴリズム</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>SuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">id =</span> <span class="st">"SuperLearner"</span>) <span class="co"># 個別予測をまとめるアルゴリズム</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>LearnerStack <span class="ot">&lt;-</span> <span class="fu">pipeline_stacking</span>(BaseLearner, SuperLearner) <span class="sc">|&gt;</span> </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 </section>
 <section id="サンプル分割の定義" class="level3" data-number="3.3.3">
 <h3 data-number="3.3.3" class="anchored" data-anchor-id="サンプル分割の定義"><span class="header-section-number">3.3.3</span> サンプル分割の定義</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ResampleCV <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ResampleCV <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="評価指標の定義" class="level3" data-number="3.3.4">
 <h3 data-number="3.3.4" class="anchored" data-anchor-id="評価指標の定義"><span class="header-section-number">3.3.4</span> 評価指標の定義</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>MesurementR2 <span class="ot">&lt;-</span>  <span class="fu">msr</span>(<span class="st">"regr.rsq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>MesurementR2 <span class="ot">&lt;-</span>  <span class="fu">msr</span>(<span class="st">"regr.rsq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="sample-splirt" class="level3" data-number="3.3.5">
-<h3 data-number="3.3.5" class="anchored" data-anchor-id="sample-splirt"><span class="header-section-number">3.3.5</span> Sample Splirt</h3>
+<section id="交差推定" class="level3" data-number="3.3.5">
+<h3 data-number="3.3.5" class="anchored" data-anchor-id="交差推定"><span class="header-section-number">3.3.5</span> 交差推定</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>FitOLS <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerOLS, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>FitOLS <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerOLS, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [21:07:35.927] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/10) 
-INFO  [21:07:35.951] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/10) 
-INFO  [21:07:35.962] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/10) 
-INFO  [21:07:35.971] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 4/10) 
-INFO  [21:07:35.983] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 5/10) 
-INFO  [21:07:35.992] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 6/10) 
-INFO  [21:07:36.000] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 7/10) 
-INFO  [21:07:36.012] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 8/10) 
-INFO  [21:07:36.021] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 9/10) 
-INFO  [21:07:36.063] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 10/10) </code></pre>
+<pre><code>INFO  [19:40:26.262] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/10) 
+INFO  [19:40:26.288] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/10) 
+INFO  [19:40:26.299] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/10) 
+INFO  [19:40:26.308] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 4/10) 
+INFO  [19:40:26.320] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 5/10) 
+INFO  [19:40:26.328] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 6/10) 
+INFO  [19:40:26.340] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 7/10) 
+INFO  [19:40:26.349] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 8/10) 
+INFO  [19:40:26.357] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 9/10) 
+INFO  [19:40:26.369] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 10/10) </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>FitLASSO <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerLASSO, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>FitLASSO <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerLASSO, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [21:07:36.323] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/10) 
-INFO  [21:07:36.559] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/10) 
-INFO  [21:07:36.656] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/10) 
-INFO  [21:07:36.741] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 4/10) 
-INFO  [21:07:36.826] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 5/10) 
-INFO  [21:07:37.002] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 6/10) 
-INFO  [21:07:37.083] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 7/10) 
-INFO  [21:07:37.173] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 8/10) 
-INFO  [21:07:37.353] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 9/10) 
-INFO  [21:07:37.432] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 10/10) </code></pre>
+<pre><code>INFO  [19:40:26.679] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/10) 
+INFO  [19:40:26.930] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/10) 
+INFO  [19:40:27.128] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/10) 
+INFO  [19:40:27.223] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 4/10) 
+INFO  [19:40:27.309] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 5/10) 
+INFO  [19:40:27.492] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 6/10) 
+INFO  [19:40:27.570] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 7/10) 
+INFO  [19:40:27.662] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 8/10) 
+INFO  [19:40:27.849] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 9/10) 
+INFO  [19:40:27.926] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 10/10) </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>FitRF <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerRF, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>FitRF <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerRF, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>INFO  [21:07:37.634] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/10) 
-INFO  [21:07:38.399] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/10) 
-INFO  [21:07:39.159] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/10) 
-INFO  [21:07:39.910] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 4/10) 
-INFO  [21:07:40.665] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 5/10) 
-INFO  [21:07:41.434] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 6/10) 
-INFO  [21:07:42.189] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 7/10) 
-INFO  [21:07:42.947] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 8/10) 
-INFO  [21:07:43.705] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 9/10) 
-INFO  [21:07:44.462] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 10/10) </code></pre>
+<pre><code>INFO  [19:40:28.021] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/10) 
+INFO  [19:40:28.788] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/10) 
+INFO  [19:40:29.549] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/10) 
+INFO  [19:40:30.325] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 4/10) 
+INFO  [19:40:31.093] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 5/10) 
+INFO  [19:40:31.851] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 6/10) 
+INFO  [19:40:32.600] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 7/10) 
+INFO  [19:40:33.354] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 8/10) 
+INFO  [19:40:34.104] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 9/10) 
+INFO  [19:40:34.845] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 10/10) </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>FitStack <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerStack, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [19:40:35.666] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 1/10) 
+INFO  [19:40:35.693] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:40:35.709] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:40:35.718] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:40:35.972] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:40:36.041] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:40:36.102] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:40:36.916] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:40:37.557] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:40:38.204] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:40:39.006] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 2/10) 
+INFO  [19:40:39.028] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:40:39.036] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:40:39.044] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:40:39.156] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:40:39.216] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:40:39.392] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:40:40.192] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:40:40.842] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:40:41.479] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:40:42.262] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 3/10) 
+INFO  [19:40:42.284] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:40:42.292] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:40:42.301] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:40:42.412] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:40:42.478] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:40:42.537] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:40:43.336] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:40:43.976] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:40:44.623] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:40:45.395] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 4/10) 
+INFO  [19:40:45.416] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:40:45.424] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:40:45.432] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:40:45.663] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:40:45.725] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:40:45.790] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:40:46.603] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:40:47.271] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:40:47.915] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:40:48.694] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 5/10) 
+INFO  [19:40:48.715] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:40:48.723] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:40:48.735] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:40:48.960] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:40:49.022] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:40:49.084] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:40:49.893] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:40:50.665] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:40:51.338] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:40:52.168] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 6/10) 
+INFO  [19:40:52.196] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:40:52.210] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:40:52.225] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:40:52.341] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:40:52.413] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:40:52.475] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:40:53.285] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:40:53.931] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:40:54.585] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:40:55.368] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 7/10) 
+INFO  [19:40:55.395] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:40:55.403] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:40:55.411] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:40:55.523] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:40:55.700] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:40:55.761] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:40:56.706] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:40:57.354] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:40:58.004] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:40:58.792] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 8/10) 
+INFO  [19:40:58.822] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:40:58.830] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:40:58.838] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:40:58.943] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:40:59.004] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:40:59.071] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:40:59.863] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:00.501] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:01.134] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:01.907] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 9/10) 
+INFO  [19:41:01.934] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:01.942] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:01.950] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:02.066] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:02.126] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:02.196] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:03.111] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:03.753] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:04.406] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:05.204] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 10/10) 
+INFO  [19:41:05.227] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:05.236] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:05.244] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:05.356] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:05.414] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:05.476] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:06.281] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:06.954] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:07.593] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) </code></pre>
 </div>
 </div>
 </section>
-<section id="性能比較" class="level3" data-number="3.3.6">
-<h3 data-number="3.3.6" class="anchored" data-anchor-id="性能比較"><span class="header-section-number">3.3.6</span> 性能比較</h3>
+<section id="ベンチマークテスト" class="level3" data-number="3.3.6">
+<h3 data-number="3.3.6" class="anchored" data-anchor-id="ベンチマークテスト"><span class="header-section-number">3.3.6</span> ベンチマーク・テスト</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>FitOLS<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">benchmark_grid</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> Task,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">list</span>(LearnerOLS,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                  LearnerLASSO,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                  LearnerRF,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                  LearnerStack),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamplings =</span> ResampleCV</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>BenchMark <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(design)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> regr.rsq 
-0.2697722 </code></pre>
+<pre><code>INFO  [19:41:08.650] [mlr3] Running benchmark with 40 resampling iterations 
+INFO  [19:41:08.652] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/10) 
+INFO  [19:41:08.661] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/10) 
+INFO  [19:41:08.671] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/10) 
+INFO  [19:41:08.688] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 4/10) 
+INFO  [19:41:08.702] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 5/10) 
+INFO  [19:41:08.715] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 6/10) 
+INFO  [19:41:08.725] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 7/10) 
+INFO  [19:41:08.738] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 8/10) 
+INFO  [19:41:08.898] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 9/10) 
+INFO  [19:41:08.907] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 10/10) 
+INFO  [19:41:08.916] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/10) 
+INFO  [19:41:08.989] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/10) 
+INFO  [19:41:09.067] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/10) 
+INFO  [19:41:09.143] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 4/10) 
+INFO  [19:41:09.226] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 5/10) 
+INFO  [19:41:09.313] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 6/10) 
+INFO  [19:41:09.398] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 7/10) 
+INFO  [19:41:09.485] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 8/10) 
+INFO  [19:41:09.563] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 9/10) 
+INFO  [19:41:09.640] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 10/10) 
+INFO  [19:41:09.750] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/10) 
+INFO  [19:41:10.531] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/10) 
+INFO  [19:41:11.315] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/10) 
+INFO  [19:41:12.089] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 4/10) 
+INFO  [19:41:12.864] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 5/10) 
+INFO  [19:41:13.632] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 6/10) 
+INFO  [19:41:14.391] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 7/10) 
+INFO  [19:41:15.154] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 8/10) 
+INFO  [19:41:15.918] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 9/10) 
+INFO  [19:41:16.685] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 10/10) 
+INFO  [19:41:17.455] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 1/10) 
+INFO  [19:41:17.479] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:17.488] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:17.508] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:17.621] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:17.685] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:17.872] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:18.677] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:19.328] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:19.984] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:20.789] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 2/10) 
+INFO  [19:41:20.811] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:20.820] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:20.828] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:20.939] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:21.008] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:21.075] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:21.890] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:22.546] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:23.204] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:24.016] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 3/10) 
+INFO  [19:41:24.039] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:24.048] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:24.057] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:24.169] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:24.230] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:24.302] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:25.123] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:25.792] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:26.472] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:27.284] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 4/10) 
+INFO  [19:41:27.307] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:27.315] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:27.323] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:27.444] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:27.512] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:27.577] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:28.372] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:29.034] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:29.687] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:30.485] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 5/10) 
+INFO  [19:41:30.507] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:30.516] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:30.525] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:30.640] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:30.833] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:30.897] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:31.705] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:32.354] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:33.026] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:33.838] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 6/10) 
+INFO  [19:41:33.871] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:33.884] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:33.896] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:34.038] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:34.116] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:34.188] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:35.001] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:35.652] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:36.307] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:37.097] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 7/10) 
+INFO  [19:41:37.127] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:37.137] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:37.145] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:37.256] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:37.318] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:37.380] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:38.191] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:38.873] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:39.525] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:40.342] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 8/10) 
+INFO  [19:41:40.371] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:40.379] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:40.387] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:40.505] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:40.571] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:40.639] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:41.608] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:42.279] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:42.935] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:43.759] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 9/10) 
+INFO  [19:41:43.781] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:43.789] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:43.798] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:43.912] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:43.970] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:44.028] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:44.829] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:45.490] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:46.160] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:46.984] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 10/10) 
+INFO  [19:41:47.007] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
+INFO  [19:41:47.015] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
+INFO  [19:41:47.024] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
+INFO  [19:41:47.145] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
+INFO  [19:41:47.203] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
+INFO  [19:41:47.268] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
+INFO  [19:41:48.084] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
+INFO  [19:41:48.744] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
+INFO  [19:41:49.397] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
+INFO  [19:41:50.199] [mlr3] Finished benchmark </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>FitLASSO<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>BenchMark<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> regr.rsq 
-0.2575834 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>FitRF<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> regr.rsq 
-0.2774852 </code></pre>
+<pre><code>   nr      resample_result task_id
+1:  1 &lt;ResampleResult[21]&gt;    Data
+2:  2 &lt;ResampleResult[21]&gt;    Data
+3:  3 &lt;ResampleResult[21]&gt;    Data
+4:  4 &lt;ResampleResult[21]&gt;    Data
+                                                         learner_id
+1:                                                          regr.lm
+2:                                                   regr.cv_glmnet
+3:                                                      regr.ranger
+4: regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner
+   resampling_id iters  regr.rsq
+1:            cv    10 0.2700908
+2:            cv    10 0.2562989
+3:            cv    10 0.2772767
+4:            cv    10 0.2804623</code></pre>
 </div>
 </div>
 
@@ -476,8 +747,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./summary.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./CausalMachineLearning.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
