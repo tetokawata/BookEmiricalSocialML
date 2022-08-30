@@ -201,17 +201,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-Purpose" id="toc-sec-Purpose" class="nav-link active" data-scroll-target="#sec-Purpose"> <span class="header-section-number">3.1</span> 問題設定</a></li>
+  <li><a href="#問題設定" id="toc-問題設定" class="nav-link active" data-scroll-target="#問題設定"> <span class="header-section-number">3.1</span> 問題設定</a></li>
   <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">3.2</span> パッケージ &amp; データ</a></li>
   <li><a href="#推定" id="toc-推定" class="nav-link" data-scroll-target="#推定"> <span class="header-section-number">3.3</span> 推定</a>
   <ul class="collapse">
   <li><a href="#推定タスクの定義" id="toc-推定タスクの定義" class="nav-link" data-scroll-target="#推定タスクの定義"> <span class="header-section-number">3.3.1</span> 推定タスクの定義</a></li>
   <li><a href="#個別推定方法の定義" id="toc-個別推定方法の定義" class="nav-link" data-scroll-target="#個別推定方法の定義"> <span class="header-section-number">3.3.2</span> 個別推定方法の定義</a></li>
-  <li><a href="#サンプル分割の定義" id="toc-サンプル分割の定義" class="nav-link" data-scroll-target="#サンプル分割の定義"> <span class="header-section-number">3.3.3</span> サンプル分割の定義</a></li>
-  <li><a href="#評価指標の定義" id="toc-評価指標の定義" class="nav-link" data-scroll-target="#評価指標の定義"> <span class="header-section-number">3.3.4</span> 評価指標の定義</a></li>
-  <li><a href="#交差推定" id="toc-交差推定" class="nav-link" data-scroll-target="#交差推定"> <span class="header-section-number">3.3.5</span> 交差推定</a></li>
-  <li><a href="#ベンチマークテスト" id="toc-ベンチマークテスト" class="nav-link" data-scroll-target="#ベンチマークテスト"> <span class="header-section-number">3.3.6</span> ベンチマーク・テスト</a></li>
+  <li><a href="#交差推定" id="toc-交差推定" class="nav-link" data-scroll-target="#交差推定"> <span class="header-section-number">3.3.3</span> 交差推定</a></li>
+  <li><a href="#ベンチマークテスト" id="toc-ベンチマークテスト" class="nav-link" data-scroll-target="#ベンチマークテスト"> <span class="header-section-number">3.3.4</span> ベンチマーク・テスト</a></li>
   </ul></li>
+  <li><a href="#auto" id="toc-auto" class="nav-link" data-scroll-target="#auto"> <span class="header-section-number">3.4</span> Auto</a></li>
   </ul>
 </nav>
     </div>
@@ -240,8 +239,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>データ分割を用いたモデル評価を行う</li>
 </ul></li>
 </ul>
-<section id="sec-Purpose" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="sec-Purpose"><span class="header-section-number">3.1</span> 問題設定</h2>
+<section id="問題設定" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="問題設定"><span class="header-section-number">3.1</span> 問題設定</h2>
 <ul>
 <li><p>事前に定義する損失関数の期待値を最小化するような、予測関数<span class="math inline">\(f(X)\)</span>の推定を目指す。</p>
 <ul>
@@ -265,17 +264,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3verse) <span class="co"># 機械学習のメタパッケージ</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3pipelines) <span class="co"># SuperLearnerを実装する</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Data <span class="ot">&lt;-</span> <span class="fu">recipe</span>(earnings<span class="sc">~</span> year <span class="sc">+</span> degree <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            CPSSW9204) <span class="sc">|&gt;</span> </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3tuning)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Data <span class="ot">&lt;-</span> <span class="fu">recipe</span>(earnings<span class="sc">~</span> year <span class="sc">+</span> degree <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            CPSSW9204) <span class="sc">|&gt;</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="推定" class="level2" data-number="3.3">
@@ -289,11 +289,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="個別推定方法の定義" class="level3" data-number="3.3.2">
 <h3 data-number="3.3.2" class="anchored" data-anchor-id="個別推定方法の定義"><span class="header-section-number">3.3.2</span> 個別推定方法の定義</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>LearnerLASSO <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.cv_glmnet"</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>MesurementR2 <span class="ot">&lt;-</span>  <span class="fu">msr</span>(<span class="st">"regr.rsq"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>LearnerOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ResampleCV <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>LearnerRF <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>LearnerLASSO <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.cv_glmnet"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>LearnerOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>LearnerRF <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>LearnerTree <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.rpart"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>LearnerTree<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>cp <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>LearnerTree<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>minsplit <span class="ot">=</span> <span class="dv">17</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="superlearnerの定義" class="level4" data-number="3.3.2.1">
 <h4 data-number="3.3.2.1" class="anchored" data-anchor-id="superlearnerの定義"><span class="header-section-number">3.3.2.1</span> SuperLearnerの定義</h4>
@@ -301,345 +310,721 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>BaseLearner <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  LearnerOLS,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  LearnerLASSO,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  LearnerRF</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>) <span class="co"># 個別推定アルゴリズム</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>SuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">id =</span> <span class="st">"SuperLearner"</span>) <span class="co"># 個別予測をまとめるアルゴリズム</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>LearnerStack <span class="ot">&lt;-</span> <span class="fu">pipeline_stacking</span>(BaseLearner, SuperLearner) <span class="sc">|&gt;</span> </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  LearnerRF,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  LearnerTree</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>) <span class="co"># 個別推定アルゴリズム</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>SuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">id =</span> <span class="st">"SuperLearner"</span>) <span class="co"># 個別予測をまとめるアルゴリズム</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>LearnerStack <span class="ot">&lt;-</span> <span class="fu">pipeline_stacking</span>(BaseLearner, SuperLearner) <span class="sc">|&gt;</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="サンプル分割の定義" class="level3" data-number="3.3.3">
-<h3 data-number="3.3.3" class="anchored" data-anchor-id="サンプル分割の定義"><span class="header-section-number">3.3.3</span> サンプル分割の定義</h3>
+<section id="交差推定" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="交差推定"><span class="header-section-number">3.3.3</span> 交差推定</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ResampleCV <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>FitOLS <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerOLS, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>FitLASSO <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerLASSO, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>FitRF <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerRF, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>FitStack <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerStack, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="評価指標の定義" class="level3" data-number="3.3.4">
-<h3 data-number="3.3.4" class="anchored" data-anchor-id="評価指標の定義"><span class="header-section-number">3.3.4</span> 評価指標の定義</h3>
+<section id="ベンチマークテスト" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="ベンチマークテスト"><span class="header-section-number">3.3.4</span> ベンチマーク・テスト</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>MesurementR2 <span class="ot">&lt;-</span>  <span class="fu">msr</span>(<span class="st">"regr.rsq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="交差推定" class="level3" data-number="3.3.5">
-<h3 data-number="3.3.5" class="anchored" data-anchor-id="交差推定"><span class="header-section-number">3.3.5</span> 交差推定</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>FitOLS <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerOLS, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>INFO  [19:40:26.262] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/10) 
-INFO  [19:40:26.288] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/10) 
-INFO  [19:40:26.299] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/10) 
-INFO  [19:40:26.308] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 4/10) 
-INFO  [19:40:26.320] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 5/10) 
-INFO  [19:40:26.328] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 6/10) 
-INFO  [19:40:26.340] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 7/10) 
-INFO  [19:40:26.349] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 8/10) 
-INFO  [19:40:26.357] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 9/10) 
-INFO  [19:40:26.369] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 10/10) </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>FitLASSO <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerLASSO, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>INFO  [19:40:26.679] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/10) 
-INFO  [19:40:26.930] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/10) 
-INFO  [19:40:27.128] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/10) 
-INFO  [19:40:27.223] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 4/10) 
-INFO  [19:40:27.309] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 5/10) 
-INFO  [19:40:27.492] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 6/10) 
-INFO  [19:40:27.570] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 7/10) 
-INFO  [19:40:27.662] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 8/10) 
-INFO  [19:40:27.849] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 9/10) 
-INFO  [19:40:27.926] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 10/10) </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>FitRF <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerRF, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>INFO  [19:40:28.021] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/10) 
-INFO  [19:40:28.788] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/10) 
-INFO  [19:40:29.549] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/10) 
-INFO  [19:40:30.325] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 4/10) 
-INFO  [19:40:31.093] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 5/10) 
-INFO  [19:40:31.851] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 6/10) 
-INFO  [19:40:32.600] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 7/10) 
-INFO  [19:40:33.354] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 8/10) 
-INFO  [19:40:34.104] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 9/10) 
-INFO  [19:40:34.845] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 10/10) </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>FitStack <span class="ot">&lt;-</span> <span class="fu">resample</span>(Task, LearnerStack, ResampleCV, <span class="at">store_models =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>INFO  [19:40:35.666] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 1/10) 
-INFO  [19:40:35.693] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:40:35.709] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:40:35.718] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:40:35.972] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:40:36.041] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:40:36.102] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:40:36.916] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:40:37.557] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:40:38.204] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:40:39.006] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 2/10) 
-INFO  [19:40:39.028] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:40:39.036] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:40:39.044] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:40:39.156] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:40:39.216] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:40:39.392] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:40:40.192] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:40:40.842] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:40:41.479] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:40:42.262] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 3/10) 
-INFO  [19:40:42.284] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:40:42.292] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:40:42.301] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:40:42.412] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:40:42.478] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:40:42.537] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:40:43.336] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:40:43.976] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:40:44.623] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:40:45.395] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 4/10) 
-INFO  [19:40:45.416] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:40:45.424] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:40:45.432] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:40:45.663] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:40:45.725] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:40:45.790] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:40:46.603] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:40:47.271] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:40:47.915] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:40:48.694] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 5/10) 
-INFO  [19:40:48.715] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:40:48.723] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:40:48.735] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:40:48.960] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:40:49.022] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:40:49.084] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:40:49.893] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:40:50.665] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:40:51.338] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:40:52.168] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 6/10) 
-INFO  [19:40:52.196] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:40:52.210] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:40:52.225] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:40:52.341] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:40:52.413] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:40:52.475] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:40:53.285] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:40:53.931] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:40:54.585] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:40:55.368] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 7/10) 
-INFO  [19:40:55.395] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:40:55.403] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:40:55.411] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:40:55.523] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:40:55.700] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:40:55.761] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:40:56.706] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:40:57.354] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:40:58.004] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:40:58.792] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 8/10) 
-INFO  [19:40:58.822] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:40:58.830] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:40:58.838] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:40:58.943] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:40:59.004] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:40:59.071] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:40:59.863] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:00.501] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:01.134] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:01.907] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 9/10) 
-INFO  [19:41:01.934] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:01.942] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:01.950] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:02.066] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:02.126] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:02.196] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:03.111] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:03.753] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:04.406] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:05.204] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 10/10) 
-INFO  [19:41:05.227] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:05.236] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:05.244] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:05.356] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:05.414] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:05.476] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:06.281] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:06.954] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:07.593] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) </code></pre>
-</div>
-</div>
-</section>
-<section id="ベンチマークテスト" class="level3" data-number="3.3.6">
-<h3 data-number="3.3.6" class="anchored" data-anchor-id="ベンチマークテスト"><span class="header-section-number">3.3.6</span> ベンチマーク・テスト</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">benchmark_grid</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> Task,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">list</span>(LearnerOLS,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                  LearnerLASSO,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                  LearnerRF,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                  LearnerStack),</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamplings =</span> ResampleCV</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>BenchMark <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(design)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>INFO  [19:41:08.650] [mlr3] Running benchmark with 40 resampling iterations 
-INFO  [19:41:08.652] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/10) 
-INFO  [19:41:08.661] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/10) 
-INFO  [19:41:08.671] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/10) 
-INFO  [19:41:08.688] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 4/10) 
-INFO  [19:41:08.702] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 5/10) 
-INFO  [19:41:08.715] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 6/10) 
-INFO  [19:41:08.725] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 7/10) 
-INFO  [19:41:08.738] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 8/10) 
-INFO  [19:41:08.898] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 9/10) 
-INFO  [19:41:08.907] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 10/10) 
-INFO  [19:41:08.916] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/10) 
-INFO  [19:41:08.989] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/10) 
-INFO  [19:41:09.067] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/10) 
-INFO  [19:41:09.143] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 4/10) 
-INFO  [19:41:09.226] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 5/10) 
-INFO  [19:41:09.313] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 6/10) 
-INFO  [19:41:09.398] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 7/10) 
-INFO  [19:41:09.485] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 8/10) 
-INFO  [19:41:09.563] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 9/10) 
-INFO  [19:41:09.640] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 10/10) 
-INFO  [19:41:09.750] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/10) 
-INFO  [19:41:10.531] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/10) 
-INFO  [19:41:11.315] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/10) 
-INFO  [19:41:12.089] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 4/10) 
-INFO  [19:41:12.864] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 5/10) 
-INFO  [19:41:13.632] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 6/10) 
-INFO  [19:41:14.391] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 7/10) 
-INFO  [19:41:15.154] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 8/10) 
-INFO  [19:41:15.918] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 9/10) 
-INFO  [19:41:16.685] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 10/10) 
-INFO  [19:41:17.455] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 1/10) 
-INFO  [19:41:17.479] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:17.488] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:17.508] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:17.621] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:17.685] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:17.872] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:18.677] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:19.328] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:19.984] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:20.789] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 2/10) 
-INFO  [19:41:20.811] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:20.820] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:20.828] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:20.939] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:21.008] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:21.075] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:21.890] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:22.546] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:23.204] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:24.016] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 3/10) 
-INFO  [19:41:24.039] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:24.048] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:24.057] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:24.169] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:24.230] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:24.302] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:25.123] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:25.792] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:26.472] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:27.284] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 4/10) 
-INFO  [19:41:27.307] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:27.315] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:27.323] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:27.444] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:27.512] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:27.577] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:28.372] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:29.034] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:29.687] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:30.485] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 5/10) 
-INFO  [19:41:30.507] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:30.516] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:30.525] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:30.640] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:30.833] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:30.897] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:31.705] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:32.354] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:33.026] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:33.838] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 6/10) 
-INFO  [19:41:33.871] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:33.884] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:33.896] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:34.038] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:34.116] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:34.188] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:35.001] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:35.652] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:36.307] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:37.097] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 7/10) 
-INFO  [19:41:37.127] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:37.137] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:37.145] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:37.256] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:37.318] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:37.380] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:38.191] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:38.873] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:39.525] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:40.342] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 8/10) 
-INFO  [19:41:40.371] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:40.379] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:40.387] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:40.505] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:40.571] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:40.639] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:41.608] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:42.279] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:42.935] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:43.759] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 9/10) 
-INFO  [19:41:43.781] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:43.789] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:43.798] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:43.912] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:43.970] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:44.028] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:44.829] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:45.490] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:46.160] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:46.984] [mlr3] Applying learner 'regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner' on task 'Data' (iter 10/10) 
-INFO  [19:41:47.007] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 1/3) 
-INFO  [19:41:47.015] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 2/3) 
-INFO  [19:41:47.024] [mlr3] Applying learner 'regr.lm' on task 'Data' (iter 3/3) 
-INFO  [19:41:47.145] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 1/3) 
-INFO  [19:41:47.203] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 2/3) 
-INFO  [19:41:47.268] [mlr3] Applying learner 'regr.cv_glmnet' on task 'Data' (iter 3/3) 
-INFO  [19:41:48.084] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 1/3) 
-INFO  [19:41:48.744] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 2/3) 
-INFO  [19:41:49.397] [mlr3] Applying learner 'regr.ranger' on task 'Data' (iter 3/3) 
-INFO  [19:41:50.199] [mlr3] Finished benchmark </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>BenchMark<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">benchmark_grid</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> Task,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">list</span>(LearnerOLS,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                  LearnerLASSO,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                  LearnerRF,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                  LearnerTree,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                  LearnerStack),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamplings =</span> ResampleCV</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>BenchMark <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(design)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>BenchMark<span class="sc">$</span><span class="fu">aggregate</span>(MesurementR2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   nr      resample_result task_id
 1:  1 &lt;ResampleResult[21]&gt;    Data
 2:  2 &lt;ResampleResult[21]&gt;    Data
 3:  3 &lt;ResampleResult[21]&gt;    Data
 4:  4 &lt;ResampleResult[21]&gt;    Data
-                                                         learner_id
-1:                                                          regr.lm
-2:                                                   regr.cv_glmnet
-3:                                                      regr.ranger
-4: regr.lm.regr.cv_glmnet.regr.ranger.nop.featureunion.SuperLearner
+5:  5 &lt;ResampleResult[21]&gt;    Data
+                                                                    learner_id
+1:                                                                     regr.lm
+2:                                                              regr.cv_glmnet
+3:                                                                 regr.ranger
+4:                                                                  regr.rpart
+5: regr.lm.regr.cv_glmnet.regr.ranger.regr.rpart.nop.featureunion.SuperLearner
    resampling_id iters  regr.rsq
 1:            cv    10 0.2700908
 2:            cv    10 0.2562989
 3:            cv    10 0.2772767
-4:            cv    10 0.2804623</code></pre>
+4:            cv    10 0.2789252
+5:            cv    10 0.2807332</code></pre>
 </div>
 </div>
-
-
 </section>
+</section>
+<section id="auto" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="auto"><span class="header-section-number">3.4</span> Auto</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>LearnerTree <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.rpart"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ParamSpace <span class="ot">&lt;-</span> <span class="fu">ps</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cp =</span> <span class="fu">p_dbl</span>(<span class="at">lower =</span> <span class="dv">0</span>, <span class="at">upper =</span> <span class="fl">0.1</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">minsplit =</span> <span class="fu">p_int</span>(<span class="at">lower =</span> <span class="dv">1</span>,<span class="at">upper =</span> <span class="dv">30</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>Terminal <span class="ot">=</span> <span class="fu">trm</span>(<span class="st">"evals"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">n_evals =</span> <span class="dv">100</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>Tuner <span class="ot">&lt;-</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">resolution =</span> <span class="dv">10</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>AutoTune <span class="ot">&lt;-</span> AutoTuner<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> LearnerTree,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">resampling =</span> ResampleCV,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">measure =</span> MesurementR2,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">search_space =</span> ParamSpace,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">terminator =</span> Terminal,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuner =</span> Tuner</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>AutoTune<span class="sc">$</span><span class="fu">train</span>(Task)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>INFO  [09:45:55.018] [bbotk] Starting to optimize 2 parameter(s) with '&lt;TunerGridSearch&gt;' and '&lt;TerminatorEvals&gt; [n_evals=100, k=0]' 
+INFO  [09:45:55.032] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:55.184] [bbotk] Result of batch 1: 
+INFO  [09:45:55.185] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:45:55.185] [bbotk]  0.03333333       17 0.219613        0      0            0.076 
+INFO  [09:45:55.185] [bbotk]                                 uhash 
+INFO  [09:45:55.185] [bbotk]  e10c477c-f7d2-44d7-b562-9c69ed9b5fe1 
+INFO  [09:45:55.186] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:55.366] [bbotk] Result of batch 2: 
+INFO  [09:45:55.367] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:55.367] [bbotk]   0       30 0.2800072        0      0            0.111 
+INFO  [09:45:55.367] [bbotk]                                 uhash 
+INFO  [09:45:55.367] [bbotk]  0f3f4c2b-fbde-4d4e-b9ba-761af5b6efb9 
+INFO  [09:45:55.367] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:55.530] [bbotk] Result of batch 3: 
+INFO  [09:45:55.530] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:55.530] [bbotk]  0.01111111        7 0.2372013        0      0            0.092 
+INFO  [09:45:55.530] [bbotk]                                 uhash 
+INFO  [09:45:55.530] [bbotk]  4a14fc99-ddf1-49a3-838d-db07e0c7ea33 
+INFO  [09:45:55.531] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:55.667] [bbotk] Result of batch 4: 
+INFO  [09:45:55.667] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:55.667] [bbotk]  0.08888889       14 0.1300632        0      0            0.064 
+INFO  [09:45:55.667] [bbotk]                                 uhash 
+INFO  [09:45:55.667] [bbotk]  4d9bae7f-a91e-4a7c-b139-180085dfd73a 
+INFO  [09:45:55.668] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:55.785] [bbotk] Result of batch 5: 
+INFO  [09:45:55.785] [bbotk]          cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:45:55.785] [bbotk]  0.08888889        1 -0.0007883159        0      0            0.041 
+INFO  [09:45:55.785] [bbotk]                                 uhash 
+INFO  [09:45:55.785] [bbotk]  f8e0b398-8921-4f2b-8d69-91583e82a0e0 
+INFO  [09:45:55.786] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:55.929] [bbotk] Result of batch 6: 
+INFO  [09:45:55.930] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:55.930] [bbotk]  0.08888889        7 0.1300632        0      0            0.071 
+INFO  [09:45:55.930] [bbotk]                                 uhash 
+INFO  [09:45:55.930] [bbotk]  aa7f9e07-a8ac-4c56-a773-85cd08d7bead 
+INFO  [09:45:55.931] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:56.089] [bbotk] Result of batch 7: 
+INFO  [09:45:56.090] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:45:56.090] [bbotk]  0.03333333       20 0.219613        0      0             0.08 
+INFO  [09:45:56.090] [bbotk]                                 uhash 
+INFO  [09:45:56.090] [bbotk]  22d75836-4ceb-46db-a3a0-c0989c611bab 
+INFO  [09:45:56.090] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:56.267] [bbotk] Result of batch 8: 
+INFO  [09:45:56.268] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:56.268] [bbotk]   0       20 0.2800072        0      0            0.105 
+INFO  [09:45:56.268] [bbotk]                                 uhash 
+INFO  [09:45:56.268] [bbotk]  6845c157-74bd-4d59-a2ab-1b72f3c00c3e 
+INFO  [09:45:56.268] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:56.416] [bbotk] Result of batch 9: 
+INFO  [09:45:56.416] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:56.416] [bbotk]  0.04444444       17 0.1943622        0      0            0.075 
+INFO  [09:45:56.416] [bbotk]                                 uhash 
+INFO  [09:45:56.416] [bbotk]  dd784521-e322-4756-b41d-ce845b6333c2 
+INFO  [09:45:56.417] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:56.583] [bbotk] Result of batch 10: 
+INFO  [09:45:56.583] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:45:56.583] [bbotk]  0.02222222        7 0.228168        0      0             0.09 
+INFO  [09:45:56.583] [bbotk]                                 uhash 
+INFO  [09:45:56.583] [bbotk]  a7c5df20-9f73-4de3-8395-6637089c1935 
+INFO  [09:45:56.584] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:56.738] [bbotk] Result of batch 11: 
+INFO  [09:45:56.739] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:45:56.739] [bbotk]  0.03333333       14 0.219613        0      0            0.082 
+INFO  [09:45:56.739] [bbotk]                                 uhash 
+INFO  [09:45:56.739] [bbotk]  5a8af1c0-948b-4b62-a495-c23229ad9db2 
+INFO  [09:45:56.740] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:56.865] [bbotk] Result of batch 12: 
+INFO  [09:45:56.865] [bbotk]          cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:45:56.865] [bbotk]  0.03333333        1 -0.0007883159        0      0            0.048 
+INFO  [09:45:56.865] [bbotk]                                 uhash 
+INFO  [09:45:56.865] [bbotk]  e4de97d6-33fa-4e8c-b57d-c352bacf9114 
+INFO  [09:45:56.866] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:57.037] [bbotk] Result of batch 13: 
+INFO  [09:45:57.038] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:57.038] [bbotk]  0.06666667        7 0.1300632        0      0            0.068 
+INFO  [09:45:57.038] [bbotk]                                 uhash 
+INFO  [09:45:57.038] [bbotk]  570e837e-8d46-47f0-a754-9449ceea0e54 
+INFO  [09:45:57.038] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:57.197] [bbotk] Result of batch 14: 
+INFO  [09:45:57.198] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:57.198] [bbotk]  0.01111111       17 0.2372013        0      0             0.09 
+INFO  [09:45:57.198] [bbotk]                                 uhash 
+INFO  [09:45:57.198] [bbotk]  44d9617c-9f30-4db4-a1f6-b0105819d7e3 
+INFO  [09:45:57.199] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:57.349] [bbotk] Result of batch 15: 
+INFO  [09:45:57.349] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:57.349] [bbotk]  0.07777778        4 0.1300632        0      0             0.07 
+INFO  [09:45:57.349] [bbotk]                                 uhash 
+INFO  [09:45:57.349] [bbotk]  ac904973-d148-4286-8b7e-0c497da8a6c4 
+INFO  [09:45:57.350] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:57.487] [bbotk] Result of batch 16: 
+INFO  [09:45:57.488] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:57.488] [bbotk]  0.1       27 0.1300632        0      0            0.065 
+INFO  [09:45:57.488] [bbotk]                                 uhash 
+INFO  [09:45:57.488] [bbotk]  4a5279b5-b3cc-4a2c-9718-19bc4dd2614f 
+INFO  [09:45:57.488] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:57.638] [bbotk] Result of batch 17: 
+INFO  [09:45:57.638] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:57.638] [bbotk]  0.07777778       20 0.1300632        0      0            0.074 
+INFO  [09:45:57.638] [bbotk]                                 uhash 
+INFO  [09:45:57.638] [bbotk]  fc6c2602-5ffc-435a-9232-2de8897c6c36 
+INFO  [09:45:57.639] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:57.787] [bbotk] Result of batch 18: 
+INFO  [09:45:57.788] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:57.788] [bbotk]  0.07777778       27 0.1300632        0      0            0.077 
+INFO  [09:45:57.788] [bbotk]                                 uhash 
+INFO  [09:45:57.788] [bbotk]  cae33d27-bf14-4f69-b4e9-414d2269f4e9 
+INFO  [09:45:57.789] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:57.940] [bbotk] Result of batch 19: 
+INFO  [09:45:57.941] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:57.941] [bbotk]  0.04444444       20 0.1943622        0      0            0.075 
+INFO  [09:45:57.941] [bbotk]                                 uhash 
+INFO  [09:45:57.941] [bbotk]  ea2752a2-a85e-4986-a3a8-dadebac11a69 
+INFO  [09:45:57.942] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:58.084] [bbotk] Result of batch 20: 
+INFO  [09:45:58.084] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:58.084] [bbotk]  0.06666667       14 0.1300632        0      0             0.07 
+INFO  [09:45:58.084] [bbotk]                                 uhash 
+INFO  [09:45:58.084] [bbotk]  190ae178-3756-40de-80ab-2ca05f8f8122 
+INFO  [09:45:58.085] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:58.245] [bbotk] Result of batch 21: 
+INFO  [09:45:58.245] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:58.245] [bbotk]  0.1       20 0.1300632        0      0            0.073 
+INFO  [09:45:58.245] [bbotk]                                 uhash 
+INFO  [09:45:58.245] [bbotk]  5cf88dc7-37e6-482a-b9f9-54d8d41678de 
+INFO  [09:45:58.246] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:58.395] [bbotk] Result of batch 22: 
+INFO  [09:45:58.396] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:58.396] [bbotk]  0.05555556       30 0.1943622        0      0            0.077 
+INFO  [09:45:58.396] [bbotk]                                 uhash 
+INFO  [09:45:58.396] [bbotk]  10442c6e-7cf7-454e-8229-66c670227140 
+INFO  [09:45:58.396] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:58.537] [bbotk] Result of batch 23: 
+INFO  [09:45:58.538] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:58.538] [bbotk]  0.06666667       30 0.1300632        0      0            0.069 
+INFO  [09:45:58.538] [bbotk]                                 uhash 
+INFO  [09:45:58.538] [bbotk]  d2799ae6-b6e7-4229-869d-9814cdc2b7db 
+INFO  [09:45:58.538] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:58.687] [bbotk] Result of batch 24: 
+INFO  [09:45:58.688] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:58.688] [bbotk]  0.07777778       10 0.1300632        0      0            0.075 
+INFO  [09:45:58.688] [bbotk]                                 uhash 
+INFO  [09:45:58.688] [bbotk]  df05400c-cc3e-499c-9f44-60af72bc6e5f 
+INFO  [09:45:58.688] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:58.844] [bbotk] Result of batch 25: 
+INFO  [09:45:58.845] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:45:58.845] [bbotk]  0.03333333       10 0.219613        0      0            0.081 
+INFO  [09:45:58.845] [bbotk]                                 uhash 
+INFO  [09:45:58.845] [bbotk]  58f29ab2-0b8c-4020-9d77-95d64cb9eea2 
+INFO  [09:45:58.845] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:58.993] [bbotk] Result of batch 26: 
+INFO  [09:45:58.994] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:58.994] [bbotk]  0.08888889       24 0.1300632        0      0            0.075 
+INFO  [09:45:58.994] [bbotk]                                 uhash 
+INFO  [09:45:58.994] [bbotk]  5aaa0009-3d46-42c6-b46d-63724ed4d918 
+INFO  [09:45:58.994] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:59.175] [bbotk] Result of batch 27: 
+INFO  [09:45:59.176] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:59.176] [bbotk]   0        4 0.2800072        0      0            0.114 
+INFO  [09:45:59.176] [bbotk]                                 uhash 
+INFO  [09:45:59.176] [bbotk]  8682816c-2149-4617-93e5-244c821806f7 
+INFO  [09:45:59.177] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:59.327] [bbotk] Result of batch 28: 
+INFO  [09:45:59.328] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:59.328] [bbotk]  0.05555556       10 0.1943622        0      0            0.074 
+INFO  [09:45:59.328] [bbotk]                                 uhash 
+INFO  [09:45:59.328] [bbotk]  fa3f7bfa-7121-41ee-9f4b-f4e12141ead0 
+INFO  [09:45:59.329] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:59.448] [bbotk] Result of batch 29: 
+INFO  [09:45:59.449] [bbotk]   cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:45:59.449] [bbotk]  0.1        1 -0.0007883159        0      0            0.045 
+INFO  [09:45:59.449] [bbotk]                                 uhash 
+INFO  [09:45:59.449] [bbotk]  6c3d42f0-416c-4141-b829-8c742f87f7ea 
+INFO  [09:45:59.450] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:59.603] [bbotk] Result of batch 30: 
+INFO  [09:45:59.604] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:59.604] [bbotk]  0.1       24 0.1300632        0      0            0.076 
+INFO  [09:45:59.604] [bbotk]                                 uhash 
+INFO  [09:45:59.604] [bbotk]  6cb2733d-0db2-48bd-9744-bae1af1bf31b 
+INFO  [09:45:59.604] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:59.767] [bbotk] Result of batch 31: 
+INFO  [09:45:59.768] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:45:59.768] [bbotk]  0.02222222       10 0.228168        0      0            0.082 
+INFO  [09:45:59.768] [bbotk]                                 uhash 
+INFO  [09:45:59.768] [bbotk]  c216e913-f042-4d87-a3ff-aa1ed18b1477 
+INFO  [09:45:59.768] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:45:59.986] [bbotk] Result of batch 32: 
+INFO  [09:45:59.986] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:45:59.986] [bbotk]  0.01111111       10 0.2372013        0      0            0.119 
+INFO  [09:45:59.986] [bbotk]                                 uhash 
+INFO  [09:45:59.986] [bbotk]  bdde023c-1935-470d-a438-2b37c5fc8a74 
+INFO  [09:45:59.987] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:00.316] [bbotk] Result of batch 33: 
+INFO  [09:46:00.317] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:00.317] [bbotk]  0.04444444        7 0.1943622        0      0            0.253 
+INFO  [09:46:00.317] [bbotk]                                 uhash 
+INFO  [09:46:00.317] [bbotk]  1f8db66e-7487-4349-94f9-e8918c1e77db 
+INFO  [09:46:00.317] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:00.460] [bbotk] Result of batch 34: 
+INFO  [09:46:00.460] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:00.460] [bbotk]  0.05555556       27 0.1943622        0      0            0.069 
+INFO  [09:46:00.460] [bbotk]                                 uhash 
+INFO  [09:46:00.460] [bbotk]  7bfe03a8-b7da-4fdb-ab71-cdefe2e7b4f7 
+INFO  [09:46:00.461] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:00.620] [bbotk] Result of batch 35: 
+INFO  [09:46:00.621] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:00.621] [bbotk]  0.04444444       14 0.1943622        0      0            0.083 
+INFO  [09:46:00.621] [bbotk]                                 uhash 
+INFO  [09:46:00.621] [bbotk]  9b20f778-8a62-4a65-ac18-2ed8b2649a22 
+INFO  [09:46:00.622] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:00.766] [bbotk] Result of batch 36: 
+INFO  [09:46:00.767] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:00.767] [bbotk]  0.08888889       10 0.1300632        0      0            0.067 
+INFO  [09:46:00.767] [bbotk]                                 uhash 
+INFO  [09:46:00.767] [bbotk]  2c80455b-13f6-42ec-8465-5c83a4ce07eb 
+INFO  [09:46:00.767] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:00.923] [bbotk] Result of batch 37: 
+INFO  [09:46:00.923] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:00.923] [bbotk]  0.03333333       24 0.219613        0      0            0.077 
+INFO  [09:46:00.923] [bbotk]                                 uhash 
+INFO  [09:46:00.923] [bbotk]  4e706d57-2b0d-4bcb-aaf2-e4f2a02e57f6 
+INFO  [09:46:00.924] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:01.064] [bbotk] Result of batch 38: 
+INFO  [09:46:01.065] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:01.065] [bbotk]  0.06666667       27 0.1300632        0      0            0.069 
+INFO  [09:46:01.065] [bbotk]                                 uhash 
+INFO  [09:46:01.065] [bbotk]  df0dad2e-4328-434b-b807-f760473dd79e 
+INFO  [09:46:01.065] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:01.212] [bbotk] Result of batch 39: 
+INFO  [09:46:01.213] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:01.213] [bbotk]  0.08888889       17 0.1300632        0      0            0.065 
+INFO  [09:46:01.213] [bbotk]                                 uhash 
+INFO  [09:46:01.213] [bbotk]  569f78e4-574e-4988-a814-7b6ccb045b2d 
+INFO  [09:46:01.214] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:01.360] [bbotk] Result of batch 40: 
+INFO  [09:46:01.360] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:01.360] [bbotk]  0.04444444       24 0.1943622        0      0            0.068 
+INFO  [09:46:01.360] [bbotk]                                 uhash 
+INFO  [09:46:01.360] [bbotk]  dad7aac5-2731-4ec9-acee-4f645a6e35b4 
+INFO  [09:46:01.361] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:01.539] [bbotk] Result of batch 41: 
+INFO  [09:46:01.539] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:01.539] [bbotk]   0       24 0.2800072        0      0            0.112 
+INFO  [09:46:01.539] [bbotk]                                 uhash 
+INFO  [09:46:01.539] [bbotk]  ee303531-baf5-454a-b067-67114c9d9b17 
+INFO  [09:46:01.540] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:01.683] [bbotk] Result of batch 42: 
+INFO  [09:46:01.684] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:01.684] [bbotk]  0.04444444       30 0.1943622        0      0            0.075 
+INFO  [09:46:01.684] [bbotk]                                 uhash 
+INFO  [09:46:01.684] [bbotk]  fa760307-5f6f-4310-9ba9-c5cb093df3f4 
+INFO  [09:46:01.684] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:01.867] [bbotk] Result of batch 43: 
+INFO  [09:46:01.868] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:01.868] [bbotk]  0.01111111       24 0.2372013        0      0            0.102 
+INFO  [09:46:01.868] [bbotk]                                 uhash 
+INFO  [09:46:01.868] [bbotk]  86d35d65-344c-4594-ab1e-81aa57c1e2c8 
+INFO  [09:46:01.868] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:02.008] [bbotk] Result of batch 44: 
+INFO  [09:46:02.009] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:02.009] [bbotk]  0.08888889       27 0.1300632        0      0             0.07 
+INFO  [09:46:02.009] [bbotk]                                 uhash 
+INFO  [09:46:02.009] [bbotk]  415b89db-f124-43b5-8d2e-228bb0a752e0 
+INFO  [09:46:02.009] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:02.189] [bbotk] Result of batch 45: 
+INFO  [09:46:02.190] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:02.190] [bbotk]   0        7 0.2800072        0      0            0.111 
+INFO  [09:46:02.190] [bbotk]                                 uhash 
+INFO  [09:46:02.190] [bbotk]  12df169a-a5be-419b-a9e0-8ad96b4957ef 
+INFO  [09:46:02.190] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:02.361] [bbotk] Result of batch 46: 
+INFO  [09:46:02.361] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:02.361] [bbotk]   0       14 0.2800072        0      0            0.101 
+INFO  [09:46:02.361] [bbotk]                                 uhash 
+INFO  [09:46:02.361] [bbotk]  0ab33880-3bdd-44d2-9585-c045e9285ec2 
+INFO  [09:46:02.362] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:02.526] [bbotk] Result of batch 47: 
+INFO  [09:46:02.527] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:02.527] [bbotk]  0.07777778       17 0.1300632        0      0            0.092 
+INFO  [09:46:02.527] [bbotk]                                 uhash 
+INFO  [09:46:02.527] [bbotk]  e06fcc75-f30d-4632-a6c4-976a524e7cdb 
+INFO  [09:46:02.528] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:02.702] [bbotk] Result of batch 48: 
+INFO  [09:46:02.703] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:02.703] [bbotk]   0       27 0.2800072        0      0            0.105 
+INFO  [09:46:02.703] [bbotk]                                 uhash 
+INFO  [09:46:02.703] [bbotk]  d30c1902-2868-4cff-81ea-6e6b87fd8f3b 
+INFO  [09:46:02.703] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:02.865] [bbotk] Result of batch 49: 
+INFO  [09:46:02.866] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:02.866] [bbotk]  0.02222222        4 0.228168        0      0            0.085 
+INFO  [09:46:02.866] [bbotk]                                 uhash 
+INFO  [09:46:02.866] [bbotk]  85c7d8b5-2943-4321-99af-f5b8ba44384f 
+INFO  [09:46:02.866] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:03.054] [bbotk] Result of batch 50: 
+INFO  [09:46:03.055] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:03.055] [bbotk]  0.01111111       20 0.2372013        0      0            0.105 
+INFO  [09:46:03.055] [bbotk]                                 uhash 
+INFO  [09:46:03.055] [bbotk]  0f214145-5c77-48b2-bab2-da251bb5d586 
+INFO  [09:46:03.056] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:03.207] [bbotk] Result of batch 51: 
+INFO  [09:46:03.208] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:03.208] [bbotk]  0.04444444        4 0.1943622        0      0            0.077 
+INFO  [09:46:03.208] [bbotk]                                 uhash 
+INFO  [09:46:03.208] [bbotk]  ad61f083-3664-4d4a-950c-263a9ffa825f 
+INFO  [09:46:03.208] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:03.320] [bbotk] Result of batch 52: 
+INFO  [09:46:03.321] [bbotk]          cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:46:03.321] [bbotk]  0.07777778        1 -0.0007883159        0      0            0.039 
+INFO  [09:46:03.321] [bbotk]                                 uhash 
+INFO  [09:46:03.321] [bbotk]  a9f4b04e-e0d8-4cfc-81c5-f49b05219e1a 
+INFO  [09:46:03.321] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:03.466] [bbotk] Result of batch 53: 
+INFO  [09:46:03.467] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:03.467] [bbotk]  0.1        7 0.1300632        0      0            0.074 
+INFO  [09:46:03.467] [bbotk]                                 uhash 
+INFO  [09:46:03.467] [bbotk]  56ce9452-f988-4a0f-9431-84644e7dcd80 
+INFO  [09:46:03.467] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:03.614] [bbotk] Result of batch 54: 
+INFO  [09:46:03.614] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:03.614] [bbotk]  0.05555556       24 0.1943622        0      0            0.072 
+INFO  [09:46:03.614] [bbotk]                                 uhash 
+INFO  [09:46:03.614] [bbotk]  6cb7c326-620b-471b-acc7-47c7461cead7 
+INFO  [09:46:03.615] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:03.764] [bbotk] Result of batch 55: 
+INFO  [09:46:03.765] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:03.765] [bbotk]  0.07777778       30 0.1300632        0      0            0.075 
+INFO  [09:46:03.765] [bbotk]                                 uhash 
+INFO  [09:46:03.765] [bbotk]  81c8aec5-65c1-43ed-9a8a-4f93a45141bf 
+INFO  [09:46:03.765] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:03.907] [bbotk] Result of batch 56: 
+INFO  [09:46:03.908] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:03.908] [bbotk]  0.1       14 0.1300632        0      0            0.067 
+INFO  [09:46:03.908] [bbotk]                                 uhash 
+INFO  [09:46:03.908] [bbotk]  688bc5d4-df69-4807-8859-b45c0e14c263 
+INFO  [09:46:03.908] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:04.032] [bbotk] Result of batch 57: 
+INFO  [09:46:04.033] [bbotk]  cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:46:04.033] [bbotk]   0        1 -0.0007883159        0      0            0.044 
+INFO  [09:46:04.033] [bbotk]                                 uhash 
+INFO  [09:46:04.033] [bbotk]  af808076-892c-4c44-b7bb-85f562dfc659 
+INFO  [09:46:04.033] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:04.236] [bbotk] Result of batch 58: 
+INFO  [09:46:04.237] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:04.237] [bbotk]  0.08888889       20 0.1300632        0      0            0.093 
+INFO  [09:46:04.237] [bbotk]                                 uhash 
+INFO  [09:46:04.237] [bbotk]  9bfed489-d6d7-4416-86fc-65f3a58b518f 
+INFO  [09:46:04.237] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:04.408] [bbotk] Result of batch 59: 
+INFO  [09:46:04.409] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:04.409] [bbotk]  0.06666667       24 0.1300632        0      0            0.081 
+INFO  [09:46:04.409] [bbotk]                                 uhash 
+INFO  [09:46:04.409] [bbotk]  629e0709-d940-4cff-93f9-e6a78206966b 
+INFO  [09:46:04.409] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:04.531] [bbotk] Result of batch 60: 
+INFO  [09:46:04.532] [bbotk]          cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:46:04.532] [bbotk]  0.04444444        1 -0.0007883159        0      0            0.046 
+INFO  [09:46:04.532] [bbotk]                                 uhash 
+INFO  [09:46:04.532] [bbotk]  bc396e94-1aa1-408f-8106-db4dcc58ece7 
+INFO  [09:46:04.532] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:04.747] [bbotk] Result of batch 61: 
+INFO  [09:46:04.748] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:04.748] [bbotk]  0.03333333        7 0.219613        0      0            0.092 
+INFO  [09:46:04.748] [bbotk]                                 uhash 
+INFO  [09:46:04.748] [bbotk]  272397cc-3ad8-4b59-b650-c70619d6e144 
+INFO  [09:46:04.748] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:04.903] [bbotk] Result of batch 62: 
+INFO  [09:46:04.904] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:04.904] [bbotk]  0.05555556        7 0.1943622        0      0            0.078 
+INFO  [09:46:04.904] [bbotk]                                 uhash 
+INFO  [09:46:04.904] [bbotk]  a41fea23-9c7d-4c9c-bb38-7ef74d04900a 
+INFO  [09:46:04.904] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:05.050] [bbotk] Result of batch 63: 
+INFO  [09:46:05.050] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:05.050] [bbotk]  0.08888889        4 0.1300632        0      0            0.069 
+INFO  [09:46:05.050] [bbotk]                                 uhash 
+INFO  [09:46:05.050] [bbotk]  b1f54115-9be8-49be-9935-5710e64c60b8 
+INFO  [09:46:05.051] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:05.206] [bbotk] Result of batch 64: 
+INFO  [09:46:05.207] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:05.207] [bbotk]  0.04444444       27 0.1943622        0      0            0.082 
+INFO  [09:46:05.207] [bbotk]                                 uhash 
+INFO  [09:46:05.207] [bbotk]  df2ae53c-dee6-4fa5-addf-33cdbbe331bd 
+INFO  [09:46:05.207] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:05.368] [bbotk] Result of batch 65: 
+INFO  [09:46:05.369] [bbotk]          cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:46:05.369] [bbotk]  0.06666667        1 -0.0007883159        0      0            0.063 
+INFO  [09:46:05.369] [bbotk]                                 uhash 
+INFO  [09:46:05.369] [bbotk]  79d47d65-f239-429b-bcd5-1f59bdfe4896 
+INFO  [09:46:05.369] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:05.517] [bbotk] Result of batch 66: 
+INFO  [09:46:05.518] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:05.518] [bbotk]  0.08888889       30 0.1300632        0      0            0.073 
+INFO  [09:46:05.518] [bbotk]                                 uhash 
+INFO  [09:46:05.518] [bbotk]  b1e52d9d-62ec-464f-9e2b-4b9b45c6ca4d 
+INFO  [09:46:05.518] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:05.700] [bbotk] Result of batch 67: 
+INFO  [09:46:05.701] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:05.701] [bbotk]   0       10 0.2800072        0      0            0.103 
+INFO  [09:46:05.701] [bbotk]                                 uhash 
+INFO  [09:46:05.701] [bbotk]  9740d198-2569-43c5-992e-6861e73604b2 
+INFO  [09:46:05.701] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:05.829] [bbotk] Result of batch 68: 
+INFO  [09:46:05.830] [bbotk]          cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:46:05.830] [bbotk]  0.02222222        1 -0.0007883159        0      0            0.052 
+INFO  [09:46:05.830] [bbotk]                                 uhash 
+INFO  [09:46:05.830] [bbotk]  4f4faeca-f072-4c5d-9ccf-b2327f6f817b 
+INFO  [09:46:05.830] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:05.972] [bbotk] Result of batch 69: 
+INFO  [09:46:05.973] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:05.973] [bbotk]  0.1       10 0.1300632        0      0             0.07 
+INFO  [09:46:05.973] [bbotk]                                 uhash 
+INFO  [09:46:05.973] [bbotk]  5f493c58-af8f-4c6b-bca8-82150e77f498 
+INFO  [09:46:05.974] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:06.099] [bbotk] Result of batch 70: 
+INFO  [09:46:06.100] [bbotk]          cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:46:06.100] [bbotk]  0.01111111        1 -0.0007883159        0      0            0.038 
+INFO  [09:46:06.100] [bbotk]                                 uhash 
+INFO  [09:46:06.100] [bbotk]  6ef60dac-a91e-4ec3-bedc-121d3bea9880 
+INFO  [09:46:06.101] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:06.271] [bbotk] Result of batch 71: 
+INFO  [09:46:06.272] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:06.272] [bbotk]  0.01111111       30 0.2372013        0      0            0.094 
+INFO  [09:46:06.272] [bbotk]                                 uhash 
+INFO  [09:46:06.272] [bbotk]  3583df55-8f9a-46b5-b1d0-bd0f3a5d2b04 
+INFO  [09:46:06.273] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:06.423] [bbotk] Result of batch 72: 
+INFO  [09:46:06.424] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:06.424] [bbotk]  0.05555556       14 0.1943622        0      0            0.072 
+INFO  [09:46:06.424] [bbotk]                                 uhash 
+INFO  [09:46:06.424] [bbotk]  4d205827-0e51-48c6-8bd8-815405e33783 
+INFO  [09:46:06.425] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:06.565] [bbotk] Result of batch 73: 
+INFO  [09:46:06.565] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:06.565] [bbotk]  0.05555556        4 0.1943622        0      0            0.066 
+INFO  [09:46:06.565] [bbotk]                                 uhash 
+INFO  [09:46:06.565] [bbotk]  4ae43c38-ae1b-49c9-ac03-55801d09d620 
+INFO  [09:46:06.566] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:06.712] [bbotk] Result of batch 74: 
+INFO  [09:46:06.713] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:06.713] [bbotk]  0.06666667        4 0.1300632        0      0            0.075 
+INFO  [09:46:06.713] [bbotk]                                 uhash 
+INFO  [09:46:06.713] [bbotk]  310e57bc-6da5-465d-afdb-d6c9d5060975 
+INFO  [09:46:06.713] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:06.859] [bbotk] Result of batch 75: 
+INFO  [09:46:06.860] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:06.860] [bbotk]  0.07777778       24 0.1300632        0      0            0.072 
+INFO  [09:46:06.860] [bbotk]                                 uhash 
+INFO  [09:46:06.860] [bbotk]  9b6434b5-608f-47e6-a3e9-7df028e85fd0 
+INFO  [09:46:06.860] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:07.007] [bbotk] Result of batch 76: 
+INFO  [09:46:07.007] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:07.007] [bbotk]  0.1       30 0.1300632        0      0            0.074 
+INFO  [09:46:07.007] [bbotk]                                 uhash 
+INFO  [09:46:07.007] [bbotk]  326307ba-926e-4497-a77e-20d941b7acba 
+INFO  [09:46:07.008] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:07.186] [bbotk] Result of batch 77: 
+INFO  [09:46:07.186] [bbotk]  cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:07.186] [bbotk]   0       17 0.2800072        0      0            0.105 
+INFO  [09:46:07.186] [bbotk]                                 uhash 
+INFO  [09:46:07.186] [bbotk]  c8ce8cb0-a97b-4d48-9019-43ed469d3ca5 
+INFO  [09:46:07.187] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:07.333] [bbotk] Result of batch 78: 
+INFO  [09:46:07.334] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:07.334] [bbotk]  0.06666667       17 0.1300632        0      0            0.076 
+INFO  [09:46:07.334] [bbotk]                                 uhash 
+INFO  [09:46:07.334] [bbotk]  1e5c9d55-b661-4814-a565-22a1734e3532 
+INFO  [09:46:07.334] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:07.537] [bbotk] Result of batch 79: 
+INFO  [09:46:07.538] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:07.538] [bbotk]  0.04444444       10 0.1943622        0      0            0.106 
+INFO  [09:46:07.538] [bbotk]                                 uhash 
+INFO  [09:46:07.538] [bbotk]  0fa0ad8e-9a81-4d73-8f31-9b17a401f1d0 
+INFO  [09:46:07.538] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:07.685] [bbotk] Result of batch 80: 
+INFO  [09:46:07.685] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:07.685] [bbotk]  0.03333333        4 0.219613        0      0            0.075 
+INFO  [09:46:07.685] [bbotk]                                 uhash 
+INFO  [09:46:07.685] [bbotk]  48a15d43-e2de-4bfb-9c22-64b37acc8cc1 
+INFO  [09:46:07.686] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:07.835] [bbotk] Result of batch 81: 
+INFO  [09:46:07.835] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:07.835] [bbotk]  0.1       17 0.1300632        0      0            0.073 
+INFO  [09:46:07.835] [bbotk]                                 uhash 
+INFO  [09:46:07.835] [bbotk]  9892c724-a5ed-491c-9785-65a50683b6d7 
+INFO  [09:46:07.836] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:07.990] [bbotk] Result of batch 82: 
+INFO  [09:46:07.990] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:07.990] [bbotk]  0.02222222       30 0.228168        0      0            0.076 
+INFO  [09:46:07.990] [bbotk]                                 uhash 
+INFO  [09:46:07.990] [bbotk]  c53c375c-d7ea-43a8-a805-b04892090170 
+INFO  [09:46:07.991] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:08.143] [bbotk] Result of batch 83: 
+INFO  [09:46:08.144] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:08.144] [bbotk]  0.05555556       17 0.1943622        0      0            0.079 
+INFO  [09:46:08.144] [bbotk]                                 uhash 
+INFO  [09:46:08.144] [bbotk]  767019e2-5348-49b9-b63c-91dd919f1498 
+INFO  [09:46:08.144] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:08.299] [bbotk] Result of batch 84: 
+INFO  [09:46:08.300] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:08.300] [bbotk]  0.05555556       20 0.1943622        0      0            0.075 
+INFO  [09:46:08.300] [bbotk]                                 uhash 
+INFO  [09:46:08.300] [bbotk]  64169cf0-8aac-4865-aace-c4fb53fa03e7 
+INFO  [09:46:08.300] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:08.457] [bbotk] Result of batch 85: 
+INFO  [09:46:08.457] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:08.457] [bbotk]  0.02222222       20 0.228168        0      0            0.082 
+INFO  [09:46:08.457] [bbotk]                                 uhash 
+INFO  [09:46:08.457] [bbotk]  76a62041-e5a3-41d7-aa15-5c7edb446d9d 
+INFO  [09:46:08.458] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:08.620] [bbotk] Result of batch 86: 
+INFO  [09:46:08.621] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:08.621] [bbotk]  0.02222222       27 0.228168        0      0            0.084 
+INFO  [09:46:08.621] [bbotk]                                 uhash 
+INFO  [09:46:08.621] [bbotk]  f94e72fb-fe87-4feb-b3d8-df2103487430 
+INFO  [09:46:08.622] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:08.763] [bbotk] Result of batch 87: 
+INFO  [09:46:08.763] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:08.763] [bbotk]  0.06666667       20 0.1300632        0      0             0.07 
+INFO  [09:46:08.763] [bbotk]                                 uhash 
+INFO  [09:46:08.763] [bbotk]  d0c04f21-62f7-4b73-9d01-e215bf9e87e7 
+INFO  [09:46:08.764] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:08.918] [bbotk] Result of batch 88: 
+INFO  [09:46:08.919] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:08.919] [bbotk]  0.06666667       10 0.1300632        0      0            0.072 
+INFO  [09:46:08.919] [bbotk]                                 uhash 
+INFO  [09:46:08.919] [bbotk]  9f5465b2-7d19-49c2-8a3a-e147813844ee 
+INFO  [09:46:08.919] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:09.072] [bbotk] Result of batch 89: 
+INFO  [09:46:09.072] [bbotk]   cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:09.072] [bbotk]  0.1        4 0.1300632        0      0            0.069 
+INFO  [09:46:09.072] [bbotk]                                 uhash 
+INFO  [09:46:09.072] [bbotk]  a08942ce-5c38-4348-9023-68811e797623 
+INFO  [09:46:09.073] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:09.232] [bbotk] Result of batch 90: 
+INFO  [09:46:09.233] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:09.233] [bbotk]  0.01111111       27 0.2372013        0      0            0.088 
+INFO  [09:46:09.233] [bbotk]                                 uhash 
+INFO  [09:46:09.233] [bbotk]  d682ab1b-6b89-4844-971a-ac5d2324fa8d 
+INFO  [09:46:09.234] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:09.413] [bbotk] Result of batch 91: 
+INFO  [09:46:09.414] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:09.414] [bbotk]  0.03333333       30 0.219613        0      0            0.087 
+INFO  [09:46:09.414] [bbotk]                                 uhash 
+INFO  [09:46:09.414] [bbotk]  3b57f177-259b-4fc0-82e0-258b00fa052f 
+INFO  [09:46:09.415] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:09.579] [bbotk] Result of batch 92: 
+INFO  [09:46:09.579] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:09.579] [bbotk]  0.02222222       17 0.228168        0      0            0.086 
+INFO  [09:46:09.579] [bbotk]                                 uhash 
+INFO  [09:46:09.579] [bbotk]  7e8d5e64-c314-4e6c-bdf6-a40591bf0cd7 
+INFO  [09:46:09.580] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:09.722] [bbotk] Result of batch 93: 
+INFO  [09:46:09.722] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:09.722] [bbotk]  0.07777778        7 0.1300632        0      0            0.071 
+INFO  [09:46:09.722] [bbotk]                                 uhash 
+INFO  [09:46:09.722] [bbotk]  6e7234a4-9a64-41b3-843e-4cef07e631ac 
+INFO  [09:46:09.723] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:09.886] [bbotk] Result of batch 94: 
+INFO  [09:46:09.886] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:09.886] [bbotk]  0.02222222       14 0.228168        0      0            0.084 
+INFO  [09:46:09.886] [bbotk]                                 uhash 
+INFO  [09:46:09.886] [bbotk]  0657e155-bd08-4a2c-843e-ace1026e3825 
+INFO  [09:46:09.887] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:10.060] [bbotk] Result of batch 95: 
+INFO  [09:46:10.060] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:10.060] [bbotk]  0.01111111       14 0.2372013        0      0            0.095 
+INFO  [09:46:10.060] [bbotk]                                 uhash 
+INFO  [09:46:10.060] [bbotk]  0970dca4-0a87-4e64-a0f9-72bf9979ca81 
+INFO  [09:46:10.061] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:10.231] [bbotk] Result of batch 96: 
+INFO  [09:46:10.231] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:10.231] [bbotk]  0.01111111        4 0.2372013        0      0            0.094 
+INFO  [09:46:10.231] [bbotk]                                 uhash 
+INFO  [09:46:10.231] [bbotk]  5ebe61a4-221a-4ee7-8826-6a88ce076a87 
+INFO  [09:46:10.232] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:10.386] [bbotk] Result of batch 97: 
+INFO  [09:46:10.387] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:10.387] [bbotk]  0.02222222       24 0.228168        0      0            0.082 
+INFO  [09:46:10.387] [bbotk]                                 uhash 
+INFO  [09:46:10.387] [bbotk]  ec3a5ee4-1e52-47ad-8d73-5e3f65328771 
+INFO  [09:46:10.388] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:10.509] [bbotk] Result of batch 98: 
+INFO  [09:46:10.510] [bbotk]          cp minsplit      regr.rsq warnings errors runtime_learners 
+INFO  [09:46:10.510] [bbotk]  0.05555556        1 -0.0007883159        0      0            0.047 
+INFO  [09:46:10.510] [bbotk]                                 uhash 
+INFO  [09:46:10.510] [bbotk]  affef7bb-2656-4803-a6c6-d6f3197f0ff5 
+INFO  [09:46:10.511] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:10.675] [bbotk] Result of batch 99: 
+INFO  [09:46:10.676] [bbotk]          cp minsplit regr.rsq warnings errors runtime_learners 
+INFO  [09:46:10.676] [bbotk]  0.03333333       27 0.219613        0      0            0.085 
+INFO  [09:46:10.676] [bbotk]                                 uhash 
+INFO  [09:46:10.676] [bbotk]  edc55b07-0156-4028-b2b0-0a77ef8d6e8b 
+INFO  [09:46:10.676] [bbotk] Evaluating 1 configuration(s) 
+INFO  [09:46:10.840] [bbotk] Result of batch 100: 
+INFO  [09:46:10.841] [bbotk]          cp minsplit  regr.rsq warnings errors runtime_learners 
+INFO  [09:46:10.841] [bbotk]  0.07777778       14 0.1300632        0      0            0.079 
+INFO  [09:46:10.841] [bbotk]                                 uhash 
+INFO  [09:46:10.841] [bbotk]  7435f56e-513f-4ceb-bfde-52d4378698ac 
+INFO  [09:46:10.843] [bbotk] Finished optimizing after 100 evaluation(s) 
+INFO  [09:46:10.844] [bbotk] Result: 
+INFO  [09:46:10.844] [bbotk]  cp minsplit learner_param_vals  x_domain  regr.rsq 
+INFO  [09:46:10.844] [bbotk]   0       30          &lt;list[3]&gt; &lt;list[2]&gt; 0.2800072 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(AutoTune)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "AutoTuner" "Learner"   "R6"       </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>AutoTune<span class="sc">$</span><span class="fu">predict</span>(Task)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;PredictionRegr&gt; for 15588 observations:
+    row_ids     truth response
+          1 11.188810 14.51522
+          2 10.000000 16.94581
+          3  5.769231 10.86328
+---                           
+      15586 19.230770 13.11743
+      15587 19.711540 15.55251
+      15588 12.740390 11.36405</code></pre>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->

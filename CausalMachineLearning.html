@@ -78,6 +78,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -119,7 +138,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -201,14 +219,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#問題設定" id="toc-問題設定" class="nav-link active" data-scroll-target="#問題設定"> <span class="header-section-number">4.1</span> 問題設定</a></li>
-  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">4.2</span> パッケージ &amp; データ</a></li>
-  <li><a href="#推定" id="toc-推定" class="nav-link" data-scroll-target="#推定"> <span class="header-section-number">4.3</span> 推定</a>
+  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link active" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">4.1</span> パッケージ &amp; データ</a></li>
+  <li><a href="#推定" id="toc-推定" class="nav-link" data-scroll-target="#推定"> <span class="header-section-number">4.2</span> 推定</a>
   <ul class="collapse">
-  <li><a href="#outcome-model" id="toc-outcome-model" class="nav-link" data-scroll-target="#outcome-model"> <span class="header-section-number">4.3.1</span> Outcome Model</a></li>
+  <li><a href="#outcome-model" id="toc-outcome-model" class="nav-link" data-scroll-target="#outcome-model"> <span class="header-section-number">4.2.1</span> Outcome Model</a></li>
   </ul></li>
-  <li><a href="#partial-linear-model" id="toc-partial-linear-model" class="nav-link" data-scroll-target="#partial-linear-model"> <span class="header-section-number">4.4</span> Partial Linear Model</a></li>
-  <li><a href="#aipw" id="toc-aipw" class="nav-link" data-scroll-target="#aipw"> <span class="header-section-number">4.5</span> AIPW</a></li>
+  <li><a href="#partial-linear-model" id="toc-partial-linear-model" class="nav-link" data-scroll-target="#partial-linear-model"> <span class="header-section-number">4.3</span> Partial Linear Model</a></li>
+  <li><a href="#aipw" id="toc-aipw" class="nav-link" data-scroll-target="#aipw"> <span class="header-section-number">4.4</span> AIPW</a></li>
   </ul>
 </nav>
     </div>
@@ -232,31 +249,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <ul>
-<li><p>データと同じ母集団から新しくランダムサンプリングされ、<span class="math inline">\(X\)</span>のみが観察できるサンプルについて<span class="math inline">\(Y\)</span>の値を予測する。</p>
-<ul>
-<li>データ分割を用いたモデル評価を行う</li>
-</ul></li>
+<li><span class="citation" data-cites="chernozhukov2018">Chernozhukov et al. (<a href="references.html#ref-chernozhukov2018" role="doc-biblioref">2018</a>)</span> を実装する</li>
 </ul>
-<section id="問題設定" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="問題設定"><span class="header-section-number">4.1</span> 問題設定</h2>
-<ul>
-<li><p>事前に定義する損失関数の期待値を最小化するような、予測関数<span class="math inline">\(f(X)\)</span>の推定を目指す。</p>
-<ul>
-<li>以下ではMean squared error(MSE)を損失関数として用いる。確率変数<span class="math inline">\(Y,X\)</span>について予測問題は以下のように定義できる</li>
-</ul></li>
-</ul>
-<p><span class="math display">\[\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]f(x)dx\]</span></p>
-<ul>
-<li>一般に以下のように書き換えられる</li>
-</ul>
-<p><span class="math display">\[\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]f(x)dx\]</span>$</p>
-<p>ただし <span class="math inline">\(\mu(x)=E[Y_i|X_i=x]\)</span></p>
-<ul>
-<li>上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forestを実装する。</li>
-</ul>
-</section>
-<section id="パッケージ-データ" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">4.2</span> パッケージ &amp; データ</h2>
+<section id="パッケージ-データ" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">4.1</span> パッケージ &amp; データ</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
@@ -285,10 +281,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">d=</span>D)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="推定" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="推定"><span class="header-section-number">4.3</span> 推定</h2>
-<section id="outcome-model" class="level3" data-number="4.3.1">
-<h3 data-number="4.3.1" class="anchored" data-anchor-id="outcome-model"><span class="header-section-number">4.3.1</span> Outcome Model</h3>
+<section id="推定" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="推定"><span class="header-section-number">4.2</span> 推定</h2>
+<section id="outcome-model" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="outcome-model"><span class="header-section-number">4.2.1</span> Outcome Model</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>RegLASSO <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.cv_glmnet"</span>,</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"RegressionLASSO"</span></span>
@@ -343,117 +339,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </section>
 </section>
-<section id="partial-linear-model" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="partial-linear-model"><span class="header-section-number">4.4</span> Partial Linear Model</h2>
+<section id="partial-linear-model" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="partial-linear-model"><span class="header-section-number">4.3</span> Partial Linear Model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>FitPLR <span class="ot">=</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(Data, </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_l=</span>RegNuisanceLearner, </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_m=</span>ProbNuisanceLearner)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>FitPLR<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>INFO  [19:43:41.548] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_l' (iter 1/5) 
-INFO  [19:43:41.584] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:41.705] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:41.712] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:41.987] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:42.188] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:42.252] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:42.752] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:43.152] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:43.538] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:44.085] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_l' (iter 2/5) 
-INFO  [19:43:44.107] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:44.115] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:44.123] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:44.233] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:44.300] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:44.363] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:44.974] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:45.368] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:45.760] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:46.301] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_l' (iter 3/5) 
-INFO  [19:43:46.325] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:46.333] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:46.340] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:46.448] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:46.626] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:46.683] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:47.166] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:47.559] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:47.942] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:48.484] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_l' (iter 4/5) 
-INFO  [19:43:48.504] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:48.511] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:48.519] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:48.621] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:48.687] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:48.745] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:49.219] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:49.614] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:50.005] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:50.545] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_l' (iter 5/5) 
-INFO  [19:43:50.565] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:50.573] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:50.581] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:50.687] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:50.752] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:50.810] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:51.416] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 1/3) 
-INFO  [19:43:51.817] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 2/3) 
-INFO  [19:43:52.202] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_l' (iter 3/3) 
-INFO  [19:43:52.845] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 1/5) 
-INFO  [19:43:52.886] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:43:52.907] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:43:52.938] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:43:53.294] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:43:53.435] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:43:53.579] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:43:54.201] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:43:54.725] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:43:55.247] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:43:56.019] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 2/5) 
-INFO  [19:43:56.054] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:43:56.088] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:43:56.109] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:43:56.336] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:43:56.475] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:43:56.610] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:43:57.241] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:43:57.772] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:43:58.299] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:43:59.083] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 3/5) 
-INFO  [19:43:59.115] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:43:59.140] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:43:59.160] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:43:59.390] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:43:59.534] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:43:59.679] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:00.421] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:00.931] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:01.446] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:02.234] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 4/5) 
-INFO  [19:44:02.268] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:02.287] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:02.312] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:02.539] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:02.683] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:02.827] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:03.445] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:03.962] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:04.484] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:05.258] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 5/5) 
-INFO  [19:44:05.290] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:05.315] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:05.335] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:05.573] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:05.721] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:05.863] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:06.500] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:07.021] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:07.550] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(FitPLR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>FitPLR <span class="ot">=</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(Data, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_l=</span>RegNuisanceLearner, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_m=</span>ProbNuisanceLearner)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>FitPLR<span class="sc">$</span><span class="fu">fit</span>()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(FitPLR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>================= DoubleMLPLR Object ==================
 
@@ -487,167 +384,18 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="aipw" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="aipw"><span class="header-section-number">4.5</span> AIPW</h2>
+<section id="aipw" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="aipw"><span class="header-section-number">4.4</span> AIPW</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>FitAIPW <span class="ot">=</span> DoubleMLIRM<span class="sc">$</span><span class="fu">new</span>(Data, </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_g=</span>RegNuisanceLearner, </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_m=</span>ProbNuisanceLearner)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>FitAIPW<span class="sc">$</span><span class="fu">fit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>INFO  [19:44:08.612] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 1/5) 
-INFO  [19:44:08.792] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:08.812] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:08.833] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:09.063] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:09.212] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:09.365] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:10.010] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:10.540] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:11.079] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:11.860] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 2/5) 
-INFO  [19:44:11.892] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:11.913] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:11.941] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:12.167] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:12.305] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:12.443] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:13.068] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:13.600] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:14.116] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:14.894] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 3/5) 
-INFO  [19:44:14.938] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:14.958] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:14.979] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:15.218] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:15.362] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:15.510] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:16.135] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:16.670] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:17.206] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:17.991] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 4/5) 
-INFO  [19:44:18.029] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:18.050] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:18.091] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:18.343] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:18.491] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:18.629] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:19.260] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:19.790] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:20.314] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:21.097] [mlr3] Applying learner 'ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner' on task 'nuis_m' (iter 5/5) 
-INFO  [19:44:21.130] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:21.158] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:21.178] [mlr3] Applying learner 'ProbLM' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:21.432] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:21.586] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:21.728] [mlr3] Applying learner 'ProbLASSO' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:22.367] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 1/3) 
-INFO  [19:44:22.932] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 2/3) 
-INFO  [19:44:23.474] [mlr3] Applying learner 'ProbRanger' on task 'nuis_m' (iter 3/3) 
-INFO  [19:44:24.517] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g0' (iter 1/5) 
-INFO  [19:44:24.539] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:24.546] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:24.553] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:24.644] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:24.685] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:24.730] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:25.018] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:25.248] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:25.468] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:25.838] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g0' (iter 2/5) 
-INFO  [19:44:25.860] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:25.867] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:25.876] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:25.957] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:25.999] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:26.054] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:26.333] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:26.548] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:26.760] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:27.117] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g0' (iter 3/5) 
-INFO  [19:44:27.137] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:27.144] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:27.151] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:27.236] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:27.279] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:27.321] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:27.598] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:27.812] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:28.027] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:28.389] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g0' (iter 4/5) 
-INFO  [19:44:28.409] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:28.416] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:28.432] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:28.510] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:28.557] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:28.603] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:28.899] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:29.113] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:29.333] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:29.697] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g0' (iter 5/5) 
-INFO  [19:44:29.717] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:29.724] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:29.732] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:29.821] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:29.867] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:29.916] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:30.204] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 1/3) 
-INFO  [19:44:30.440] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 2/3) 
-INFO  [19:44:30.663] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g0' (iter 3/3) 
-INFO  [19:44:31.258] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g1' (iter 1/5) 
-INFO  [19:44:31.282] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:31.290] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:31.297] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:31.379] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:31.429] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:31.467] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:31.720] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:31.871] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:32.013] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:32.303] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g1' (iter 2/5) 
-INFO  [19:44:32.323] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:32.331] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:32.338] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:32.408] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:32.451] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:32.486] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:32.739] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:32.884] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:33.027] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:33.312] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g1' (iter 3/5) 
-INFO  [19:44:33.333] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:33.340] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:33.348] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:33.424] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:33.466] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:33.501] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:33.750] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:33.911] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:34.061] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:34.340] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g1' (iter 4/5) 
-INFO  [19:44:34.359] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:34.367] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:34.374] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:34.449] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:34.490] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:34.529] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:34.781] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:34.927] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:35.072] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:35.365] [mlr3] Applying learner 'RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner' on task 'nuis_g1' (iter 5/5) 
-INFO  [19:44:35.385] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:35.391] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:35.398] [mlr3] Applying learner 'RegressionOLS' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:35.473] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:35.514] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:35.553] [mlr3] Applying learner 'RegressionLASSO' on task 'nuis_g1' (iter 3/3) 
-INFO  [19:44:35.797] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 1/3) 
-INFO  [19:44:35.966] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 2/3) 
-INFO  [19:44:36.128] [mlr3] Applying learner 'RegressionRandomForest' on task 'nuis_g1' (iter 3/3) </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(FitAIPW)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>FitAIPW <span class="ot">=</span> DoubleMLIRM<span class="sc">$</span><span class="fu">new</span>(Data, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_g=</span>RegNuisanceLearner, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_m=</span>ProbNuisanceLearner)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>FitAIPW<span class="sc">$</span><span class="fu">fit</span>()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(FitAIPW)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>================= DoubleMLIRM Object ==================
 
@@ -682,6 +430,11 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-chernozhukov2018" class="csl-entry" role="doc-biblioentry">
+Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“Double/Debiased Machine Learning for Treatment and Structural Parameters.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
