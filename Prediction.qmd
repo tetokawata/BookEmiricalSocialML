@@ -1,0 +1,149 @@
+# 予測 {#sec-Prediction}
+
+- データと同じ母集団から新しくランダムサンプリングされ、$X$のみが観察できるサンプルについて$Y$の値を予測する。
+
+  - データ分割を用いたモデル評価を行う
+
+## 問題設定
+
+- 事前に定義する損失関数の期待値を最小化するような、予測関数$f(X)$の推定を目指す。
+
+  - 以下ではMean squared error(MSE)を損失関数として用いる。確率変数$Y,X$について予測問題は以下のように定義できる
+
+$$\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]f(x)dx$$
+
+  - 一般に以下のように書き換えられる
+
+$$\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]f(x)dx$$$
+
+ただし $\mu(x)=E[Y_i|X_i=x]$
+
+- 上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forest、およびそれらのSuperLearnerを実装する。
+
+## パッケージ & データ
+
+```{r}
+library(tidyverse)
+library(recipes)
+library(mlr3verse) # 機械学習のメタパッケージ
+library(mlr3pipelines) # SuperLearnerを実装する
+library(mlr3tuning)
+library(AER)
+
+data("CPSSW9204")
+
+set.seed(123)
+
+Data <- recipe(earnings~ year + degree + gender + age,
+            CPSSW9204) |> 
+  step_dummy(all_nominal_predictors()) |> 
+  prep() |> 
+  bake(CPSSW9204)
+```
+
+## 推定
+
+### 推定タスクの定義
+
+```{r}
+Task <- as_task_regr(Data, target = "earnings")
+```
+
+### 個別推定方法の定義
+
+```{r}
+MesurementR2 <-  msr("regr.rsq")
+
+ResampleCV <- rsmp("cv")
+
+LearnerLASSO <- lrn("regr.cv_glmnet")
+
+LearnerOLS <- lrn("regr.lm")
+
+LearnerRF <- lrn("regr.ranger")
+
+LearnerTree <- lrn("regr.rpart")
+
+LearnerTree$param_set$values$cp = 0
+LearnerTree$param_set$values$minsplit = 17
+```
+
+#### SuperLearnerの定義
+
+```{r}
+BaseLearner <- list(
+  LearnerOLS,
+  LearnerLASSO,
+  LearnerRF,
+  LearnerTree
+) # 個別推定アルゴリズム
+
+SuperLearner <- lrn("regr.lm",
+                    id = "SuperLearner") # 個別予測をまとめるアルゴリズム
+
+LearnerStack <- pipeline_stacking(BaseLearner, SuperLearner) |> 
+  as_learner()
+```
+
+
+
+### 交差推定
+
+```{r}
+lgr::get_logger("mlr3")$set_threshold("warn")
+
+FitOLS <- resample(Task, LearnerOLS, ResampleCV, store_models = TRUE)
+FitLASSO <- resample(Task, LearnerLASSO, ResampleCV, store_models = TRUE)
+FitRF <- resample(Task, LearnerRF, ResampleCV, store_models = TRUE)
+FitStack <- resample(Task, LearnerStack, ResampleCV, store_models = TRUE)
+```
+
+### ベンチマーク・テスト
+
+```{r}
+design <- benchmark_grid(
+  tasks = Task,
+  learners = list(LearnerOLS,
+                  LearnerLASSO,
+                  LearnerRF,
+                  LearnerTree,
+                  LearnerStack),
+  resamplings = ResampleCV
+)
+
+BenchMark <- benchmark(design)
+
+BenchMark$aggregate(MesurementR2)
+```
+
+
+```{r, eval = FALSE, echo = FALSE}
+LearnerTree <- lrn("regr.rpart")
+
+ParamSpace <- ps(
+  cp = p_dbl(lower = 0, upper = 0.1),
+  minsplit = p_int(lower = 1,upper = 30)
+)
+
+Terminal = trm("evals",
+               n_evals = 100)
+
+
+Tuner <- tnr("grid_search",
+             resolution = 10)
+
+AutoTune <- AutoTuner$new(
+  learner = LearnerTree,
+  resampling = ResampleCV,
+  measure = MesurementR2,
+  search_space = ParamSpace,
+  terminator = Terminal,
+  tuner = Tuner
+)
+
+lgr::get_logger("mlr3")$set_threshold("warn")
+
+AutoTune$train(Task)
+```
+
+

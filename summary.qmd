@@ -1,7 +1,50 @@
-# 記述統計
+# 付録: 記述統計 {#sec-Description}
 
-In summary, this book has no content whatsoever.
+-   関心のあるグループ $(D)$ ごとに記述統計をまとめる
+
+-   [Section -@sec-Table] 記述統計表を作成
+
+-   [Section -@sec-Figure] 変数の分布がバランスしているかどうか、図示する
+
+## パッケージ & データ
 
 ```{r}
-1 + 1
+#| message: false
+#| warning: false
+library(tidyverse)
+library(AER)
+library(cobalt)
+library(gtsummary)
+
+data("CPSSW9204")
 ```
+
+-   [gtsummary](https://www.danieldsjoberg.com/gtsummary/) : 記述統計表作成
+
+-   [cobalt](https://ngreifer.github.io/cobalt/) : 図作成
+
+## 記述統計評 {#sec-Table}
+
+-   $D=degree$ ごとに以下を表示
+
+    -   連続変数については、 "中央値(下位25%, 上位25%)"
+
+    -   カテゴリー変数について、 "サンプルサイズ(割合)"
+
+```{r}
+CPSSW9204 |> 
+  tbl_summary(by = "degree")
+```
+
+## 記述統計評 {#sec-Figure}
+
+-   Yの平均差/Yの標準偏差を報告 (@imbens2015 などで推奨)
+
+```{r}
+bal.tab(degree ~ gender + age + year,
+                CPSSW9204,
+        binary = "std", continuous = "std") |> 
+  plot()
+```
+
+- 女性かつ近年、かつ年齢が若い方が大卒比率が高い

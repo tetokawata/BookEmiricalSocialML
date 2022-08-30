@@ -1,0 +1,160 @@
+# セミパラメトリック推定 {#sec-CausalMachine}
+
+-   @chernozhukov2018 を実装する
+
+## パッケージ & データ
+
+```{r}
+library(tidyverse)
+library(recipes)
+library(mlr3verse)
+library(mlr3pipelines)
+library(AER)
+library(DoubleML)
+
+data("CPSSW9204")
+
+set.seed(123)
+
+Y <- CPSSW9204$earnings
+
+D <- if_else(CPSSW9204$degree == "bachelor",1,0)
+
+X <- recipe(~ year + gender + age,
+            CPSSW9204) |> 
+  step_normalize(all_numeric_predictors()) |> 
+  step_dummy(all_nominal_predictors()) |> 
+  prep() |> 
+  bake(CPSSW9204,
+       composition = "matrix")
+
+Data <-  double_ml_data_from_matrix(X=X, 
+                                        y=Y, 
+                                        d=D)
+```
+
+## 平均効果の推定
+
+### Super Learnerの定義
+
+-   LASSO, OLS, Random ForestからなるSuper Learnerを用いる
+
+```{r}
+RegLASSO <- lrn("regr.cv_glmnet",
+  id = "RegressionLASSO"
+)
+RegOLS <- lrn("regr.lm",
+  id = "RegressionOLS"
+)
+
+RegRF <- lrn("regr.ranger",
+  id = "RegressionRandomForest"
+)
+
+ProbLASSO <- lrn("classif.cv_glmnet",
+  id = "ProbLASSO",
+  predict_type = "prob"
+)
+
+ProbOLS <- lrn("classif.log_reg",
+  id = "ProbLM",
+  predict_type = "prob"
+)
+
+ProbRF <- lrn("classif.ranger",
+  id = "ProbRanger",
+  predict_type = "prob"
+)
+
+RegLearners <- list(
+  RegOLS,
+  RegLASSO,
+  RegRF
+)
+
+ProbLearners <- list(
+  ProbOLS,
+  ProbLASSO,
+  ProbRF
+)
+
+RegSuperLearner <- lrn("regr.lm",
+                    id = "RegressionSuperLearner")
+
+ProbSuperLearner <- lrn("classif.log_reg",
+                    id = "ProbSuperLearner")
+
+
+RegNuisanceLearner <- pipeline_stacking(RegLearners, RegSuperLearner) |> 
+  as_learner()
+
+ProbNuisanceLearner <- pipeline_stacking(ProbLearners, ProbSuperLearner) |> 
+  as_learner()
+```
+
+### Partial Linear Model
+
+-   部分線形モデル [@robinson1988]
+
+```{r}
+lgr::get_logger("mlr3")$set_threshold("warn")
+
+FitPLR = DoubleMLPLR$new(Data, 
+                         ml_l=RegNuisanceLearner, 
+                         ml_m=ProbNuisanceLearner)
+
+FitPLR$fit()
+
+print(FitPLR)
+```
+
+### AIPW
+
+-   AIPW [@robins1995]
+
+```{r}
+lgr::get_logger("mlr3")$set_threshold("warn")
+
+FitAIPW = DoubleMLIRM$new(Data, 
+                         ml_g=RegNuisanceLearner, 
+                         ml_m=ProbNuisanceLearner)
+
+FitAIPW$fit()
+
+print(FitAIPW)
+```
+
+## Best Linear Predictors
+
+```{r}
+TempY <- FitAIPW$psi_b
+
+TempData <- double_ml_data_from_matrix(
+  X = NULL,
+  y = TempY,
+  d = X
+)
+
+lgr::get_logger("mlr3")$set_threshold("warn")
+
+FitBLP = DoubleMLPLR$new(TempData, 
+                         ml_l=lrn("regr.lm"), 
+                         ml_m=lrn("regr.lm"))
+
+FitBLP$fit()
+
+
+FitBLP$bootstrap()
+
+as_tibble(FitBLP$confint(joint = TRUE)) |> 
+  mutate(Name = colnames(X),
+         Point = FitBLP$coef) |> 
+  ggplot(aes(y = Name,
+             x = Point,
+             xmin = `2.5 %`,
+             xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 0) +
+  theme_bw()
+```
+

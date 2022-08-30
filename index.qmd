@@ -14,3 +14,11 @@
 - Example dataとしては、AERパッケージに含まれるNMES1988(the US National Medical Expenditure Survey)を利用
 
 - [Section -@sec-ParameterLinearEstimation] 線形モデルを用いたパラメータ推定
+
+- [Section -@sec-Prediction] 予測モデル推定
+
+- [Section -@sec-CausalMachine] セミパラメトリック推定 $+$ 機械学習 による平均差の推定
+
+- [Section -@sec-Description] Treatmentグループ別の記述統計
+
+- [Section -@sec-PreProcess] recipesパッケージを用いた統合的なデータ整備

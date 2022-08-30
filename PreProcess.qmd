@@ -1,0 +1,37 @@
+# 付録: データ整備 {#sec-PreProcess}
+
+## パッケージ & データ
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(AER)
+library(recipes)
+
+data("CPSSW9204")
+```
+
+-   tidyverse : 個別変数についてのデータ加工関数群を提供
+
+-   [recipes](https://recipes.tidymodels.org/) : 統合的なデータ加工関数を提供
+
+## recipes
+
+```{r}
+X <- recipe(earnings ~ degree + year + gender + age,
+            CPSSW9204) |> # 推定式を定義
+  update_role(degree,
+              new_role = "treatment") |> # degreeをtreatmentに指定
+  step_unknown(all_nominal_predictors()) |> # 非数値変数について、欠損値を"unknown"に変更
+  step_other(all_nominal_predictors()) |> # 非数値変数について、小規模グループを"other"に変更
+  step_dummy(all_nominal_predictors()) |> # 非数値変数をダミー変数に変換
+  step_indicate_na(all_numeric_predictors()) |> # 数値変数について、欠損ダミーを作成
+  step_impute_median(all_numeric_predictors()) |> # 数値変数について、欠損値に中央値を補完
+  step_nzv(all_numeric_predictors()) |> # 数値変数について、 変動が少ない変数を除外
+  step_corr(all_numeric_predictors()) |> # 相関が強い変数を除去
+  prep() |> 
+  bake(CPSSW9204)
+```
+
+

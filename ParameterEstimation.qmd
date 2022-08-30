@@ -21,11 +21,15 @@ $$E[Y|D=d,X=x]=\underbrace{\tau}_{Interest\ parameter}\times d+\underbrace{f(x)}
 #| warning: false
 library(tidyverse)
 library(AER)
-library(estimatr)
-library(MatchIt)
+library(estimatr) # Estimation with robust standard error
+library(MatchIt) # Matching for preprocess
 
 data("CPSSW9204")
 ```
+
+-   [estimatr](https://declaredesign.org/r/estimatr/)
+
+-   [MatchIt](https://kosukeimai.github.io/MatchIt/)
 
 ## パラメータの推定 {#sec-ParameterEstimation}
 
@@ -33,7 +37,7 @@ data("CPSSW9204")
 
 -   サンプル内MSEを最大化するように推定
 
--   robust standard errorを計算するためにestimatrパッケージ[@R-estimatr]を利用
+-   robust standard errorを計算するためにestimatrパッケージを利用
 
 -   lm_robust関数で推定
 
@@ -56,7 +60,7 @@ lm_robust(earnings ~ degree + gender + age + year, # Outcome ~ Treatment + Contr
 
 -   原因変数が完全にランダム化されている場合、因果効果の**識別**を目的に回帰分析を応用する必要はない
 
--   因果効果の**推定**の改善、効率性向上、を目的として線形モデルの利用は議論されてきた。
+-   因果効果の**推定**の改善、効率性向上、を目的とした線形モデルの利用は議論されてきた
 
 -   @lin2013 は、以下のような交差項を導入したモデルを用いることで、平均の差の推定に比べて、漸近的効率性が悪化することはない（同等か改善する）ことを示した
 
@@ -76,15 +80,15 @@ lm_lin(earnings ~ degree, # Outcome ~ Treatment
 
 -   回帰を行う事前準備としてマッチング法を利用する
 
-    -   重回帰が持つ関数形への依存度を減らせる [@ho2007matching]
+    -   重回帰が持つ関数形への依存度を減らせる [@ho2007]
 
-    -   MathItパッケージ [@MatchIt2011]を利用
+    -   MathItパッケージを利用
 
 -   多数のマッチング法が実装されている
 
-### Exact matching
+### Coarsened exact matching
 
--   Coarsened exact matching[@iacus2012causal]の実装
+-   Coarsened exact matching [@iacus2012]の実装
 
     -   連続変数をカテゴリー変数化することで、マッチングできるサンプルサイズを増やすことが期待できる
 
@@ -150,7 +154,7 @@ $$p_d(X)\equiv \Pr[D=d|X]$$
 
 -   未知の場合、データから推定する必要がある
 
--   推定された傾向スコアを用いたStratification マッチング
+-   推定された傾向スコアを用いたStratification マッチング [@imbens2015 の推奨]
 
     -　ロジットにて傾向スコアを推定
 
