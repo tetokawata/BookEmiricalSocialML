@@ -220,12 +220,13 @@ div.csl-indent {
    
   <ul>
   <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link active" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">4.1</span> パッケージ &amp; データ</a></li>
-  <li><a href="#推定" id="toc-推定" class="nav-link" data-scroll-target="#推定"> <span class="header-section-number">4.2</span> 推定</a>
+  <li><a href="#平均効果の推定" id="toc-平均効果の推定" class="nav-link" data-scroll-target="#平均効果の推定"> <span class="header-section-number">4.2</span> 平均効果の推定</a>
   <ul class="collapse">
-  <li><a href="#outcome-model" id="toc-outcome-model" class="nav-link" data-scroll-target="#outcome-model"> <span class="header-section-number">4.2.1</span> Outcome Model</a></li>
+  <li><a href="#super-learnerの定義" id="toc-super-learnerの定義" class="nav-link" data-scroll-target="#super-learnerの定義"> <span class="header-section-number">4.2.1</span> Super Learnerの定義</a></li>
+  <li><a href="#partial-linear-model" id="toc-partial-linear-model" class="nav-link" data-scroll-target="#partial-linear-model"> <span class="header-section-number">4.2.2</span> Partial Linear Model</a></li>
+  <li><a href="#aipw" id="toc-aipw" class="nav-link" data-scroll-target="#aipw"> <span class="header-section-number">4.2.3</span> AIPW</a></li>
   </ul></li>
-  <li><a href="#partial-linear-model" id="toc-partial-linear-model" class="nav-link" data-scroll-target="#partial-linear-model"> <span class="header-section-number">4.3</span> Partial Linear Model</a></li>
-  <li><a href="#aipw" id="toc-aipw" class="nav-link" data-scroll-target="#aipw"> <span class="header-section-number">4.4</span> AIPW</a></li>
+  <li><a href="#best-linear-predictors" id="toc-best-linear-predictors" class="nav-link" data-scroll-target="#best-linear-predictors"> <span class="header-section-number">4.3</span> Best Linear Predictors</a></li>
   </ul>
 </nav>
     </div>
@@ -271,20 +272,24 @@ div.csl-indent {
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="sc">~</span> year <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>            CPSSW9204) <span class="sc">|&gt;</span> </span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204,</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">composition =</span> <span class="st">"matrix"</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>Data <span class="ot">&lt;-</span>  <span class="fu">double_ml_data_from_matrix</span>(<span class="at">X=</span>X, </span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">y=</span>Y, </span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">d=</span>D)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">composition =</span> <span class="st">"matrix"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>Data <span class="ot">&lt;-</span>  <span class="fu">double_ml_data_from_matrix</span>(<span class="at">X=</span>X, </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">y=</span>Y, </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">d=</span>D)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="推定" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="推定"><span class="header-section-number">4.2</span> 推定</h2>
-<section id="outcome-model" class="level3" data-number="4.2.1">
-<h3 data-number="4.2.1" class="anchored" data-anchor-id="outcome-model"><span class="header-section-number">4.2.1</span> Outcome Model</h3>
+<section id="平均効果の推定" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="平均効果の推定"><span class="header-section-number">4.2</span> 平均効果の推定</h2>
+<section id="super-learnerの定義" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="super-learnerの定義"><span class="header-section-number">4.2.1</span> Super Learnerの定義</h3>
+<ul>
+<li>LASSO, OLS, Random ForestからなるSuper Learnerを用いる</li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>RegLASSO <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.cv_glmnet"</span>,</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"RegressionLASSO"</span></span>
@@ -338,9 +343,11 @@ div.csl-indent {
 <span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-</section>
-<section id="partial-linear-model" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="partial-linear-model"><span class="header-section-number">4.3</span> Partial Linear Model</h2>
+<section id="partial-linear-model" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="partial-linear-model"><span class="header-section-number">4.2.2</span> Partial Linear Model</h3>
+<ul>
+<li>部分線形モデル <span class="citation" data-cites="robinson1988">(<a href="references.html#ref-robinson1988" role="doc-biblioref">Robinson 1988</a>)</span></li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -378,14 +385,17 @@ Apply cross-fitting: TRUE
 ------------------ Fit summary       ------------------
  Estimates and significance testing of the effect of target variables
   Estimate. Std. Error t value Pr(&gt;|t|)    
-d    5.6527     0.1143   49.47   &lt;2e-16 ***
+d    5.6472     0.1142   49.44   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="aipw" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="aipw"><span class="header-section-number">4.4</span> AIPW</h2>
+<section id="aipw" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="aipw"><span class="header-section-number">4.2.3</span> AIPW</h3>
+<ul>
+<li>AIPW <span class="citation" data-cites="robins1995">(<a href="references.html#ref-robins1995" role="doc-biblioref">Robins and Rotnitzky 1995</a>)</span></li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -428,11 +438,55 @@ d    5.6285     0.1136   49.54   &lt;2e-16 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="best-linear-predictors" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="best-linear-predictors"><span class="header-section-number">4.3</span> Best Linear Predictors</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>TempY <span class="ot">&lt;-</span> FitAIPW<span class="sc">$</span>psi_b</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>TempData <span class="ot">&lt;-</span> <span class="fu">double_ml_data_from_matrix</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> TempY,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> X</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>FitBLP <span class="ot">=</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(TempData, </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_l=</span><span class="fu">lrn</span>(<span class="st">"regr.lm"</span>), </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_m=</span><span class="fu">lrn</span>(<span class="st">"regr.lm"</span>))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>FitBLP<span class="sc">$</span><span class="fu">fit</span>()</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>FitBLP<span class="sc">$</span><span class="fu">bootstrap</span>()</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(FitBLP<span class="sc">$</span><span class="fu">confint</span>(<span class="at">joint =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Name =</span> <span class="fu">colnames</span>(X),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">Point =</span> FitBLP<span class="sc">$</span>coef) <span class="sc">|&gt;</span> </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> Name,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> Point,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmin =</span> <span class="st">`</span><span class="at">2.5 %</span><span class="st">`</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmax =</span> <span class="st">`</span><span class="at">97.5 %</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="CausalMachineLearning_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
 <div id="ref-chernozhukov2018" class="csl-entry" role="doc-biblioentry">
 Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“Double/Debiased Machine Learning for Treatment and Structural Parameters.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
+</div>
+<div id="ref-robins1995" class="csl-entry" role="doc-biblioentry">
+Robins, James M., and Andrea Rotnitzky. 1995. <span>“Semiparametric Efficiency in Multivariate Regression Models with Missing Data.”</span> <em>Journal of the American Statistical Association</em> 90 (429): 122129. <a href="https://doi.org/10.1080/01621459.1995.10476494">https://doi.org/10.1080/01621459.1995.10476494</a>.
+</div>
+<div id="ref-robinson1988" class="csl-entry" role="doc-biblioentry">
+Robinson, P. M. 1988. <span>“Root-n-Consistent Semiparametric Regression.”</span> <em>Econometrica</em> 56 (4): 931–54. <a href="https://doi.org/10.2307/1912705">https://doi.org/10.2307/1912705</a>.
 </div>
 </div>
 </section>
