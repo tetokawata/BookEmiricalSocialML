@@ -2,14 +2,17 @@ project:
   type: book
 
 book:
-  title: "Rによる比較・因果推論・予測研究"
+  title: "Rによる比較・因果推論・予測研究 (ver 0.01)"
   author: "川田恵介"
   date: "8/15/2022"
   chapters:
     - index.qmd
     - intro.qmd
     - ParameterEstimation.qmd
+    - Prediction.qmd
+    - CausalMachineLearning.qmd
     - summary.qmd
+    - PreProcess.qmd
     - references.qmd
 
 execute:

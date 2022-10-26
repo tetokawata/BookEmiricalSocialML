@@ -2,47 +2,66 @@
 
 -   @chernozhukov2018 を実装する
 
-## パッケージ & データ
+## 設定
 
-```{r}
+::: {.panel-tabset}
+
+### R
+
+```{r SetUpR}
 library(tidyverse)
 library(recipes)
 library(mlr3verse)
 library(mlr3pipelines)
-library(AER)
+library(data.table)
 library(DoubleML)
 
-data("CPSSW9204")
+Data_R <- fread("ExampleData/Example.csv")
 
-set.seed(123)
-
-Y <- CPSSW9204$earnings
-
-D <- if_else(CPSSW9204$degree == "bachelor",1,0)
-
-X <- recipe(~ year + gender + age,
-            CPSSW9204) |> 
-  step_normalize(all_numeric_predictors()) |> 
-  step_dummy(all_nominal_predictors()) |> 
-  prep() |> 
-  bake(CPSSW9204,
-       composition = "matrix")
-
-Data <-  double_ml_data_from_matrix(X=X, 
-                                        y=Y, 
-                                        d=D)
+Task_R <- double_ml_data_from_data_frame(Data_R,
+                                         x_cols = c("TradeQ", "Size", "BuildYear", "Distance"),
+                                         y_col = c("Price"),
+                                         d_cols = c("Reform"))
 ```
 
-## 平均効果の推定
+### Python
 
-### Super Learnerの定義
+```{python SetUpPython}
+import pandas as pd
+import numpy as np
+from sklearn.base import clone
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import StackingRegressor
+from doubleml import DoubleMLData
+from doubleml import DoubleMLPLR
+from doubleml import DoubleMLIRM
 
--   LASSO, OLS, Random ForestからなるSuper Learnerを用いる
+Data_Python = pd.read_csv('ExampleData/Example.csv')
 
-```{r}
-RegLASSO <- lrn("regr.cv_glmnet",
-  id = "RegressionLASSO"
-)
+Task_Python = DoubleMLData(Data_Python, 
+                          y_col = 'Price',
+                          d_cols = 'Reform',
+                          x_cols = ['TradeQ',"Size","Distance","BuildYear"])
+```
+
+
+:::
+
+## 平均効果の推定: Partial Linear Model
+
+- 部分線形モデル [@robinson1988]
+
+- RandomForestとOLSのStackingを用いる
+
+    - Pythonについて、現状、RandomForestのみ
+
+::: {.panel-tabset}
+
+### R
+
+```{r PLRegressR}
 RegOLS <- lrn("regr.lm",
   id = "RegressionOLS"
 )
@@ -51,11 +70,54 @@ RegRF <- lrn("regr.ranger",
   id = "RegressionRandomForest"
 )
 
-ProbLASSO <- lrn("classif.cv_glmnet",
-  id = "ProbLASSO",
-  predict_type = "prob"
+RegLearners <- list(
+  RegOLS,
+  RegRF
 )
 
+RegSuperLearner <- lrn("regr.lm",
+                    id = "RegressionSuperLearner")
+
+RegNuisanceLearner <- 
+  pipeline_stacking(RegLearners, RegSuperLearner) |> 
+  as_learner()
+
+lgr::get_logger("mlr3")$set_threshold("warn")
+
+FitPLR_R <- DoubleMLPLR$new(Task_R,
+                            ml_l=RegNuisanceLearner$clone(), 
+                            ml_m=RegNuisanceLearner$clone(),
+                            n_folds = 2)
+
+FitPLR_R$fit()
+
+print(FitPLR_R)
+```
+
+### Python
+
+```{python PLRegressPython}
+FitPLR_Python = DoubleMLPLR(Task_Python,
+                            RandomForestRegressor(n_estimators = 500),
+                            RandomForestRegressor(n_estimators = 500),
+                            n_folds = 2)
+
+FitPLR_Python.fit()
+
+print(FitPLR_Python)
+```
+
+:::
+
+## 平均効果の推定: AIPW
+
+-   AIPW [@robins1995]
+
+::: {.panel-tabset}
+
+### R
+
+```{r AIPWeightR}
 ProbOLS <- lrn("classif.log_reg",
   id = "ProbLM",
   predict_type = "prob"
@@ -66,95 +128,39 @@ ProbRF <- lrn("classif.ranger",
   predict_type = "prob"
 )
 
-RegLearners <- list(
-  RegOLS,
-  RegLASSO,
-  RegRF
-)
-
-ProbLearners <- list(
-  ProbOLS,
-  ProbLASSO,
-  ProbRF
-)
-
-RegSuperLearner <- lrn("regr.lm",
-                    id = "RegressionSuperLearner")
+ProbLearners <- list(ProbOLS,ProbRF)
 
 ProbSuperLearner <- lrn("classif.log_reg",
                     id = "ProbSuperLearner")
 
-
-RegNuisanceLearner <- pipeline_stacking(RegLearners, RegSuperLearner) |> 
-  as_learner()
-
 ProbNuisanceLearner <- pipeline_stacking(ProbLearners, ProbSuperLearner) |> 
   as_learner()
-```
-
-### Partial Linear Model
-
--   部分線形モデル [@robinson1988]
-
-```{r}
-lgr::get_logger("mlr3")$set_threshold("warn")
-
-FitPLR = DoubleMLPLR$new(Data, 
-                         ml_l=RegNuisanceLearner, 
-                         ml_m=ProbNuisanceLearner)
-
-FitPLR$fit()
-
-print(FitPLR)
-```
-
-### AIPW
-
--   AIPW [@robins1995]
-
-```{r}
-lgr::get_logger("mlr3")$set_threshold("warn")
-
-FitAIPW = DoubleMLIRM$new(Data, 
-                         ml_g=RegNuisanceLearner, 
-                         ml_m=ProbNuisanceLearner)
-
-FitAIPW$fit()
-
-print(FitAIPW)
-```
-
-## Best Linear Predictors
-
-```{r}
-TempY <- FitAIPW$psi_b
-
-TempData <- double_ml_data_from_matrix(
-  X = NULL,
-  y = TempY,
-  d = X
-)
 
 lgr::get_logger("mlr3")$set_threshold("warn")
 
-FitBLP = DoubleMLPLR$new(TempData, 
-                         ml_l=lrn("regr.lm"), 
-                         ml_m=lrn("regr.lm"))
+FitAIPW_R = DoubleMLIRM$new(Task_R,
+                            ml_g=RegNuisanceLearner, 
+                            ml_m=ProbNuisanceLearner,
+                            n_folds = 2,
+                            trimming_threshold = 0.1)
 
-FitBLP$fit()
+FitAIPW_R$fit()
 
-
-FitBLP$bootstrap()
-
-as_tibble(FitBLP$confint(joint = TRUE)) |> 
-  mutate(Name = colnames(X),
-         Point = FitBLP$coef) |> 
-  ggplot(aes(y = Name,
-             x = Point,
-             xmin = `2.5 %`,
-             xmax = `97.5 %`)) +
-  geom_pointrange() +
-  geom_vline(xintercept = 0) +
-  theme_bw()
+print(FitAIPW_R)
 ```
 
+### Python
+
+```{python AIPWeightPython}
+FitAIPW_Python = DoubleMLIRM(Task_Python,
+                            RandomForestRegressor(n_estimators = 500),
+                            RandomForestClassifier(n_estimators = 500),
+                            n_folds = 2,
+                            trimming_threshold = 0.1)
+  
+FitAIPW_Python.fit()
+
+FitAIPW_Python.summary
+```
+
+:::

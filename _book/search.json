@@ -2,29 +2,169 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Rによる比較・因果推論・予測研究",
+    "title": "Rによる比較・因果推論・予測研究 (ver 0.01)",
     "section": "",
-    "text": "定量的な比較、（反実仮想）因果推定、予測分析をRによって行う方法を紹介\n経済学におけるデータ分析の大部分は、複数の変数間での関係性の理解・利用を目的としている。 本ページでは、ある結果変数\\(Y\\)と独立変数（群）\\(X=X_1,...,X_L\\)の関係性に焦点を当てる。 また\\(Y\\)と\\(X\\)がともに観察でき、関心のある母集団からランダムサンプリングされたデータが入手出来ている。\n具体的な分析目標を大きく（予測）\\(Y\\)の予測関数の推定、（比較）異なる\\(X\\)間での\\(Y\\)の比較、（因果効果）\\(X\\)の変化が\\(Y\\)に与える因果効果の推定、に大別し、それぞれについて簡単な説明とRのサンプルコードの提供\nデータインポート、整理、可視化を行う関数群を統合的に提供するtidyverseパッケージの利用\nExample dataとしては、AERパッケージに含まれるNMES1988(the US National Medical Expenditure Survey)を利用"
+    "text": "定量的な比較、（反実仮想）因果推定、予測分析をRによって行う方法を紹介\n経済学におけるデータ分析の大部分は、複数の変数間での関係性の理解・利用を目的としている。 本ページでは、ある結果変数\\(Y\\)と独立変数（群）\\(X=X_1,...,X_L\\)の関係性に焦点を当てる。 また\\(Y\\)と\\(X\\)がともに観察でき、関心のある母集団からランダムサンプリングされたデータが入手出来ている。\n具体的な分析目標を大きく（予測）\\(Y\\)の予測関数の推定、（比較）異なる\\(X\\)間での\\(Y\\)の比較、（因果効果）\\(X\\)の変化が\\(Y\\)に与える因果効果の推定、に大別し、それぞれについて簡単な説明とRのサンプルコードの提供\nデータインポート、整理、可視化を行う関数群を統合的に提供するtidyverseパッケージの利用\nExample dataとしては、AERパッケージに含まれるNMES1988(the US National Medical Expenditure Survey)を利用\nSection 2 線形モデルを用いたパラメータ推定\nSection 3 予測モデル推定\nSection 4 セミパラメトリック推定 \\(+\\) 機械学習 による平均差の推定\nSection 5 Treatmentグループ別の記述統計\nSection 6 recipesパッケージを用いた統合的なデータ整備"
   },
   {
     "objectID": "intro.html",
     "href": "intro.html",
-    "title": "1  Introduction",
+    "title": "1  準備",
     "section": "",
-    "text": "See Knuth (1984) for additional discussion of literate programming.\n\n1 + 1\n\n[1] 2\n\n\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+    "text": "本ページでは、tidyverseパッケージの利用を前提とし、pipe演算子を用いたコード例を示す"
+  },
+  {
+    "objectID": "intro.html#tidyverse",
+    "href": "intro.html#tidyverse",
+    "title": "1  準備",
+    "section": "1.1 tidyverse",
+    "text": "1.1 tidyverse\n\nデータ整備・可視化等の関数群を提供する（メタ）パッケージ\n\n公式ページ"
+  },
+  {
+    "objectID": "intro.html#nativeなpipe演算子",
+    "href": "intro.html#nativeなpipe演算子",
+    "title": "1  準備",
+    "section": "1.2 nativeなpipe演算子",
+    "text": "1.2 nativeなpipe演算子\n\nR version 4.1からpipe演算子が、追加パッケージなしで利用可能になった\n\nTools -> Global option -> Code -> “Use native pipe operator” をチェックする\nCtr + Shift + mがショートカット\n現状、magrittrパッケージが提供するpipe (%>%)に比べて、機能が限定されている\n\npipe演算子：二つの入力X1,X2から出力Yを得る関数fについて、pipe演算子を用いると、Y <- X1 |> f(X2)と書き換えられる\npipe演算子を使わない場合、ある出力結果を入力として用いるためには、複数のobjectを作成する必要があり煩雑\n\n\nn <- rnorm(100) # 標準正規分布から100個値を取得し、nと名付ける\n\nhist(n)　# nを用いてヒストグラムを描画\n\n\n\n\n\npipe演算子を使うと以下のようになる\n\n\nrnorm(100) |> \n  hist()"
+  },
+  {
+    "objectID": "ParameterEstimation.html",
+    "href": "ParameterEstimation.html",
+    "title": "2  線形モデルによるパラメータの推定",
+    "section": "",
+    "text": "関心のあるパラメータ\\(\\tau(X)=E[Y|d,X]-E[Y|d',X]\\)を埋め込んだ線形モデルを推定する。\n\n典型的には、\\(E[Y|D,X]\\)を線形近似し、推定する。\n\\[E[Y|D=d,X=x]=\\underbrace{\\tau}_{Interest\\ parameter}\\times d+\\underbrace{f(x)}_{Nuisance\\ function}\\] - \\(f(X)=\\beta_0 + \\beta_1 X_1 + ...+\\beta_LX_L\\)"
+  },
+  {
+    "objectID": "ParameterEstimation.html#パッケージ-データ",
+    "href": "ParameterEstimation.html#パッケージ-データ",
+    "title": "2  線形モデルによるパラメータの推定",
+    "section": "2.1 パッケージ & データ",
+    "text": "2.1 パッケージ & データ\n\nlibrary(tidyverse)\nlibrary(AER)\nlibrary(estimatr) # Estimation with robust standard error\nlibrary(MatchIt) # Matching for preprocess\n\ndata(\"CPSSW9204\")\n\n\nestimatr\nMatchIt"
+  },
+  {
+    "objectID": "ParameterEstimation.html#sec-ParameterEstimation",
+    "href": "ParameterEstimation.html#sec-ParameterEstimation",
+    "title": "2  線形モデルによるパラメータの推定",
+    "section": "2.2 パラメータの推定",
+    "text": "2.2 パラメータの推定\n\n\\(\\tau(x)=\\tau,f(x)=\\beta_0+\\beta_1x_1+...+\\beta_Lx_L\\)と特定化\nサンプル内MSEを最大化するように推定\nrobust standard errorを計算するためにestimatrパッケージを利用\nlm_robust関数で推定\n\n\nlm_robust(earnings ~ degree + gender + age + year, # Outcome ~ Treatment + Controls\n          data = CPSSW9204)\n\n                 Estimate Std. Error    t value      Pr(>|t|)   CI Lower\n(Intercept)    -1.3734240 0.56012981  -2.451974  1.421837e-02 -2.4713435\ndegreebachelor  5.6693812 0.11409767  49.688844  0.000000e+00  5.4457365\ngenderfemale   -2.5584302 0.10555849 -24.237085 2.042463e-127 -2.7653371\nage             0.3999398 0.01870067  21.386388 4.880841e-100  0.3632843\nyear2004        4.7218644 0.10448036  45.193798  0.000000e+00  4.5170708\n                 CI Upper    DF\n(Intercept)    -0.2755044 15583\ndegreebachelor  5.8930259 15583\ngenderfemale   -2.3515232 15583\nage             0.4365953 15583\nyear2004        4.9266581 15583\n\n\n\n線形モデルによる推定は、いくつかの問題がある\n\n異なるグループ間で、\\(X\\)の分布が異なる場合、回帰式の定式化に強く依存する\n一般に平均効果ではなく、加重平均が推計される\nサンプルサイズに比べて、少数のコントロール変数を導入できない\n\n以下ではマッチング法、機械学手法を用いた頑強な推定を目指す\n\n\n2.2.1 RCTデータへの応用\n\n原因変数が完全にランダム化されている場合、因果効果の識別を目的に回帰分析を応用する必要はない\n因果効果の推定の改善、効率性向上、を目的とした線形モデルの利用は議論されてきた\nLin (2013) は、以下のような交差項を導入したモデルを用いることで、平均の差の推定に比べて、漸近的効率性が悪化することはない（同等か改善する）ことを示した\n\n\\[E[Y|D,X]=\\beta_{D}\\times D+\\beta_1\\times X_1+...+\\beta_L\\times X_L\\]\n\\[+\\underbrace{\\beta_{1D}\\times D\\times X_1+...+\\beta_{LD}\\times D\\times X_L}_{交差項}\\]\n\nlm_lin関数で推定可能\n\n\nlm_lin(earnings ~ degree, # Outcome ~ Treatment\n       ~ gender + age + year, # ~ Controls\n       data = CPSSW9204)\n\n                                Estimate Std. Error     t value      Pr(>|t|)\n(Intercept)                   11.8445518 0.05886786 201.2057631  0.000000e+00\ndegreebachelor                 5.6534529 0.11317582  49.9528355  0.000000e+00\ngenderfemale_c                -2.5004885 0.11301520 -22.1252401 7.932323e-107\nage_c                          0.2554277 0.02057814  12.4125730  3.276989e-35\nyear2004_c                     3.7186028 0.11834727  31.4211113 3.546993e-210\ndegreebachelor:genderfemale_c -0.1059052 0.22219513  -0.4766317  6.336311e-01\ndegreebachelor:age_c           0.3271382 0.03945813   8.2907675  1.216210e-16\ndegreebachelor:year2004_c      2.3273241 0.22003125  10.5772436  4.657042e-26\n                                CI Lower   CI Upper    DF\n(Intercept)                   11.7291640 11.9599396 15580\ndegreebachelor                 5.4316151  5.8752907 15580\ngenderfemale_c                -2.7220114 -2.2789655 15580\nage_c                          0.2150921  0.2957633 15580\nyear2004_c                     3.4866284  3.9505772 15580\ndegreebachelor:genderfemale_c -0.5414335  0.3296230 15580\ndegreebachelor:age_c           0.2497957  0.4044807 15580\ndegreebachelor:year2004_c      1.8960373  2.7586110 15580"
+  },
+  {
+    "objectID": "ParameterEstimation.html#sec-Matching",
+    "href": "ParameterEstimation.html#sec-Matching",
+    "title": "2  線形モデルによるパラメータの推定",
+    "section": "2.3 マッチング法による修正",
+    "text": "2.3 マッチング法による修正\n\n回帰を行う事前準備としてマッチング法を利用する\n\n重回帰が持つ関数形への依存度を減らせる (Ho et al. 2007)\nMathItパッケージを利用\n\n多数のマッチング法が実装されている\n\n\n2.3.1 Coarsened exact matching\n\nCoarsened exact matching (Iacus, King, and Porro 2012)の実装\n\n連続変数をカテゴリー変数化することで、マッチングできるサンプルサイズを増やすことが期待できる\n\n\n\nfit.m <- matchit(degree ~ gender + age + year,\n                 data = CPSSW9204,\n                 method = \"CEM\"\n                 )\n\n\nマッチング結果の表示\n\n\nfit.m\n\nA matchit object\n - method: Coarsened exact matching\n - number of obs.: 15588 (original), 15588 (matched)\n - target estimand: ATT\n - covariates: gender, age, year\n\n\n\nSample sizesにて、マッチングできなかったサンプル数（985のコントロールグループ中、667サンプルがマッチングできなかった）が確認できる\nマッチング結果の図示\n\n\nfit.m |> \n  summary() |> \n  plot(abs = FALSE)\n\n\n\n\n\nマッチング結果を変数として含んだデータを作成\n\n\ndf <- match.data(fit.m)\n\n\n“subclass”: マッチングしたグループ\n“weights”：マッチング後の推計に用いるウェイト\nマッチングしたデータを用いた推定\n\n新たに作成されるweight (defaltではweights)を用いた、加重推定で実装\n\n\n\nlm_robust(earnings ~ degree + gender + age + year,\n          df,\n          weights = weights,\n          clusters = subclass)\n\n                 Estimate Std. Error     t value     Pr(>|t|)   CI Lower\n(Intercept)    -0.9406001 1.06964454  -0.8793577 3.900258e-01 -3.1770482\ndegreebachelor  5.6973701 0.29536430  19.2892987 8.424314e-21  5.0987422\ngenderfemale   -2.5534913 0.19585455 -13.0376918 1.521310e-14 -2.9520114\nage             0.3855614 0.03430666  11.2386741 8.520762e-10  0.3137177\nyear2004        4.6549789 0.18737754  24.8427793 1.299149e-23  4.2743968\n                 CI Upper       DF\n(Intercept)     1.2958479 19.29879\ndegreebachelor  6.2959981 36.70388\ngenderfemale   -2.1549711 32.88904\nage             0.4574051 18.84870\nyear2004        5.0355610 34.52932\n\n\n\n\n2.3.2 Propensity score with subclassification\n\nCoarsened exact matchingでもマッチングできないサンプルが多数出てくる可能性\n\nとくに\\(X\\)が大量にある場合\n\n1次元の距離指標を用いて、マッチングを行う\n\n距離指標としては、Mahalanobis’ Distance、Propensity scoreなど\n\nここではPropensity score \\(p_d(X)\\)を用いる\n\n\\[p_d(X)\\equiv \\Pr[D=d|X]\\]\n\n属性\\(X\\)のユニットの中で、原因変数の値が\\(d\\)である人の割合\n未知の場合、データから推定する必要がある\n推定された傾向スコアを用いたStratification マッチング (Imbens 2015 の推奨)\n-　ロジットにて傾向スコアを推定\n\n\nfit.m <- matchit(degree ~ gender + age + year,\n                 data = CPSSW9204,\n                 method = \"subclass\",\n                 estimand = \"ATE\"\n                 )\n\n\nマッチング結果\n\n\nsummary(fit.m)\n\n\nCall:\nmatchit(formula = degree ~ gender + age + year, data = CPSSW9204, \n    method = \"subclass\", estimand = \"ATE\")\n\nSummary of Balance for All Data:\n             Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean\ndistance            0.4310        0.4180          0.2320     1.1147    0.0648\ngendermale          0.5291        0.6167         -0.1779          .    0.0877\ngenderfemale        0.4709        0.3833          0.1779          .    0.0877\nage                29.6460       29.7982         -0.0534     1.0019    0.0152\nyear1992            0.4487        0.5164         -0.1358          .    0.0677\nyear2004            0.5513        0.4836          0.1358          .    0.0677\n             eCDF Max\ndistance       0.1109\ngendermale     0.0877\ngenderfemale   0.0877\nage            0.0288\nyear1992       0.0677\nyear2004       0.0677\n\nSummary of Balance Across Subclasses\n             Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean\ndistance            0.4239        0.4232          0.0118     1.0127    0.0041\ngendermale          0.5787        0.5812         -0.0050          .    0.0025\ngenderfemale        0.4213        0.4188          0.0050          .    0.0025\nage                29.7479       29.7332          0.0052     0.9890    0.0035\nyear1992            0.4828        0.4902         -0.0148          .    0.0074\nyear2004            0.5172        0.5098          0.0148          .    0.0074\n             eCDF Max\ndistance       0.0130\ngendermale     0.0025\ngenderfemale   0.0025\nage            0.0079\nyear1992       0.0074\nyear2004       0.0074\n\nSample Sizes:\n              Control Treated\nAll           8986.   6602.  \nMatched (ESS) 8881.41 6483.64\nMatched       8986.   6602.  \nUnmatched        0.      0.  \nDiscarded        0.      0.  \n\n\n\nマッチング結果の図示\n\n\nfit.m |> \n  summary() |> \n  plot(abs = FALSE)\n\n\n\n\n\nマッチングしたデータを用いた推定\n\n\nlm_robust(earnings ~ degree + gender + age + year,\n          df,\n          weights = weights,\n          clusters = subclass)\n\n                 Estimate Std. Error     t value     Pr(>|t|)   CI Lower\n(Intercept)    -0.9406001 1.06964454  -0.8793577 3.900258e-01 -3.1770482\ndegreebachelor  5.6973701 0.29536430  19.2892987 8.424314e-21  5.0987422\ngenderfemale   -2.5534913 0.19585455 -13.0376918 1.521310e-14 -2.9520114\nage             0.3855614 0.03430666  11.2386741 8.520762e-10  0.3137177\nyear2004        4.6549789 0.18737754  24.8427793 1.299149e-23  4.2743968\n                 CI Upper       DF\n(Intercept)     1.2958479 19.29879\ndegreebachelor  6.2959981 36.70388\ngenderfemale   -2.1549711 32.88904\nage             0.4574051 18.84870\nyear2004        5.0355610 34.52932"
+  },
+  {
+    "objectID": "ParameterEstimation.html#sec-Appendix",
+    "href": "ParameterEstimation.html#sec-Appendix",
+    "title": "2  線形モデルによるパラメータの推定",
+    "section": "2.4 付録：推定結果の保存と表示",
+    "text": "2.4 付録：推定結果の保存と表示\n\n2.4.1 Dot-and-Whisker plotによる可視化\n\nDot-and-Whisker図により点推定量と信頼区間を可視化\n\n\nfit.m <- matchit(degree ~ gender + age + year,\n                 data = CPSSW9204,\n                 method = \"CEM\"\n                 )\n\ndf <- match.data(fit.m)\n\nResult1 <- lm_robust(earnings ~ degree + gender + age + year,\n            data = df) |> \n  tidy() |> \n  filter(term == \"degreebachelor\"\n         ) |> \n  mutate(Method = \"OLS\")\n\nResult1 |> \n  ggplot(aes(y = term,\n             x = estimate,\n             xmin = conf.low,\n             xmax = conf.high)\n         ) +\n  geom_pointrange() +\n  geom_vline(xintercept = 0) +\n  theme_bw()\n\n\n\n\n\nResult2 <- lm_robust(earnings ~ degree + gender + age,\n            data = df,\n            weights = weights,\n            clusters = subclass) |> \n  tidy() |> \n  filter(term == \"degreebachelor\"\n         ) |> \n  mutate(Method = \"Matching + OLS\")\n\nResult1 |> \n  bind_rows(Result2) |> \n  ggplot(aes(y = Method,\n             x = estimate,\n             xmin = conf.low,\n             xmax = conf.high)\n         ) +\n  geom_pointrange() +\n  geom_vline(xintercept = 0) +\n  theme_bw()\n\n\n\n\n\n\n\n\nHo, Daniel E., Kosuke Imai, Gary King, and Elizabeth A. Stuart. 2007. “Matching as Nonparametric Preprocessing for Reducing Model Dependence in Parametric Causal Inference.” Political Analysis 15 (3): 199–236. https://doi.org/10.1093/pan/mpl013.\n\n\nIacus, Stefano M., Gary King, and Giuseppe Porro. 2012. “Causal Inference Without Balance Checking: Coarsened Exact Matching.” Political Analysis 20 (1): 1–24. https://doi.org/10.1093/pan/mpr013.\n\n\nImbens, Guido W. 2015. “Matching Methods in Practice: Three Examples.” The Journal of Human Resources 50 (2): 373–419. https://www.jstor.org/stable/24735990.\n\n\nLin, Winston. 2013. “Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining Freedman’s Critique.” The Annals of Applied Statistics 7 (1): 295–318. https://doi.org/10.1214/12-AOAS583."
+  },
+  {
+    "objectID": "Prediction.html",
+    "href": "Prediction.html",
+    "title": "3  予測",
+    "section": "",
+    "text": "データと同じ母集団から新しくランダムサンプリングされ、\\(X\\)のみが観察できるサンプルについて\\(Y\\)の値を予測する。\n\nデータ分割を用いたモデル評価を行う"
+  },
+  {
+    "objectID": "Prediction.html#問題設定",
+    "href": "Prediction.html#問題設定",
+    "title": "3  予測",
+    "section": "3.1 問題設定",
+    "text": "3.1 問題設定\n\n事前に定義する損失関数の期待値を最小化するような、予測関数\\(f(X)\\)の推定を目指す。\n\n以下ではMean squared error(MSE)を損失関数として用いる。確率変数\\(Y,X\\)について予測問題は以下のように定義できる\n\n\n\\[\\min_{f(X)}MSE = \\int_{x}E[(Y_i-f(x))^2|X_i=x]f(x)dx\\]\n\n一般に以下のように書き換えられる\n\n\\[\\min_{f(X_i)} \\int_{x}E[(\\mu(x)-f(x))^2|X_i=x]f(x)dx\\]$\nただし \\(\\mu(x)=E[Y_i|X_i=x]\\)\n\n上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forest、およびそれらのSuperLearnerを実装する。"
+  },
+  {
+    "objectID": "Prediction.html#パッケージ-データ",
+    "href": "Prediction.html#パッケージ-データ",
+    "title": "3  予測",
+    "section": "3.2 パッケージ & データ",
+    "text": "3.2 パッケージ & データ\n\nlibrary(tidyverse)\nlibrary(recipes)\nlibrary(mlr3verse) # 機械学習のメタパッケージ\nlibrary(mlr3pipelines) # SuperLearnerを実装する\nlibrary(mlr3tuning)\nlibrary(AER)\n\ndata(\"CPSSW9204\")\n\nset.seed(123)\n\nData <- recipe(earnings~ year + degree + gender + age,\n            CPSSW9204) |> \n  step_dummy(all_nominal_predictors()) |> \n  prep() |> \n  bake(CPSSW9204)"
+  },
+  {
+    "objectID": "Prediction.html#推定",
+    "href": "Prediction.html#推定",
+    "title": "3  予測",
+    "section": "3.3 推定",
+    "text": "3.3 推定\n\n3.3.1 推定タスクの定義\n\nTask <- as_task_regr(Data, target = \"earnings\")\n\n\n\n3.3.2 個別推定方法の定義\n\nMesurementR2 <-  msr(\"regr.rsq\")\n\nResampleCV <- rsmp(\"cv\")\n\nLearnerLASSO <- lrn(\"regr.cv_glmnet\")\n\nLearnerOLS <- lrn(\"regr.lm\")\n\nLearnerRF <- lrn(\"regr.ranger\")\n\nLearnerTree <- lrn(\"regr.rpart\")\n\nLearnerTree$param_set$values$cp = 0\nLearnerTree$param_set$values$minsplit = 17\n\n\n3.3.2.1 SuperLearnerの定義\n\nBaseLearner <- list(\n  LearnerOLS,\n  LearnerLASSO,\n  LearnerRF,\n  LearnerTree\n) # 個別推定アルゴリズム\n\nSuperLearner <- lrn(\"regr.lm\",\n                    id = \"SuperLearner\") # 個別予測をまとめるアルゴリズム\n\nLearnerStack <- pipeline_stacking(BaseLearner, SuperLearner) |> \n  as_learner()\n\n\n\n\n3.3.3 交差推定\n\nlgr::get_logger(\"mlr3\")$set_threshold(\"warn\")\n\nFitOLS <- resample(Task, LearnerOLS, ResampleCV, store_models = TRUE)\nFitLASSO <- resample(Task, LearnerLASSO, ResampleCV, store_models = TRUE)\nFitRF <- resample(Task, LearnerRF, ResampleCV, store_models = TRUE)\nFitStack <- resample(Task, LearnerStack, ResampleCV, store_models = TRUE)\n\n\n\n3.3.4 ベンチマーク・テスト\n\ndesign <- benchmark_grid(\n  tasks = Task,\n  learners = list(LearnerOLS,\n                  LearnerLASSO,\n                  LearnerRF,\n                  LearnerTree,\n                  LearnerStack),\n  resamplings = ResampleCV\n)\n\nBenchMark <- benchmark(design)\n\nBenchMark$aggregate(MesurementR2)\n\n   nr      resample_result task_id\n1:  1 <ResampleResult[21]>    Data\n2:  2 <ResampleResult[21]>    Data\n3:  3 <ResampleResult[21]>    Data\n4:  4 <ResampleResult[21]>    Data\n5:  5 <ResampleResult[21]>    Data\n                                                                    learner_id\n1:                                                                     regr.lm\n2:                                                              regr.cv_glmnet\n3:                                                                 regr.ranger\n4:                                                                  regr.rpart\n5: regr.lm.regr.cv_glmnet.regr.ranger.regr.rpart.nop.featureunion.SuperLearner\n   resampling_id iters  regr.rsq\n1:            cv    10 0.2700908\n2:            cv    10 0.2562989\n3:            cv    10 0.2772767\n4:            cv    10 0.2789252\n5:            cv    10 0.2807332"
+  },
+  {
+    "objectID": "CausalMachineLearning.html",
+    "href": "CausalMachineLearning.html",
+    "title": "4  セミパラメトリック推定",
+    "section": "",
+    "text": "Chernozhukov et al. (2018) を実装する"
+  },
+  {
+    "objectID": "CausalMachineLearning.html#設定",
+    "href": "CausalMachineLearning.html#設定",
+    "title": "4  セミパラメトリック推定",
+    "section": "4.1 設定",
+    "text": "4.1 設定\n\nRPython\n\n\n\nlibrary(tidyverse)\nlibrary(recipes)\nlibrary(mlr3verse)\nlibrary(mlr3pipelines)\nlibrary(data.table)\nlibrary(DoubleML)\n\nData_R <- fread(\"ExampleData/Example.csv\")\n\nTask_R <- double_ml_data_from_data_frame(Data_R,\n                                         x_cols = c(\"TradeQ\", \"Size\", \"BuildYear\", \"Distance\"),\n                                         y_col = c(\"Price\"),\n                                         d_cols = c(\"Reform\"))\n\n\n\n\nimport pandas as pd\nimport numpy as np\nfrom sklearn.base import clone\nfrom sklearn.ensemble import RandomForestRegressor\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.ensemble import StackingRegressor\nfrom doubleml import DoubleMLData\nfrom doubleml import DoubleMLPLR\nfrom doubleml import DoubleMLIRM\n\nData_Python = pd.read_csv('ExampleData/Example.csv')\n\nTask_Python = DoubleMLData(Data_Python, \n                          y_col = 'Price',\n                          d_cols = 'Reform',\n                          x_cols = ['TradeQ',\"Size\",\"Distance\",\"BuildYear\"])"
+  },
+  {
+    "objectID": "CausalMachineLearning.html#平均効果の推定-partial-linear-model",
+    "href": "CausalMachineLearning.html#平均効果の推定-partial-linear-model",
+    "title": "4  セミパラメトリック推定",
+    "section": "4.2 平均効果の推定: Partial Linear Model",
+    "text": "4.2 平均効果の推定: Partial Linear Model\n\n部分線形モデル (Robinson 1988)\nRandomForestとOLSのStackingを用いる\n\nPythonについて、現状、RandomForestのみ\n\n\n\nRPython\n\n\n\nRegOLS <- lrn(\"regr.lm\",\n  id = \"RegressionOLS\"\n)\n\nRegRF <- lrn(\"regr.ranger\",\n  id = \"RegressionRandomForest\"\n)\n\nRegLearners <- list(\n  RegOLS,\n  RegRF\n)\n\nRegSuperLearner <- lrn(\"regr.lm\",\n                    id = \"RegressionSuperLearner\")\n\nRegNuisanceLearner <- \n  pipeline_stacking(RegLearners, RegSuperLearner) |> \n  as_learner()\n\nlgr::get_logger(\"mlr3\")$set_threshold(\"warn\")\n\nFitPLR_R <- DoubleMLPLR$new(Task_R,\n                            ml_l=RegNuisanceLearner$clone(), \n                            ml_m=RegNuisanceLearner$clone(),\n                            n_folds = 2)\n\nFitPLR_R$fit()\n\nprint(FitPLR_R)\n\n================= DoubleMLPLR Object ==================\n\n\n------------------ Data summary      ------------------\nOutcome variable: Price\nTreatment variable(s): Reform\nCovariates: TradeQ, Size, BuildYear, Distance\nInstrument(s): \nNo. Observations: 14793\n\n------------------ Score & algorithm ------------------\nScore function: partialling out\nDML algorithm: dml2\n\n------------------ Machine learner   ------------------\nml_l: RegressionOLS.RegressionRandomForest.nop.featureunion.RegressionSuperLearner\nml_m: RegressionOLS.RegressionRandomForest.nop.featureunion.RegressionSuperLearner\n\n------------------ Resampling        ------------------\nNo. folds: 2\nNo. repeated sample splits: 1\nApply cross-fitting: TRUE\n\n------------------ Fit summary       ------------------\n Estimates and significance testing of the effect of target variables\n       Estimate. Std. Error t value Pr(>|t|)    \nReform    4.8749     0.4118   11.84   <2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\n\n\n\nFitPLR_Python = DoubleMLPLR(Task_Python,\n                            RandomForestRegressor(n_estimators = 500),\n                            RandomForestRegressor(n_estimators = 500),\n                            n_folds = 2)\n\nFitPLR_Python.fit()\n\n<doubleml.double_ml_plr.DoubleMLPLR object at 0x14b8e69a0>\n\nprint(FitPLR_Python)\n\n================== DoubleMLPLR Object ==================\n\n------------------ Data summary      ------------------\nOutcome variable: Price\nTreatment variable(s): ['Reform']\nCovariates: ['TradeQ', 'Size', 'Distance', 'BuildYear']\nInstrument variable(s): None\nNo. Observations: 14793\n\n------------------ Score & algorithm ------------------\nScore function: partialling out\nDML algorithm: dml2\n\n------------------ Machine learner   ------------------\nLearner ml_g: RandomForestRegressor(n_estimators=500)\nLearner ml_m: RandomForestRegressor(n_estimators=500)\n\n------------------ Resampling        ------------------\nNo. folds: 2\nNo. repeated sample splits: 1\nApply cross-fitting: True\n\n------------------ Fit summary       ------------------\n            coef   std err          t         P>|t|     2.5 %   97.5 %\nReform  4.996924  0.428021  11.674479  1.721175e-31  4.158018  5.83583"
+  },
+  {
+    "objectID": "CausalMachineLearning.html#平均効果の推定-aipw",
+    "href": "CausalMachineLearning.html#平均効果の推定-aipw",
+    "title": "4  セミパラメトリック推定",
+    "section": "4.3 平均効果の推定: AIPW",
+    "text": "4.3 平均効果の推定: AIPW\n\nAIPW (Robins and Rotnitzky 1995)\n\n\nRPython\n\n\n\nProbOLS <- lrn(\"classif.log_reg\",\n  id = \"ProbLM\",\n  predict_type = \"prob\"\n)\n\nProbRF <- lrn(\"classif.ranger\",\n  id = \"ProbRanger\",\n  predict_type = \"prob\"\n)\n\nProbLearners <- list(ProbOLS,ProbRF)\n\nProbSuperLearner <- lrn(\"classif.log_reg\",\n                    id = \"ProbSuperLearner\")\n\nProbNuisanceLearner <- pipeline_stacking(ProbLearners, ProbSuperLearner) |> \n  as_learner()\n\nlgr::get_logger(\"mlr3\")$set_threshold(\"warn\")\n\nFitAIPW_R = DoubleMLIRM$new(Task_R,\n                            ml_g=RegNuisanceLearner, \n                            ml_m=ProbNuisanceLearner,\n                            n_folds = 2,\n                            trimming_threshold = 0.1)\n\nFitAIPW_R$fit()\n\nprint(FitAIPW_R)\n\n================= DoubleMLIRM Object ==================\n\n\n------------------ Data summary      ------------------\nOutcome variable: Price\nTreatment variable(s): Reform\nCovariates: TradeQ, Size, BuildYear, Distance\nInstrument(s): \nNo. Observations: 14793\n\n------------------ Score & algorithm ------------------\nScore function: ATE\nDML algorithm: dml2\n\n------------------ Machine learner   ------------------\nml_g: RegressionOLS.RegressionRandomForest.nop.featureunion.RegressionSuperLearner\nml_m: ProbLM.ProbRanger.nop.featureunion.ProbSuperLearner\n\n------------------ Resampling        ------------------\nNo. folds: 2\nNo. repeated sample splits: 1\nApply cross-fitting: TRUE\n\n------------------ Fit summary       ------------------\n Estimates and significance testing of the effect of target variables\n       Estimate. Std. Error t value Pr(>|t|)    \nReform    4.0580     0.4315   9.404   <2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n\n\n\n\nFitAIPW_Python = DoubleMLIRM(Task_Python,\n                            RandomForestRegressor(n_estimators = 500),\n                            RandomForestClassifier(n_estimators = 500),\n                            n_folds = 2,\n                            trimming_threshold = 0.1)\n  \nFitAIPW_Python.fit()\n\n<doubleml.double_ml_irm.DoubleMLIRM object at 0x14b8e67c0>\n\nFitAIPW_Python.summary\n\n            coef   std err         t         P>|t|     2.5 %   97.5 %\nReform  3.883986  0.572558  6.783565  1.172459e-11  2.761793  5.00618\n\n\n\n\n\n\n\n\n\nChernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. “Double/Debiased Machine Learning for Treatment and Structural Parameters.” The Econometrics Journal 21 (1): C1–68. https://doi.org/10.1111/ectj.12097.\n\n\nRobins, James M., and Andrea Rotnitzky. 1995. “Semiparametric Efficiency in Multivariate Regression Models with Missing Data.” Journal of the American Statistical Association 90 (429): 122129. https://doi.org/10.1080/01621459.1995.10476494.\n\n\nRobinson, P. M. 1988. “Root-n-Consistent Semiparametric Regression.” Econometrica 56 (4): 931–54. https://doi.org/10.2307/1912705."
   },
   {
     "objectID": "summary.html",
     "href": "summary.html",
-    "title": "2  Summary",
+    "title": "5  付録: 記述統計",
     "section": "",
-    "text": "1 + 1\n\n[1] 2"
+    "text": "関心のあるグループ \\((D)\\) ごとに記述統計をまとめる\nSection 5.2 記述統計表を作成\nSection 5.3 変数の分布がバランスしているかどうか、図示する"
+  },
+  {
+    "objectID": "summary.html#パッケージ-データ",
+    "href": "summary.html#パッケージ-データ",
+    "title": "5  付録: 記述統計",
+    "section": "5.1 パッケージ & データ",
+    "text": "5.1 パッケージ & データ\n\nlibrary(tidyverse)\nlibrary(AER)\nlibrary(cobalt)\nlibrary(gtsummary)\n\ndata(\"CPSSW9204\")\n\n\ngtsummary : 記述統計表作成\ncobalt : 図作成"
+  },
+  {
+    "objectID": "summary.html#sec-Table",
+    "href": "summary.html#sec-Table",
+    "title": "5  付録: 記述統計",
+    "section": "5.2 記述統計評",
+    "text": "5.2 記述統計評\n\n\\(D=degree\\) ごとに以下を表示\n\n連続変数については、 “中央値(下位25%, 上位25%)”\nカテゴリー変数について、 “サンプルサイズ(割合)”\n\n\n\nCPSSW9204 |> \n  tbl_summary(by = \"degree\")\n\n\n\n\n\n  \n  \n    \n      Characteristic\n      highschool, N = 8,9861\n      bachelor, N = 6,6021\n    \n  \n  \n    year\n\n\n    1992\n4,640 (52%)\n2,962 (45%)\n    2004\n4,346 (48%)\n3,640 (55%)\n    earnings\n11 (8, 14)\n16 (12, 21)\n    gender\n\n\n    male\n5,542 (62%)\n3,493 (53%)\n    female\n3,444 (38%)\n3,109 (47%)\n    age\n30 (27, 32)\n30 (27, 32)\n  \n  \n  \n    \n      1 n (%); Median (IQR)"
+  },
+  {
+    "objectID": "summary.html#sec-Figure",
+    "href": "summary.html#sec-Figure",
+    "title": "5  付録: 記述統計",
+    "section": "5.3 記述統計評",
+    "text": "5.3 記述統計評\n\nYの平均差/Yの標準偏差を報告 (Imbens (2015) などで推奨)\n\n\nbal.tab(degree ~ gender + age + year,\n                CPSSW9204,\n        binary = \"std\", continuous = \"std\") |> \n  plot()\n\n\n\n\n\n女性かつ近年、かつ年齢が若い方が大卒比率が高い\n\n\n\n\n\nImbens, Guido W. 2015. “Matching Methods in Practice: Three Examples.” The Journal of Human Resources 50 (2): 373–419. https://www.jstor.org/stable/24735990."
+  },
+  {
+    "objectID": "PreProcess.html",
+    "href": "PreProcess.html",
+    "title": "6  付録: データ整備",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(AER)\nlibrary(recipes)\n\ndata(\"CPSSW9204\")\n\n\ntidyverse : 個別変数についてのデータ加工関数群を提供\nrecipes : 統合的なデータ加工関数を提供"
+  },
+  {
+    "objectID": "PreProcess.html#recipes",
+    "href": "PreProcess.html#recipes",
+    "title": "6  付録: データ整備",
+    "section": "6.2 recipes",
+    "text": "6.2 recipes\n\nX <- recipe(earnings ~ degree + year + gender + age,\n            CPSSW9204) |> # 推定式を定義\n  update_role(degree,\n              new_role = \"treatment\") |> # degreeをtreatmentに指定\n  step_unknown(all_nominal_predictors()) |> # 非数値変数について、欠損値を\"unknown\"に変更\n  step_other(all_nominal_predictors()) |> # 非数値変数について、小規模グループを\"other\"に変更\n  step_dummy(all_nominal_predictors()) |> # 非数値変数をダミー変数に変換\n  step_indicate_na(all_numeric_predictors()) |> # 数値変数について、欠損ダミーを作成\n  step_impute_median(all_numeric_predictors()) |> # 数値変数について、欠損値に中央値を補完\n  step_nzv(all_numeric_predictors()) |> # 数値変数について、 変動が少ない変数を除外\n  step_corr(all_numeric_predictors()) |> # 相関が強い変数を除去\n  prep() |> \n  bake(CPSSW9204)"
   },
   {
     "objectID": "references.html",
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+    "text": "Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo,\nChristian Hansen, Whitney Newey, and James Robins. 2018.\n“Double/Debiased Machine Learning for Treatment and Structural\nParameters.” The Econometrics Journal 21 (1): C1–68. https://doi.org/10.1111/ectj.12097.\n\n\nHo, Daniel E., Kosuke Imai, Gary King, and Elizabeth A. Stuart. 2007.\n“Matching as Nonparametric Preprocessing for Reducing Model\nDependence in Parametric Causal Inference.” Political\nAnalysis 15 (3): 199–236. https://doi.org/10.1093/pan/mpl013.\n\n\nIacus, Stefano M., Gary King, and Giuseppe Porro. 2012. “Causal\nInference Without Balance Checking: Coarsened Exact Matching.”\nPolitical Analysis 20 (1): 1–24. https://doi.org/10.1093/pan/mpr013.\n\n\nImbens, Guido W. 2015. “Matching Methods in Practice: Three\nExamples.” The Journal of Human Resources 50 (2):\n373–419. https://www.jstor.org/stable/24735990.\n\n\nLin, Winston. 2013. “Agnostic Notes on Regression Adjustments to\nExperimental Data: Reexamining Freedman’s Critique.”\nThe Annals of Applied Statistics 7 (1): 295–318. https://doi.org/10.1214/12-AOAS583.\n\n\nRobins, James M., and Andrea Rotnitzky. 1995. “Semiparametric\nEfficiency in Multivariate Regression Models with Missing Data.”\nJournal of the American Statistical Association 90 (429):\n122129. https://doi.org/10.1080/01621459.1995.10476494.\n\n\nRobinson, P. M. 1988. “Root-n-Consistent Semiparametric\nRegression.” Econometrica 56 (4): 931–54. https://doi.org/10.2307/1912705."
   }
 ]
