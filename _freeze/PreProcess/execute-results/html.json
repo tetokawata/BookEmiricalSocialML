@@ -1,0 +1,16 @@
+{
+  "hash": "0c25c3d229d2e08fab9fc8e87f533114",
+  "result": {
+    "markdown": "# 付録: データ整備 {#sec-PreProcess}\n\n## パッケージ & データ\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(AER)\nlibrary(recipes)\n\ndata(\"CPSSW9204\")\n```\n:::\n\n\n-   tidyverse : 個別変数についてのデータ加工関数群を提供\n\n-   [recipes](https://recipes.tidymodels.org/) : 統合的なデータ加工関数を提供\n\n## recipes\n\n\n::: {.cell}\n\n```{.r .cell-code}\nX <- recipe(earnings ~ degree + year + gender + age,\n            CPSSW9204) |> # 推定式を定義\n  update_role(degree,\n              new_role = \"treatment\") |> # degreeをtreatmentに指定\n  step_unknown(all_nominal_predictors()) |> # 非数値変数について、欠損値を\"unknown\"に変更\n  step_other(all_nominal_predictors()) |> # 非数値変数について、小規模グループを\"other\"に変更\n  step_dummy(all_nominal_predictors()) |> # 非数値変数をダミー変数に変換\n  step_indicate_na(all_numeric_predictors()) |> # 数値変数について、欠損ダミーを作成\n  step_impute_median(all_numeric_predictors()) |> # 数値変数について、欠損値に中央値を補完\n  step_nzv(all_numeric_predictors()) |> # 数値変数について、 変動が少ない変数を除外\n  step_corr(all_numeric_predictors()) |> # 相関が強い変数を除去\n  prep() |> \n  bake(CPSSW9204)\n```\n:::\n",
+    "supporting": [
+      "PreProcess_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
