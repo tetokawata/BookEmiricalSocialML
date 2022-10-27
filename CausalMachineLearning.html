@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.37">
+<meta name="generator" content="quarto-1.1.251">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -215,18 +220,13 @@ div.csl-indent {
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link active" data-scroll-target="#パッケージ-データ"> <span class="header-section-number">4.1</span> パッケージ &amp; データ</a></li>
-  <li><a href="#平均効果の推定" id="toc-平均効果の推定" class="nav-link" data-scroll-target="#平均効果の推定"> <span class="header-section-number">4.2</span> 平均効果の推定</a>
-  <ul class="collapse">
-  <li><a href="#super-learnerの定義" id="toc-super-learnerの定義" class="nav-link" data-scroll-target="#super-learnerの定義"> <span class="header-section-number">4.2.1</span> Super Learnerの定義</a></li>
-  <li><a href="#partial-linear-model" id="toc-partial-linear-model" class="nav-link" data-scroll-target="#partial-linear-model"> <span class="header-section-number">4.2.2</span> Partial Linear Model</a></li>
-  <li><a href="#aipw" id="toc-aipw" class="nav-link" data-scroll-target="#aipw"> <span class="header-section-number">4.2.3</span> AIPW</a></li>
-  </ul></li>
-  <li><a href="#best-linear-predictors" id="toc-best-linear-predictors" class="nav-link" data-scroll-target="#best-linear-predictors"> <span class="header-section-number">4.3</span> Best Linear Predictors</a></li>
+  <li><a href="#設定" id="toc-設定" class="nav-link active" data-scroll-target="#設定"><span class="toc-section-number">4.1</span>  設定</a></li>
+  <li><a href="#平均効果の推定-partial-linear-model" id="toc-平均効果の推定-partial-linear-model" class="nav-link" data-scroll-target="#平均効果の推定-partial-linear-model"><span class="toc-section-number">4.2</span>  平均効果の推定: Partial Linear Model</a></li>
+  <li><a href="#平均効果の推定-aipw" id="toc-平均効果の推定-aipw" class="nav-link" data-scroll-target="#平均効果の推定-aipw"><span class="toc-section-number">4.3</span>  平均効果の推定: AIPW</a></li>
   </ul>
 </nav>
     </div>
@@ -252,228 +252,264 @@ div.csl-indent {
 <ul>
 <li><span class="citation" data-cites="chernozhukov2018">Chernozhukov et al. (<a href="references.html#ref-chernozhukov2018" role="doc-biblioref">2018</a>)</span> を実装する</li>
 </ul>
-<section id="パッケージ-データ" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">4.1</span> パッケージ &amp; データ</h2>
+<section id="設定" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="設定"><span class="header-section-number">4.1</span> 設定</h2>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3verse)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mlr3pipelines)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DoubleML)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Data_R <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"ExampleData/Example.csv"</span>)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> CPSSW9204<span class="sc">$</span>earnings</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="fu">if_else</span>(CPSSW9204<span class="sc">$</span>degree <span class="sc">==</span> <span class="st">"bachelor"</span>,<span class="dv">1</span>,<span class="dv">0</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="sc">~</span> year <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>            CPSSW9204) <span class="sc">|&gt;</span> </span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204,</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">composition =</span> <span class="st">"matrix"</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>Data <span class="ot">&lt;-</span>  <span class="fu">double_ml_data_from_matrix</span>(<span class="at">X=</span>X, </span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">y=</span>Y, </span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">d=</span>D)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>Task_R <span class="ot">&lt;-</span> <span class="fu">double_ml_data_from_data_frame</span>(Data_R,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">x_cols =</span> <span class="fu">c</span>(<span class="st">"TradeQ"</span>, <span class="st">"Size"</span>, <span class="st">"BuildYear"</span>, <span class="st">"Distance"</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">y_col =</span> <span class="fu">c</span>(<span class="st">"Price"</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">d_cols =</span> <span class="fu">c</span>(<span class="st">"Reform"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="平均効果の推定" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="平均効果の推定"><span class="header-section-number">4.2</span> 平均効果の推定</h2>
-<section id="super-learnerの定義" class="level3" data-number="4.2.1">
-<h3 data-number="4.2.1" class="anchored" data-anchor-id="super-learnerの定義"><span class="header-section-number">4.2.1</span> Super Learnerの定義</h3>
-<ul>
-<li>LASSO, OLS, Random ForestからなるSuper Learnerを用いる</li>
-</ul>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>RegLASSO <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.cv_glmnet"</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"RegressionLASSO"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>RegOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"RegressionOLS"</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>RegRF <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"RegressionRandomForest"</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.base <span class="im">import</span> clone</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> StackingRegressor</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> doubleml <span class="im">import</span> DoubleMLData</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> doubleml <span class="im">import</span> DoubleMLPLR</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> doubleml <span class="im">import</span> DoubleMLIRM</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ProbLASSO <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.cv_glmnet"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"ProbLASSO"</span>,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_type =</span> <span class="st">"prob"</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>ProbOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.log_reg"</span>,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"ProbLM"</span>,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_type =</span> <span class="st">"prob"</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>ProbRF <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.ranger"</span>,</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"ProbRanger"</span>,</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_type =</span> <span class="st">"prob"</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>RegLearners <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  RegOLS,</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  RegLASSO,</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  RegRF</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>ProbLearners <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  ProbOLS,</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  ProbLASSO,</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  ProbRF</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>RegSuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>,</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>                    <span class="at">id =</span> <span class="st">"RegressionSuperLearner"</span>)</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>ProbSuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.log_reg"</span>,</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>                    <span class="at">id =</span> <span class="st">"ProbSuperLearner"</span>)</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>RegNuisanceLearner <span class="ot">&lt;-</span> <span class="fu">pipeline_stacking</span>(RegLearners, RegSuperLearner) <span class="sc">|&gt;</span> </span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>()</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>ProbNuisanceLearner <span class="ot">&lt;-</span> <span class="fu">pipeline_stacking</span>(ProbLearners, ProbSuperLearner) <span class="sc">|&gt;</span> </span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Data_Python <span class="op">=</span> pd.read_csv(<span class="st">'ExampleData/Example.csv'</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>Task_Python <span class="op">=</span> DoubleMLData(Data_Python, </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                          y_col <span class="op">=</span> <span class="st">'Price'</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                          d_cols <span class="op">=</span> <span class="st">'Reform'</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                          x_cols <span class="op">=</span> [<span class="st">'TradeQ'</span>,<span class="st">"Size"</span>,<span class="st">"Distance"</span>,<span class="st">"BuildYear"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
 </div>
 </section>
-<section id="partial-linear-model" class="level3" data-number="4.2.2">
-<h3 data-number="4.2.2" class="anchored" data-anchor-id="partial-linear-model"><span class="header-section-number">4.2.2</span> Partial Linear Model</h3>
+<section id="平均効果の推定-partial-linear-model" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="平均効果の推定-partial-linear-model"><span class="header-section-number">4.2</span> 平均効果の推定: Partial Linear Model</h2>
 <ul>
-<li>部分線形モデル <span class="citation" data-cites="robinson1988">(<a href="references.html#ref-robinson1988" role="doc-biblioref">Robinson 1988</a>)</span></li>
+<li><p>部分線形モデル <span class="citation" data-cites="robinson1988">(<a href="references.html#ref-robinson1988" role="doc-biblioref">Robinson 1988</a>)</span></p></li>
+<li><p>RandomForestとOLSのStackingを用いる</p>
+<ul>
+<li>Pythonについて、現状、RandomForestのみ</li>
+</ul></li>
 </ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>FitPLR <span class="ot">=</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(Data, </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_l=</span>RegNuisanceLearner, </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_m=</span>ProbNuisanceLearner)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>FitPLR<span class="sc">$</span><span class="fu">fit</span>()</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>RegOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"RegressionOLS"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>RegRF <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"RegressionRandomForest"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(FitPLR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>RegLearners <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  RegOLS,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  RegRF</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>RegSuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                    <span class="at">id =</span> <span class="st">"RegressionSuperLearner"</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>RegNuisanceLearner <span class="ot">&lt;-</span> </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pipeline_stacking</span>(RegLearners, RegSuperLearner) <span class="sc">|&gt;</span> </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>()</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>FitPLR_R <span class="ot">&lt;-</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(Task_R,</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ml_l=</span>RegNuisanceLearner<span class="sc">$</span><span class="fu">clone</span>(), </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ml_m=</span>RegNuisanceLearner<span class="sc">$</span><span class="fu">clone</span>(),</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                            <span class="at">n_folds =</span> <span class="dv">2</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>FitPLR_R<span class="sc">$</span><span class="fu">fit</span>()</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(FitPLR_R)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>================= DoubleMLPLR Object ==================
 
 
 ------------------ Data summary      ------------------
-Outcome variable: y
-Treatment variable(s): d
-Covariates: X1, X2, X3
+Outcome variable: Price
+Treatment variable(s): Reform
+Covariates: TradeQ, Size, BuildYear, Distance
 Instrument(s): 
-No. Observations: 15588
+No. Observations: 14793
 
 ------------------ Score &amp; algorithm ------------------
 Score function: partialling out
 DML algorithm: dml2
 
 ------------------ Machine learner   ------------------
-ml_l: RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner
-ml_m: ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner
+ml_l: RegressionOLS.RegressionRandomForest.nop.featureunion.RegressionSuperLearner
+ml_m: RegressionOLS.RegressionRandomForest.nop.featureunion.RegressionSuperLearner
 
 ------------------ Resampling        ------------------
-No. folds: 5
+No. folds: 2
 No. repeated sample splits: 1
 Apply cross-fitting: TRUE
 
 ------------------ Fit summary       ------------------
  Estimates and significance testing of the effect of target variables
-  Estimate. Std. Error t value Pr(&gt;|t|)    
-d    5.6472     0.1142   49.44   &lt;2e-16 ***
+       Estimate. Std. Error t value Pr(&gt;|t|)    
+Reform    4.8749     0.4118   11.84   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>FitPLR_Python <span class="op">=</span> DoubleMLPLR(Task_Python,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                            RandomForestRegressor(n_estimators <span class="op">=</span> <span class="dv">500</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                            RandomForestRegressor(n_estimators <span class="op">=</span> <span class="dv">500</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                            n_folds <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>FitPLR_Python.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;doubleml.double_ml_plr.DoubleMLPLR object at 0x14b8e69a0&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(FitPLR_Python)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>================== DoubleMLPLR Object ==================
+
+------------------ Data summary      ------------------
+Outcome variable: Price
+Treatment variable(s): ['Reform']
+Covariates: ['TradeQ', 'Size', 'Distance', 'BuildYear']
+Instrument variable(s): None
+No. Observations: 14793
+
+------------------ Score &amp; algorithm ------------------
+Score function: partialling out
+DML algorithm: dml2
+
+------------------ Machine learner   ------------------
+Learner ml_g: RandomForestRegressor(n_estimators=500)
+Learner ml_m: RandomForestRegressor(n_estimators=500)
+
+------------------ Resampling        ------------------
+No. folds: 2
+No. repeated sample splits: 1
+Apply cross-fitting: True
+
+------------------ Fit summary       ------------------
+            coef   std err          t         P&gt;|t|     2.5 %   97.5 %
+Reform  4.996924  0.428021  11.674479  1.721175e-31  4.158018  5.83583</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="aipw" class="level3" data-number="4.2.3">
-<h3 data-number="4.2.3" class="anchored" data-anchor-id="aipw"><span class="header-section-number">4.2.3</span> AIPW</h3>
+<section id="平均効果の推定-aipw" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="平均効果の推定-aipw"><span class="header-section-number">4.3</span> 平均効果の推定: AIPW</h2>
 <ul>
 <li>AIPW <span class="citation" data-cites="robins1995">(<a href="references.html#ref-robins1995" role="doc-biblioref">Robins and Rotnitzky 1995</a>)</span></li>
 </ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>FitAIPW <span class="ot">=</span> DoubleMLIRM<span class="sc">$</span><span class="fu">new</span>(Data, </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_g=</span>RegNuisanceLearner, </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_m=</span>ProbNuisanceLearner)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>FitAIPW<span class="sc">$</span><span class="fu">fit</span>()</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(FitAIPW)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ProbOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.log_reg"</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"ProbLM"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_type =</span> <span class="st">"prob"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>ProbRF <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.ranger"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"ProbRanger"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">predict_type =</span> <span class="st">"prob"</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ProbLearners <span class="ot">&lt;-</span> <span class="fu">list</span>(ProbOLS,ProbRF)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>ProbSuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"classif.log_reg"</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                    <span class="at">id =</span> <span class="st">"ProbSuperLearner"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>ProbNuisanceLearner <span class="ot">&lt;-</span> <span class="fu">pipeline_stacking</span>(ProbLearners, ProbSuperLearner) <span class="sc">|&gt;</span> </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>()</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>FitAIPW_R <span class="ot">=</span> DoubleMLIRM<span class="sc">$</span><span class="fu">new</span>(Task_R,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ml_g=</span>RegNuisanceLearner, </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ml_m=</span>ProbNuisanceLearner,</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>                            <span class="at">n_folds =</span> <span class="dv">2</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>                            <span class="at">trimming_threshold =</span> <span class="fl">0.1</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>FitAIPW_R<span class="sc">$</span><span class="fu">fit</span>()</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(FitAIPW_R)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>================= DoubleMLIRM Object ==================
 
 
 ------------------ Data summary      ------------------
-Outcome variable: y
-Treatment variable(s): d
-Covariates: X1, X2, X3
+Outcome variable: Price
+Treatment variable(s): Reform
+Covariates: TradeQ, Size, BuildYear, Distance
 Instrument(s): 
-No. Observations: 15588
+No. Observations: 14793
 
 ------------------ Score &amp; algorithm ------------------
 Score function: ATE
 DML algorithm: dml2
 
 ------------------ Machine learner   ------------------
-ml_g: RegressionOLS.RegressionLASSO.RegressionRandomForest.nop.featureunion.RegressionSuperLearner
-ml_m: ProbLM.ProbLASSO.ProbRanger.nop.featureunion.ProbSuperLearner
+ml_g: RegressionOLS.RegressionRandomForest.nop.featureunion.RegressionSuperLearner
+ml_m: ProbLM.ProbRanger.nop.featureunion.ProbSuperLearner
 
 ------------------ Resampling        ------------------
-No. folds: 5
+No. folds: 2
 No. repeated sample splits: 1
 Apply cross-fitting: TRUE
 
 ------------------ Fit summary       ------------------
  Estimates and significance testing of the effect of target variables
-  Estimate. Std. Error t value Pr(&gt;|t|)    
-d    5.6285     0.1136   49.54   &lt;2e-16 ***
+       Estimate. Std. Error t value Pr(&gt;|t|)    
+Reform    4.0580     0.4315   9.404   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="best-linear-predictors" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="best-linear-predictors"><span class="header-section-number">4.3</span> Best Linear Predictors</h2>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>TempY <span class="ot">&lt;-</span> FitAIPW<span class="sc">$</span>psi_b</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>TempData <span class="ot">&lt;-</span> <span class="fu">double_ml_data_from_matrix</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> <span class="cn">NULL</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> TempY,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> X</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"warn"</span>)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>FitBLP <span class="ot">=</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(TempData, </span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_l=</span><span class="fu">lrn</span>(<span class="st">"regr.lm"</span>), </span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">ml_m=</span><span class="fu">lrn</span>(<span class="st">"regr.lm"</span>))</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>FitBLP<span class="sc">$</span><span class="fu">fit</span>()</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>FitBLP<span class="sc">$</span><span class="fu">bootstrap</span>()</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(FitBLP<span class="sc">$</span><span class="fu">confint</span>(<span class="at">joint =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Name =</span> <span class="fu">colnames</span>(X),</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">Point =</span> FitBLP<span class="sc">$</span>coef) <span class="sc">|&gt;</span> </span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> Name,</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> Point,</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmin =</span> <span class="st">`</span><span class="at">2.5 %</span><span class="st">`</span>,</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">xmax =</span> <span class="st">`</span><span class="at">97.5 %</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="CausalMachineLearning_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>FitAIPW_Python <span class="op">=</span> DoubleMLIRM(Task_Python,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                            RandomForestRegressor(n_estimators <span class="op">=</span> <span class="dv">500</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                            RandomForestClassifier(n_estimators <span class="op">=</span> <span class="dv">500</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                            n_folds <span class="op">=</span> <span class="dv">2</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                            trimming_threshold <span class="op">=</span> <span class="fl">0.1</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>FitAIPW_Python.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;doubleml.double_ml_irm.DoubleMLIRM object at 0x14b8e67c0&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>FitAIPW_Python.summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            coef   std err         t         P&gt;|t|     2.5 %   97.5 %
+Reform  3.883986  0.572558  6.783565  1.172459e-11  2.761793  5.00618</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 
@@ -561,7 +597,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
