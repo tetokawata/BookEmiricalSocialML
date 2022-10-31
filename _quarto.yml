@@ -2,9 +2,9 @@ project:
   type: book
 
 book:
-  title: "Rによる比較・因果推論・予測研究 (ver 0.01)"
+  title: "Rによる比較・因果推論・予測研究 (ver 0.1)"
   author: "川田恵介"
-  date: "8/15/2022"
+  date: "10/31/2022"
   chapters:
     - index.qmd
     - intro.qmd

@@ -16,7 +16,7 @@ $$\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]g(x)dx$$
 
   - 一般に以下の最適化問題の解と一致
 
-$$\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]g(x)dx$$$
+$$\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]g(x)dx$$
 
 ただし $\mu(x)=E[Y_i|X_i=x]$
 
@@ -30,8 +30,8 @@ $$\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]g(x)dx$$$
 flowchart TB
   A[データとパッケージの読み込み] --> B[予測タスクの定義/サンプル分割]
   B --> C1[BuildIn 推定アルゴリズムの定義]
-  B --> C2[BuildIn + 前処理 推定アルゴリズムの定義]
-  B --> C3[BuildIn + 前処理 + Tuning 推定アルゴリズムの定義]
+  B --> C2[+ 前処理]
+  B --> C3[+ パラメータTuning]
   C1 --> C4[Super Learnerの定義]
   C2 --> C4[Super Learnerの定義]
   C3 --> C4[Super Learnerの定義]
@@ -53,7 +53,7 @@ flowchart TB
 ```{r SetUpR}
 library(tidyverse)
 library(mlr3verse) # 機械学習のメタパッケージ
-library(mlr3pipelines) # SuperLearnerの実装
+library(mlr3pipelines) # Stacking用
 
 Raw <- read_csv("ExampleData/Example.csv")
 
@@ -82,7 +82,20 @@ Tuner <- tnr("grid_search",
              resolution = 20) # 20回のグリッドサーチ
 ```
 
+
+### 使用するBuildIn Algorithmを定義
+
+```{r Learner$}
+SimpleOLS <- lrn("regr.lm", id = "SimpleOLS") # OLS
+
+RandomForest <- lrn("regr.ranger", id = "RandomForest") # RandomForest
+```
+
 ### PreProcess
+
+- 線形モデルについて、連続変数二乗項と交差項を導入
+
+    - [Duflo](https://github.com/demirermert/MLInference/blob/master/NBER_SI_DEV_master_lecture.pdf) のおすすめ
 
 ```{r WithPreProcessR}
 Mutate = po("mutate") # データ加工
@@ -100,66 +113,54 @@ Mutate$param_set$values$mutation = list(
 ) # 二乗項と交差項の作成
 
 Scale = po("scale") # 標準化
-```
 
+OLS <- Mutate %>>% 
+  Scale %>>% 
+  lrn("regr.lm") |> 
+  as_learner() # 二乗項と交差項を導入したOLS
 
-### 個別推定方法の定義
-
-```{r Learner$}
-SimpleOLS <- lrn("regr.lm", id = "SimpleOLS")
-
-OLS <- Mutate %>>% Scale %>>% lrn("regr.lm") |> as_learner()
 OLS$id <- "OLS"
-RandomForest <- lrn("regr.ranger")
-
-Tree <- lrn("regr.rpart")
 ```
 
 ### チューニング付き推定方法の定義
 
+- Tree、LASSO アルゴリズムについて、HyperParameterを交差検証により推定する
+
+- 探索するHyperParameterの範囲を設定する必要がある
+
+    - [mlr3tuningspaces](https://github.com/mlr-org/mlr3tuningspaces)パッケージが提供するおすすめ範囲を使用
+
 ```{r TunedLearnerR}
+Tree <- lrn("regr.rpart") |> 
+  lts()
+
+Tree <- AutoTuner$new(
+  learner = Tree,
+  resampling = CV,
+  measure = R2,
+  terminator = Terminal,
+  tuner = Tuner
+  )
+
+Tree$id <- "Tree"
+
+LASSO <- lrn("regr.glmnet") |> 
+  lts()
+
+LASSO <- Mutate %>>% 
+  Scale %>>% 
+  LASSO |> 
+  as_learner()
+
 LASSO <- AutoTuner$new(
-  learner = lrn("regr.glmnet"),
+  learner = LASSO,
   resampling = CV,
   measure = R2,
-  search_space = ps(
-    lambda = p_dbl(lower = 0, upper = 5)
-    ),
   terminator = Terminal,
   tuner = Tuner
-) # lambdaをチューニング (LASSO)
+  )
 
-LASSO <- Mutate %>>% Scale %>>% LASSO |> as_learner()
 LASSO$id <- "LASSO"
-
-PrunedTree <- AutoTuner$new(
-  learner = lrn("regr.rpart"),
-  resampling = CV,
-  measure = R2,
-  search_space = ps(
-    cp = p_dbl(lower = 0, upper = 0.1)
-    ),
-  terminator = Terminal,
-  tuner = Tuner
-) # cpをチューニング
-
-PrunedTree$id <- "PrunedTree" # Pruned TreeとIDづけ
-
-ElasticNet <- AutoTuner$new(
-  learner = lrn("regr.glmnet"),
-  resampling = CV,
-  measure = R2,
-  search_space = ps(
-    lambda = p_dbl(lower = 0, upper = 5),
-    alpha = p_dbl(lower = 0,upper = 1)
-    ),
-  terminator = Terminal,
-  tuner = Tuner
-) # lambdaとalphaをチューニング
-
-ElasticNet <- Mutate %>>% Scale %>>% ElasticNet |> as_learner()
-
-ElasticNet$id <- "ElasticNet"
 ```
 
 ### SuperLearnerの定義
@@ -170,8 +171,6 @@ BaseLearner <- list(
   SimpleOLS,
   RandomForest,
   Tree,
-  PrunedTree,
-  ElasticNet,
   LASSO
 ) # 個別推定アルゴリズム
 
@@ -195,8 +194,6 @@ Design <- benchmark_grid(
     LASSO,
     RandomForest,
     Tree,
-    PrunedTree,
-    ElasticNet,
     Stacking
   ),
   resamplings = CV
@@ -217,9 +214,12 @@ BenchMark$aggregate(R2)
     
 ### 最終モデル
 
+- Stakingを全TrainingDataで推定
+
+- TestDataで評価
+
 ```{r}
 SuperLearner$train(Task, row_ids = Group$train)
 
 SuperLearner$predict(Task, Group$test)$score(R2)
 ```
-
