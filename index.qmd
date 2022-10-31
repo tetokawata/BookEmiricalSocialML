@@ -8,10 +8,9 @@
 
 - 具体的な分析目標を大きく（予測）$Y$の予測関数の推定、（比較）異なる$X$間での$Y$の比較、（因果効果）$X$の変化が$Y$に与える因果効果の推定、に大別し、それぞれについて簡単な説明とRのサンプルコードの提供
 
+    - 随時Pythonコードを追加
 
-- データインポート、整理、可視化を行う関数群を統合的に提供するtidyverseパッケージの利用
-
-- Example dataとしては、AERパッケージに含まれるNMES1988(the US National Medical Expenditure Survey)を利用
+- Example dataとしては、[Githubレポジトリ](https://github.com/tetokawata/BookEmiricalSocialML)内ExampleDataフォルダーのExample.csvを使用
 
 - [Section -@sec-ParameterLinearEstimation] 線形モデルを用いたパラメータ推定
 

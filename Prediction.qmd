@@ -168,7 +168,6 @@ LASSO$id <- "LASSO"
 ```{r StackR}
 BaseLearner <- list(
   OLS,
-  SimpleOLS,
   RandomForest,
   Tree,
   LASSO
@@ -177,7 +176,9 @@ BaseLearner <- list(
 SuperLearner <- lrn("regr.lm",
                     id = "SuperLearner") # 個別予測をまとめるアルゴリズム
 
-Stacking <- pipeline_stacking(BaseLearner, SuperLearner) |> 
+Stacking <- pipeline_stacking(BaseLearner, 
+                              SuperLearner,
+                              use_features = FALSE) |> 
   as_learner() # SuperLearnerの定義
 
 Stacking$id <- "Stacking"
@@ -219,7 +220,6 @@ BenchMark$aggregate(R2)
 - TestDataで評価
 
 ```{r}
-SuperLearner$train(Task, row_ids = Group$train)
-
-SuperLearner$predict(Task, Group$test)$score(R2)
+Stacking$train(Task, row_ids = Group$train)
+Stacking$predict(Task, Group$test)$score(R2)
 ```

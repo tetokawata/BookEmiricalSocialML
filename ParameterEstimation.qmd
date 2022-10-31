@@ -14,7 +14,11 @@ $$E[Y|D=d,X=x]=\underbrace{\tau}_{Interest\ parameter}\times d+\underbrace{f(x)}
 
     -   [Section -@sec-Appendix]推定結果の表によるまとめ、可視化、および複数の推定結果を効率的に保存する方法を紹介
 
-## パッケージ & データ
+## 設定
+
+::: {.panel-tabset}
+
+### R
 
 ```{r}
 #| message: false
@@ -24,27 +28,31 @@ library(AER)
 library(estimatr) # Estimation with robust standard error
 library(MatchIt) # Matching for preprocess
 
-data("CPSSW9204")
+Data_R <- read_csv("ExampleData/Example.csv")
 ```
 
 -   [estimatr](https://declaredesign.org/r/estimatr/)
 
 -   [MatchIt](https://kosukeimai.github.io/MatchIt/)
 
+### Python
+
+```{python}
+import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+
+Data_Python = pd.read_csv('ExampleData/Example.csv')
+```
+
+
+:::
+
 ## パラメータの推定 {#sec-ParameterEstimation}
 
 -   $\tau(x)=\tau,f(x)=\beta_0+\beta_1x_1+...+\beta_Lx_L$と特定化
 
 -   サンプル内MSEを最大化するように推定
-
--   robust standard errorを計算するためにestimatrパッケージを利用
-
--   lm_robust関数で推定
-
-```{r}
-lm_robust(earnings ~ degree + gender + age + year, # Outcome ~ Treatment + Controls
-          data = CPSSW9204)
-```
 
 -   線形モデルによる推定は、いくつかの問題がある
 
@@ -55,6 +63,33 @@ lm_robust(earnings ~ degree + gender + age + year, # Outcome ~ Treatment + Contr
     -   サンプルサイズに比べて、少数のコントロール変数を導入できない
 
 -   以下ではマッチング法、機械学手法を用いた頑強な推定を目指す
+
+::: {.panel-tabset}
+
+### R
+
+-   robust standard errorを計算するためにestimatrパッケージを利用
+
+-   lm_robust関数で推定
+
+
+```{r}
+lm_robust(Price ~ Reform + TradeQ + Size + BuildYear + Distance, # Outcome ~ Treatment + Controls
+          data = Data_R)
+```
+
+### Python
+
+-   statsmodelsパッケージを利用
+
+-   heteroscedasticity robust (HC3)を設定
+
+```{python}
+results = smf.ols('Price ~ Reform + TradeQ + Size + BuildYear + Distance', data=Data_Python).fit(cov_type='HC3')
+print(results.summary())
+```
+
+:::
 
 ### RCTデータへの応用
 
@@ -71,10 +106,12 @@ $$+\underbrace{\beta_{1D}\times D\times X_1+...+\beta_{LD}\times D\times X_L}_{�
 -   lm_lin関数で推定可能
 
 ```{r}
-lm_lin(earnings ~ degree, # Outcome ~ Treatment
-       ~ gender + age + year, # ~ Controls
-       data = CPSSW9204)
+lm_lin(Price ~ Reform, # Outcome ~ Treatment
+       ~ TradeQ + Size + BuildYear + Distance, # ~ Controls
+       data = Data_R)
 ```
+
+
 
 ## マッチング法による修正 {#sec-Matching}
 
@@ -93,8 +130,8 @@ lm_lin(earnings ~ degree, # Outcome ~ Treatment
     -   連続変数をカテゴリー変数化することで、マッチングできるサンプルサイズを増やすことが期待できる
 
 ```{r}
-fit.m <- matchit(degree ~ gender + age + year,
-                 data = CPSSW9204,
+fit.m <- matchit(Reform ~ TradeQ + Size + BuildYear + Distance,
+                 data = Data_R,
                  method = "CEM"
                  )
 ```
@@ -105,7 +142,7 @@ fit.m <- matchit(degree ~ gender + age + year,
 fit.m
 ```
 
--   Sample sizesにて、マッチングできなかったサンプル数（985のコントロールグループ中、667サンプルがマッチングできなかった）が確認できる
+-   Sample sizesにて、マッチングできなかったサンプル数（14793の事例中、9625サンプルがマッチングできなかった）が確認できる
 
 -   マッチング結果の図示
 
@@ -130,7 +167,7 @@ df <- match.data(fit.m)
     -   新たに作成されるweight (defaltではweights)を用いた、加重推定で実装
 
 ```{r}
-lm_robust(earnings ~ degree + gender + age + year,
+lm_robust(Price ~ Reform + TradeQ + Size + BuildYear + Distance,
           df,
           weights = weights,
           clusters = subclass)
@@ -159,8 +196,8 @@ $$p_d(X)\equiv \Pr[D=d|X]$$
     -　ロジットにて傾向スコアを推定
 
 ```{r}
-fit.m <- matchit(degree ~ gender + age + year,
-                 data = CPSSW9204,
+fit.m <- matchit(Reform ~ TradeQ + Size + BuildYear + Distance,
+                 data = Data_R,
                  method = "subclass",
                  estimand = "ATE"
                  )
@@ -183,7 +220,7 @@ fit.m |>
 -   マッチングしたデータを用いた推定
 
 ```{r}
-lm_robust(earnings ~ degree + gender + age + year,
+lm_robust(Price ~ Reform + TradeQ + Size + BuildYear + Distance,
           df,
           weights = weights,
           clusters = subclass)
@@ -196,17 +233,17 @@ lm_robust(earnings ~ degree + gender + age + year,
 -   Dot-and-Whisker図により点推定量と信頼区間を可視化
 
 ```{r}
-fit.m <- matchit(degree ~ gender + age + year,
-                 data = CPSSW9204,
+fit.m <- matchit(Reform ~ TradeQ + Size + BuildYear + Distance,
+                 data = Data_R,
                  method = "CEM"
                  )
 
 df <- match.data(fit.m)
 
-Result1 <- lm_robust(earnings ~ degree + gender + age + year,
+Result1 <- lm_robust(Price ~ Reform + TradeQ + Size + BuildYear + Distance,
             data = df) |> 
   tidy() |> 
-  filter(term == "degreebachelor"
+  filter(term == "Reform"
          ) |> 
   mutate(Method = "OLS")
 
@@ -222,12 +259,12 @@ Result1 |>
 ```
 
 ```{r}
-Result2 <- lm_robust(earnings ~ degree + gender + age,
+Result2 <- lm_robust(Price ~ Reform + TradeQ + Size + BuildYear + Distance,
             data = df,
             weights = weights,
             clusters = subclass) |> 
   tidy() |> 
-  filter(term == "degreebachelor"
+  filter(term == "Reform"
          ) |> 
   mutate(Method = "Matching + OLS")
 
