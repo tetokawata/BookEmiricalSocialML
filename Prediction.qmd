@@ -1,149 +1,225 @@
 # 予測 {#sec-Prediction}
 
-- データと同じ母集団から新しくランダムサンプリングされ、$X$のみが観察できるサンプルについて$Y$の値を予測する。
+- 手持ちのデータと同じ母集団から新しくランダムサンプリングされ、$X$のみが観察できるサンプルについて$Y$の値を予測する。
 
-  - データ分割を用いたモデル評価を行う
+  - データ分割を用いたモデル選択、評価を行う
 
 ## 問題設定
 
-- 事前に定義する損失関数の期待値を最小化するような、予測関数$f(X)$の推定を目指す。
+- 事前に定義する損失関数の母平均 (Population Risk) を最小化するような、予測関数$f(X)$の推定を目指す。
 
   - 以下ではMean squared error(MSE)を損失関数として用いる。確率変数$Y,X$について予測問題は以下のように定義できる
 
-$$\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]f(x)dx$$
+$$\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]g(x)dx$$
 
-  - 一般に以下のように書き換えられる
+- $g(x)$ は$x$の分布関数
 
-$$\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]f(x)dx$$$
+  - 一般に以下の最適化問題の解と一致
+
+$$\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]g(x)dx$$$
 
 ただし $\mu(x)=E[Y_i|X_i=x]$
 
 - 上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forest、およびそれらのSuperLearnerを実装する。
 
-## パッケージ & データ
+## 実装
 
-```{r}
-library(tidyverse)
-library(recipes)
-library(mlr3verse) # 機械学習のメタパッケージ
-library(mlr3pipelines) # SuperLearnerを実装する
-library(mlr3tuning)
-library(AER)
+- 以下のPipelineを実装
 
-data("CPSSW9204")
-
-set.seed(123)
-
-Data <- recipe(earnings~ year + degree + gender + age,
-            CPSSW9204) |> 
-  step_dummy(all_nominal_predictors()) |> 
-  prep() |> 
-  bake(CPSSW9204)
+```{mermaid}
+flowchart TB
+  A[データとパッケージの読み込み] --> B[予測タスクの定義/サンプル分割]
+  B --> C1[BuildIn 推定アルゴリズムの定義]
+  B --> C2[BuildIn + 前処理 推定アルゴリズムの定義]
+  B --> C3[BuildIn + 前処理 + Tuning 推定アルゴリズムの定義]
+  C1 --> C4[Super Learnerの定義]
+  C2 --> C4[Super Learnerの定義]
+  C3 --> C4[Super Learnerの定義]
+  C1 --> D[Trainデータのみを用いたベンチマーク]
+  C2 --> D[Trainデータのみを用いたベンチマーク]
+  C3 --> D[Trainデータのみを用いたベンチマーク]
+  C4 --> D[Trainデータのみを用いたベンチマーク]
+  D --> E[最善の予測モデルを用いた最終推計]
+  E --> F[Testデータによる評価]
 ```
 
-## 推定
+
+### パッケージ & データ
+
+- ここではpipelinesによるデータ整備は行わない (暫定的)
+
+- 追加でlgr (表示するメッセージを操作), future (並列計算)  パッケージを使用
+
+```{r SetUpR}
+library(tidyverse)
+library(mlr3verse) # 機械学習のメタパッケージ
+library(mlr3pipelines) # SuperLearnerの実装
+
+Raw <- read_csv("ExampleData/Example.csv")
+
+set.seed(123)
+```
 
 ### 推定タスクの定義
 
-```{r}
-Task <- as_task_regr(Data, target = "earnings")
+- 分割数、繰り返し計算回数は最小限に設定
+
+    - 実戦では増やす
+
+```{r DefineR}
+Task <- as_task_regr(Raw, target = "Price") # Task設定
+
+Group <- partition(Task, ratio = 0.8) # Train/Test分割
+
+R2 <-  msr("regr.rsq") # R2で評価
+
+CV <- rsmp("cv",folds = 2) # 2分割交差検証
+
+Terminal = trm("evals",
+               n_evals = 20) # 20回の繰り返し評価
+
+Tuner <- tnr("grid_search",
+             resolution = 20) # 20回のグリッドサーチ
 ```
+
+### PreProcess
+
+```{r WithPreProcessR}
+Mutate = po("mutate") # データ加工
+Mutate$param_set$values$mutation = list(
+  Size2 = ~ Size*Size,
+  TradeQ2 = ~ TradeQ*TradeQ,
+  BuildYear2 = ~BuildYear*BuildYear,
+  Distance2 = ~Distance*Distance,
+  Size_TradeQ = ~Size*TradeQ,
+  Size_BuildYear = ~Size*BuildYear,
+  Size_Distance = ~ Size*Distance,
+  TradeQ_BuildYear = ~TradeQ*BuildYear,
+  TradeQ_Distance = ~TradeQ*Distance,
+  BuildYear_Distance = ~BuildYear*Distance
+) # 二乗項と交差項の作成
+
+Scale = po("scale") # 標準化
+```
+
 
 ### 個別推定方法の定義
 
-```{r}
-MesurementR2 <-  msr("regr.rsq")
+```{r Learner$}
+SimpleOLS <- lrn("regr.lm", id = "SimpleOLS")
 
-ResampleCV <- rsmp("cv")
+OLS <- Mutate %>>% Scale %>>% lrn("regr.lm") |> as_learner()
+OLS$id <- "OLS"
+RandomForest <- lrn("regr.ranger")
 
-LearnerLASSO <- lrn("regr.cv_glmnet")
-
-LearnerOLS <- lrn("regr.lm")
-
-LearnerRF <- lrn("regr.ranger")
-
-LearnerTree <- lrn("regr.rpart")
-
-LearnerTree$param_set$values$cp = 0
-LearnerTree$param_set$values$minsplit = 17
+Tree <- lrn("regr.rpart")
 ```
 
-#### SuperLearnerの定義
+### チューニング付き推定方法の定義
 
-```{r}
+```{r TunedLearnerR}
+LASSO <- AutoTuner$new(
+  learner = lrn("regr.glmnet"),
+  resampling = CV,
+  measure = R2,
+  search_space = ps(
+    lambda = p_dbl(lower = 0, upper = 5)
+    ),
+  terminator = Terminal,
+  tuner = Tuner
+) # lambdaをチューニング (LASSO)
+
+LASSO <- Mutate %>>% Scale %>>% LASSO |> as_learner()
+LASSO$id <- "LASSO"
+
+PrunedTree <- AutoTuner$new(
+  learner = lrn("regr.rpart"),
+  resampling = CV,
+  measure = R2,
+  search_space = ps(
+    cp = p_dbl(lower = 0, upper = 0.1)
+    ),
+  terminator = Terminal,
+  tuner = Tuner
+) # cpをチューニング
+
+PrunedTree$id <- "PrunedTree" # Pruned TreeとIDづけ
+
+ElasticNet <- AutoTuner$new(
+  learner = lrn("regr.glmnet"),
+  resampling = CV,
+  measure = R2,
+  search_space = ps(
+    lambda = p_dbl(lower = 0, upper = 5),
+    alpha = p_dbl(lower = 0,upper = 1)
+    ),
+  terminator = Terminal,
+  tuner = Tuner
+) # lambdaとalphaをチューニング
+
+ElasticNet <- Mutate %>>% Scale %>>% ElasticNet |> as_learner()
+
+ElasticNet$id <- "ElasticNet"
+```
+
+### SuperLearnerの定義
+
+```{r StackR}
 BaseLearner <- list(
-  LearnerOLS,
-  LearnerLASSO,
-  LearnerRF,
-  LearnerTree
+  OLS,
+  SimpleOLS,
+  RandomForest,
+  Tree,
+  PrunedTree,
+  ElasticNet,
+  LASSO
 ) # 個別推定アルゴリズム
 
 SuperLearner <- lrn("regr.lm",
                     id = "SuperLearner") # 個別予測をまとめるアルゴリズム
 
-LearnerStack <- pipeline_stacking(BaseLearner, SuperLearner) |> 
-  as_learner()
-```
+Stacking <- pipeline_stacking(BaseLearner, SuperLearner) |> 
+  as_learner() # SuperLearnerの定義
 
-
-
-### 交差推定
-
-```{r}
-lgr::get_logger("mlr3")$set_threshold("warn")
-
-FitOLS <- resample(Task, LearnerOLS, ResampleCV, store_models = TRUE)
-FitLASSO <- resample(Task, LearnerLASSO, ResampleCV, store_models = TRUE)
-FitRF <- resample(Task, LearnerRF, ResampleCV, store_models = TRUE)
-FitStack <- resample(Task, LearnerStack, ResampleCV, store_models = TRUE)
+Stacking$id <- "Stacking"
 ```
 
 ### ベンチマーク・テスト
 
 ```{r}
-design <- benchmark_grid(
-  tasks = Task,
-  learners = list(LearnerOLS,
-                  LearnerLASSO,
-                  LearnerRF,
-                  LearnerTree,
-                  LearnerStack),
-  resamplings = ResampleCV
+Design <- benchmark_grid(
+  tasks = list(Task$clone()$filter(Group$train)),
+  learners = list(
+    OLS,
+    SimpleOLS,
+    LASSO,
+    RandomForest,
+    Tree,
+    PrunedTree,
+    ElasticNet,
+    Stacking
+  ),
+  resamplings = CV
 )
 
-BenchMark <- benchmark(design)
+lgr::get_logger("mlr3")$set_threshold("error") # Errorのみを表示
+lgr::get_logger("bbotk")$set_threshold("error") # Errorのみを表示
+future::plan("multisession") # 並列処理
 
-BenchMark$aggregate(MesurementR2)
+BenchMark <- benchmark(Design)
+
+BenchMark$aggregate(R2)
 ```
 
+- RandomForestとStackingはComparableな性能
 
-```{r, eval = FALSE, echo = FALSE}
-LearnerTree <- lrn("regr.rpart")
+    - とりあえずStackingを採用
+    
+### 最終モデル
 
-ParamSpace <- ps(
-  cp = p_dbl(lower = 0, upper = 0.1),
-  minsplit = p_int(lower = 1,upper = 30)
-)
+```{r}
+SuperLearner$train(Task, row_ids = Group$train)
 
-Terminal = trm("evals",
-               n_evals = 100)
-
-
-Tuner <- tnr("grid_search",
-             resolution = 10)
-
-AutoTune <- AutoTuner$new(
-  learner = LearnerTree,
-  resampling = ResampleCV,
-  measure = MesurementR2,
-  search_space = ParamSpace,
-  terminator = Terminal,
-  tuner = Tuner
-)
-
-lgr::get_logger("mlr3")$set_threshold("warn")
-
-AutoTune$train(Task)
+SuperLearner$predict(Task, Group$test)$score(R2)
 ```
-
 
