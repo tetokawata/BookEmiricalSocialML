@@ -39,7 +39,6 @@ Data_R <- read_csv("ExampleData/Example.csv")
 
 ```{python}
 import pandas as pd
-import numpy as np
 import statsmodels.formula.api as smf
 
 Data_Python = pd.read_csv('ExampleData/Example.csv')
@@ -226,11 +225,13 @@ lm_robust(Price ~ Reform + TradeQ + Size + BuildYear + Distance,
           clusters = subclass)
 ```
 
-## 付録：推定結果の保存と表示 {#sec-Appendix}
-
-### Dot-and-Whisker plotによる可視化
+## 付録：Dot-and-Whisker plotによる可視化 {#sec-Appendix}
 
 -   Dot-and-Whisker図により点推定量と信頼区間を可視化
+
+::: {.panel-tabset}
+
+### R
 
 ```{r}
 fit.m <- matchit(Reform ~ TradeQ + Size + BuildYear + Distance,
@@ -279,3 +280,5 @@ Result1 |>
   geom_vline(xintercept = 0) +
   theme_bw()
 ```
+
+:::

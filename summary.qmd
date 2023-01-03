@@ -6,45 +6,75 @@
 
 -   [Section -@sec-Figure] 変数の分布がバランスしているかどうか、図示する
 
-## パッケージ & データ
+## 設定
+
+::: {.panel-tabset}
+
+### R
 
 ```{r}
 #| message: false
 #| warning: false
 library(tidyverse)
-library(AER)
-library(cobalt)
-library(gtsummary)
+library(gtsummary) # 記述統計
+library(cobalt) # バランス確認
 
-data("CPSSW9204")
+Data_R <- read_csv("ExampleData/Example.csv")
 ```
 
 -   [gtsummary](https://www.danieldsjoberg.com/gtsummary/) : 記述統計表作成
 
 -   [cobalt](https://ngreifer.github.io/cobalt/) : 図作成
 
-## 記述統計評 {#sec-Table}
+### Python
 
--   $D=degree$ ごとに以下を表示
+```{python}
+import pandas as pd
 
-    -   連続変数については、 "中央値(下位25%, 上位25%)"
-
-    -   カテゴリー変数について、 "サンプルサイズ(割合)"
-
-```{r}
-CPSSW9204 |> 
-  tbl_summary(by = "degree")
+Data_Python = pd.read_csv('ExampleData/Example.csv')
 ```
 
-## 記述統計評 {#sec-Figure}
+:::
 
--   Yの平均差/Yの標準偏差を報告 (@imbens2015 などで推奨)
+## 記述統計表 {#sec-Table}
+
+-   $D=Reform$ ごとに以下を表示
+
+
+::: {.panel-tabset}
+
+### R
+
+-   連続変数については、 "中央値(下位25%, 上位25%)"
+
+-   カテゴリー変数について、 "サンプルサイズ(割合)"
+
 
 ```{r}
-bal.tab(degree ~ gender + age + year,
-                CPSSW9204,
+Data_R |> 
+  tbl_summary(by = "Reform")
+```
+
+### Python
+
+```{python}
+Data_Python.groupby('Reform').describe().T
+```
+
+
+:::
+
+## バランス確認 {#sec-Figure}
+
+-   異なるDグループ間で、Xの分布の違いを確認
+
+-   Xの平均差/Xの標準偏差を報告 (@imbens2015 などで推奨)
+
+```{r}
+bal.tab(Reform ~ Size + BuildYear + Distance + TradeQ,
+        Data_R,
         binary = "std", continuous = "std") |> 
   plot()
 ```
 
-- 女性かつ近年、かつ年齢が若い方が大卒比率が高い
+- 築年が古い、広い、駅からの距離が長い物件が、改装されがち
