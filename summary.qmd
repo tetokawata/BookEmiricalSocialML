@@ -4,6 +4,8 @@
 
 -   [Section -@sec-Table] 記述統計表を作成
 
+-   [Section -@sec-Histogram] ヒストグラムを用いた比較
+
 -   [Section -@sec-Figure] 変数の分布がバランスしているかどうか、図示する
 
 ## 設定
@@ -30,6 +32,8 @@ Data_R <- read_csv("ExampleData/Example.csv")
 
 ```{python}
 import pandas as pd
+import seaborn as sns # 可視化
+
 
 Data_Python = pd.read_csv('ExampleData/Example.csv')
 ```
@@ -61,14 +65,61 @@ Data_R |>
 Data_Python.groupby('Reform').describe().T
 ```
 
+:::
+
+## ヒストグラム {#sec-Histogram}
+
+-   $D=Reform$ ごとに以下を表示
+
+
+::: {.panel-tabset}
+
+### R
+
+
+```{r}
+Data_R |> 
+  mutate(Reform = factor(Reform)) |> 
+  ggplot(
+    aes(
+      x = Size,
+      fill = Reform,
+      group = Reform
+      )
+    ) +
+  geom_histogram(
+    aes(y=..density..),
+    alpha=0.5,
+    position='identity'
+    ) +
+  theme_bw()
+```
+
+### Python
+
+```{python}
+sns.displot(
+  Data_Python, 
+  x="Size", 
+  hue="Reform", 
+  stat="density",
+  common_norm=False)
+
+
+```
 
 :::
+
 
 ## バランス確認 {#sec-Figure}
 
 -   異なるDグループ間で、Xの分布の違いを確認
 
 -   Xの平均差/Xの標準偏差を報告 (@imbens2015 などで推奨)
+
+::: {.panel-tabset}
+
+### R
 
 ```{r}
 bal.tab(Reform ~ Size + BuildYear + Distance + TradeQ,
@@ -78,3 +129,9 @@ bal.tab(Reform ~ Size + BuildYear + Distance + TradeQ,
 ```
 
 - 築年が古い、広い、駅からの距離が長い物件が、改装されがち
+
+### Python
+
+- Under construction
+
+:::
