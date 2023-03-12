@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.251">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.1) - 5&nbsp; 付録: 記述統計</title>
+<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.11) - 5&nbsp; 付録: 記述統計</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -166,7 +166,7 @@ div.csl-indent {
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">R/Pythonによる比較・因果推論・予測研究 (ver 0.1)</a> 
+      <a href="./">R/Pythonによる比較・因果推論・予測研究 (ver 0.11)</a> 
     </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -225,9 +225,10 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link active" data-scroll-target="#パッケージ-データ"><span class="toc-section-number">5.1</span>  パッケージ &amp; データ</a></li>
-  <li><a href="#sec-Table" id="toc-sec-Table" class="nav-link" data-scroll-target="#sec-Table"><span class="toc-section-number">5.2</span>  記述統計評</a></li>
-  <li><a href="#sec-Figure" id="toc-sec-Figure" class="nav-link" data-scroll-target="#sec-Figure"><span class="toc-section-number">5.3</span>  記述統計評</a></li>
+  <li><a href="#設定" id="toc-設定" class="nav-link active" data-scroll-target="#設定"><span class="toc-section-number">5.1</span>  設定</a></li>
+  <li><a href="#sec-Table" id="toc-sec-Table" class="nav-link" data-scroll-target="#sec-Table"><span class="toc-section-number">5.2</span>  記述統計表</a></li>
+  <li><a href="#sec-Histogram" id="toc-sec-Histogram" class="nav-link" data-scroll-target="#sec-Histogram"><span class="toc-section-number">5.3</span>  ヒストグラム</a></li>
+  <li><a href="#sec-Figure" id="toc-sec-Figure" class="nav-link" data-scroll-target="#sec-Figure"><span class="toc-section-number">5.4</span>  バランス確認</a></li>
   </ul>
 </nav>
     </div>
@@ -244,6 +245,7 @@ div.csl-indent {
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -253,43 +255,63 @@ div.csl-indent {
 <ul>
 <li><p>関心のあるグループ <span class="math inline">\((D)\)</span> ごとに記述統計をまとめる</p></li>
 <li><p><a href="#sec-Table">Section&nbsp;<span>5.2</span></a> 記述統計表を作成</p></li>
-<li><p><a href="#sec-Figure">Section&nbsp;<span>5.3</span></a> 変数の分布がバランスしているかどうか、図示する</p></li>
+<li><p><a href="#sec-Histogram">Section&nbsp;<span>5.3</span></a> ヒストグラムを用いた比較</p></li>
+<li><p><a href="#sec-Figure">Section&nbsp;<span>5.4</span></a> 変数の分布がバランスしているかどうか、図示する</p></li>
 </ul>
-<section id="パッケージ-データ" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">5.1</span> パッケージ &amp; データ</h2>
+<section id="設定" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="設定"><span class="header-section-number">5.1</span> 設定</h2>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cobalt)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary) <span class="co"># 記述統計</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cobalt) <span class="co"># バランス確認</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Data_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"ExampleData/Example.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><p><a href="https://www.danieldsjoberg.com/gtsummary/">gtsummary</a> : 記述統計表作成</p></li>
 <li><p><a href="https://ngreifer.github.io/cobalt/">cobalt</a> : 図作成</p></li>
 </ul>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns <span class="co"># 可視化</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Data_Python <span class="op">=</span> pd.read_csv(<span class="st">'ExampleData/Example.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="sec-Table" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="sec-Table"><span class="header-section-number">5.2</span> 記述統計評</h2>
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-Table"><span class="header-section-number">5.2</span> 記述統計表</h2>
 <ul>
-<li><p><span class="math inline">\(D=degree\)</span> ごとに以下を表示</p>
+<li><span class="math inline">\(D=Reform\)</span> ごとに以下を表示</li>
+</ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <ul>
 <li><p>連続変数については、 “中央値(下位25%, 上位25%)”</p></li>
 <li><p>カテゴリー変数について、 “サンプルサイズ(割合)”</p></li>
-</ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>CPSSW9204 <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> <span class="st">"degree"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Data_R <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> <span class="st">"Reform"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="bwvqvlcqfu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="pzvffjxqqy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#bwvqvlcqfu) .gt_table {
+:where(#pzvffjxqqy) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -314,7 +336,7 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_heading {
+:where(#pzvffjxqqy) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -326,7 +348,12 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_title {
+:where(#pzvffjxqqy) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#pzvffjxqqy) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -338,7 +365,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-:where(#bwvqvlcqfu) .gt_subtitle {
+:where(#pzvffjxqqy) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -350,13 +377,13 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-:where(#bwvqvlcqfu) .gt_bottom_border {
+:where(#pzvffjxqqy) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_col_headings {
+:where(#pzvffjxqqy) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -371,7 +398,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_col_heading {
+:where(#pzvffjxqqy) .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -391,7 +418,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-:where(#bwvqvlcqfu) .gt_column_spanner_outer {
+:where(#pzvffjxqqy) .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -403,15 +430,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-:where(#bwvqvlcqfu) .gt_column_spanner_outer:first-child {
+:where(#pzvffjxqqy) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#bwvqvlcqfu) .gt_column_spanner_outer:last-child {
+:where(#pzvffjxqqy) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#bwvqvlcqfu) .gt_column_spanner {
+:where(#pzvffjxqqy) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -423,7 +450,7 @@ div.csl-indent {
   width: 100%;
 }
 
-:where(#bwvqvlcqfu) .gt_group_heading {
+:where(#pzvffjxqqy) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -446,9 +473,10 @@ div.csl-indent {
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
-:where(#bwvqvlcqfu) .gt_empty_group_heading {
+:where(#pzvffjxqqy) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -463,15 +491,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-:where(#bwvqvlcqfu) .gt_from_md > :first-child {
+:where(#pzvffjxqqy) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#bwvqvlcqfu) .gt_from_md > :last-child {
+:where(#pzvffjxqqy) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#bwvqvlcqfu) .gt_row {
+:where(#pzvffjxqqy) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -490,7 +518,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-:where(#bwvqvlcqfu) .gt_stub {
+:where(#pzvffjxqqy) .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -503,7 +531,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#bwvqvlcqfu) .gt_stub_row_group {
+:where(#pzvffjxqqy) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -517,11 +545,11 @@ div.csl-indent {
   vertical-align: top;
 }
 
-:where(#bwvqvlcqfu) .gt_row_group_first td {
+:where(#pzvffjxqqy) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#bwvqvlcqfu) .gt_summary_row {
+:where(#pzvffjxqqy) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -531,16 +559,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#bwvqvlcqfu) .gt_first_summary_row {
+:where(#pzvffjxqqy) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_first_summary_row.thick {
+:where(#pzvffjxqqy) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#bwvqvlcqfu) .gt_last_summary_row {
+:where(#pzvffjxqqy) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -550,7 +578,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_grand_summary_row {
+:where(#pzvffjxqqy) .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -560,7 +588,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#bwvqvlcqfu) .gt_first_grand_summary_row {
+:where(#pzvffjxqqy) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -570,11 +598,11 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_striped {
+:where(#pzvffjxqqy) .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#bwvqvlcqfu) .gt_table_body {
+:where(#pzvffjxqqy) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -583,7 +611,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_footnotes {
+:where(#pzvffjxqqy) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -597,7 +625,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_footnote {
+:where(#pzvffjxqqy) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -606,7 +634,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#bwvqvlcqfu) .gt_sourcenotes {
+:where(#pzvffjxqqy) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -620,7 +648,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-:where(#bwvqvlcqfu) .gt_sourcenote {
+:where(#pzvffjxqqy) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -628,108 +656,104 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#bwvqvlcqfu) .gt_left {
+:where(#pzvffjxqqy) .gt_left {
   text-align: left;
 }
 
-:where(#bwvqvlcqfu) .gt_center {
+:where(#pzvffjxqqy) .gt_center {
   text-align: center;
 }
 
-:where(#bwvqvlcqfu) .gt_right {
+:where(#pzvffjxqqy) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#bwvqvlcqfu) .gt_font_normal {
+:where(#pzvffjxqqy) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#bwvqvlcqfu) .gt_font_bold {
+:where(#pzvffjxqqy) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#bwvqvlcqfu) .gt_font_italic {
+:where(#pzvffjxqqy) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#bwvqvlcqfu) .gt_super {
+:where(#pzvffjxqqy) .gt_super {
   font-size: 65%;
 }
 
-:where(#bwvqvlcqfu) .gt_two_val_uncert {
-  display: inline-block;
-  line-height: 1em;
-  text-align: right;
-  font-size: 60%;
-  vertical-align: -0.25em;
-  margin-left: 0.1em;
-}
-
-:where(#bwvqvlcqfu) .gt_footnote_marks {
+:where(#pzvffjxqqy) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#bwvqvlcqfu) .gt_asterisk {
+:where(#pzvffjxqqy) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#bwvqvlcqfu) .gt_slash_mark {
-  font-size: 0.7em;
-  line-height: 0.7em;
-  vertical-align: 0.15em;
+:where(#pzvffjxqqy) .gt_indent_1 {
+  text-indent: 5px;
 }
 
-:where(#bwvqvlcqfu) .gt_fraction_numerator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: 0.45em;
+:where(#pzvffjxqqy) .gt_indent_2 {
+  text-indent: 10px;
 }
 
-:where(#bwvqvlcqfu) .gt_fraction_denominator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: -0.05em;
+:where(#pzvffjxqqy) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#pzvffjxqqy) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#pzvffjxqqy) .gt_indent_5 {
+  text-indent: 25px;
 }
 </style>
 <table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>highschool</strong>, N = 8,986<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>bachelor</strong>, N = 6,602<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Characteristic</strong>"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>0</strong>, N = 11,012<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>0</strong>, N = 11,012<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>1</strong>, N = 3,781<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>1</strong>, N = 3,781<sup class="gt_footnote_marks">1</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left">year</td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1992</td>
-<td class="gt_row gt_center">4,640 (52%)</td>
-<td class="gt_row gt_center">2,962 (45%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">2004</td>
-<td class="gt_row gt_center">4,346 (48%)</td>
-<td class="gt_row gt_center">3,640 (55%)</td></tr>
-    <tr><td class="gt_row gt_left">earnings</td>
-<td class="gt_row gt_center">11 (8, 14)</td>
-<td class="gt_row gt_center">16 (12, 21)</td></tr>
-    <tr><td class="gt_row gt_left">gender</td>
-<td class="gt_row gt_center"></td>
-<td class="gt_row gt_center"></td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">male</td>
-<td class="gt_row gt_center">5,542 (62%)</td>
-<td class="gt_row gt_center">3,493 (53%)</td></tr>
-    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">female</td>
-<td class="gt_row gt_center">3,444 (38%)</td>
-<td class="gt_row gt_center">3,109 (47%)</td></tr>
-    <tr><td class="gt_row gt_left">age</td>
-<td class="gt_row gt_center">30 (27, 32)</td>
-<td class="gt_row gt_center">30 (27, 32)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">TradeQ</td>
+<td headers="stat_1" class="gt_row gt_center"></td>
+<td headers="stat_2" class="gt_row gt_center"></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
+<td headers="stat_1" class="gt_row gt_center">2,864 (26%)</td>
+<td headers="stat_2" class="gt_row gt_center">963 (25%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
+<td headers="stat_1" class="gt_row gt_center">2,940 (27%)</td>
+<td headers="stat_2" class="gt_row gt_center">967 (26%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
+<td headers="stat_1" class="gt_row gt_center">2,682 (24%)</td>
+<td headers="stat_2" class="gt_row gt_center">914 (24%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
+<td headers="stat_1" class="gt_row gt_center">2,526 (23%)</td>
+<td headers="stat_2" class="gt_row gt_center">937 (25%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Size</td>
+<td headers="stat_1" class="gt_row gt_center">45 (25, 65)</td>
+<td headers="stat_2" class="gt_row gt_center">50 (35, 65)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">BuildYear</td>
+<td headers="stat_1" class="gt_row gt_center">2,006 (1,998, 2,012)</td>
+<td headers="stat_2" class="gt_row gt_center">1,995 (1,984, 2,003)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Distance</td>
+<td headers="stat_1" class="gt_row gt_center">6.0 (4.0, 9.0)</td>
+<td headers="stat_2" class="gt_row gt_center">7.0 (4.0, 10.0)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Price</td>
+<td headers="stat_1" class="gt_row gt_center">31 (22, 50)</td>
+<td headers="stat_2" class="gt_row gt_center">34 (24, 48)</td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">
@@ -741,24 +765,134 @@ div.csl-indent {
 </div>
 </div>
 </div>
-</section>
-<section id="sec-Figure" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="sec-Figure"><span class="header-section-number">5.3</span> 記述統計評</h2>
-<ul>
-<li>Yの平均差/Yの標準偏差を報告 (<span class="citation" data-cites="imbens2015">Imbens (<a href="references.html#ref-imbens2015" role="doc-biblioref">2015</a>)</span> などで推奨)</li>
-</ul>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.tab</span>(degree <span class="sc">~</span> gender <span class="sc">+</span> age <span class="sc">+</span> year,</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                CPSSW9204,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">binary =</span> <span class="st">"std"</span>, <span class="at">continuous =</span> <span class="st">"std"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Data_Python.groupby(<span class="st">'Reform'</span>).describe().T</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reform                      0            1
+TradeQ    count  11012.000000  3781.000000
+          mean       2.442245     2.482677
+          std        1.107117     1.120293
+          min        1.000000     1.000000
+          25%        1.000000     1.000000
+          50%        2.000000     2.000000
+          75%        3.000000     3.000000
+          max        4.000000     4.000000
+Size      count  11012.000000  3781.000000
+          mean      45.175490    49.809574
+          std       22.727207    20.268129
+          min       10.000000    10.000000
+          25%       25.000000    35.000000
+          50%       45.000000    50.000000
+          75%       65.000000    65.000000
+          max      125.000000   125.000000
+BuildYear count  11012.000000  3781.000000
+          mean    2003.263187  1993.545579
+          std       12.008525    12.893772
+          min     1963.000000  1964.000000
+          25%     1998.000000  1984.000000
+          50%     2006.000000  1995.000000
+          75%     2012.000000  2003.000000
+          max     2022.000000  2021.000000
+Distance  count  11012.000000  3781.000000
+          mean       6.973628     7.275513
+          std        4.049774     4.109578
+          min        0.000000     0.000000
+          25%        4.000000     4.000000
+          50%        6.000000     7.000000
+          75%        9.000000    10.000000
+          max       22.000000    21.000000
+Price     count  11012.000000  3781.000000
+          mean      39.529176    40.086363
+          std       32.085602    27.362758
+          min        0.500000     0.540000
+          25%       22.000000    24.000000
+          50%       31.000000    34.000000
+          75%       50.000000    48.000000
+          max     1600.000000   300.000000</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-Histogram" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="sec-Histogram"><span class="header-section-number">5.3</span> ヒストグラム</h2>
+<ul>
+<li><span class="math inline">\(D=Reform\)</span> ごとに以下を表示</li>
+</ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Data_R <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Reform =</span> <span class="fu">factor</span>(Reform)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> Size,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> Reform,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">group =</span> Reform</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y=</span>..density..),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha=</span><span class="fl">0.5</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">position=</span><span class="st">'identity'</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="summary_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="summary_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sns.displot(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  Data_Python, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  x<span class="op">=</span><span class="st">"Size"</span>, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  hue<span class="op">=</span><span class="st">"Reform"</span>, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  stat<span class="op">=</span><span class="st">"density"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  common_norm<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="summary_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="280"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-Figure" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="sec-Figure"><span class="header-section-number">5.4</span> バランス確認</h2>
+<ul>
+<li><p>異なるDグループ間で、Xの分布の違いを確認</p></li>
+<li><p>Xの平均差/Xの標準偏差を報告 (<span class="citation" data-cites="imbens2015">Imbens (<a href="references.html#ref-imbens2015" role="doc-biblioref">2015</a>)</span> などで推奨)</p></li>
+</ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.tab</span>(Reform <span class="sc">~</span> Size <span class="sc">+</span> BuildYear <span class="sc">+</span> Distance <span class="sc">+</span> TradeQ,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>        Data_R,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">binary =</span> <span class="st">"std"</span>, <span class="at">continuous =</span> <span class="st">"std"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="summary_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <ul>
-<li>女性かつ近年、かつ年齢が若い方が大卒比率が高い</li>
+<li>築年が古い、広い、駅からの距離が長い物件が、改装されがち</li>
 </ul>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<ul>
+<li>Under construction</li>
+</ul>
+</div>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
@@ -810,7 +944,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -846,24 +997,42 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>

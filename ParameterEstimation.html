@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.251">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.1) - 2&nbsp; 線形モデルによるパラメータの推定</title>
+<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.11) - 2&nbsp; 線形モデルによるパラメータの推定</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -166,7 +166,7 @@ div.csl-indent {
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">R/Pythonによる比較・因果推論・予測研究 (ver 0.1)</a> 
+      <a href="./">R/Pythonによる比較・因果推論・予測研究 (ver 0.11)</a> 
     </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -235,10 +235,7 @@ div.csl-indent {
   <li><a href="#coarsened-exact-matching" id="toc-coarsened-exact-matching" class="nav-link" data-scroll-target="#coarsened-exact-matching"><span class="toc-section-number">2.3.1</span>  Coarsened exact matching</a></li>
   <li><a href="#propensity-score-with-subclassification" id="toc-propensity-score-with-subclassification" class="nav-link" data-scroll-target="#propensity-score-with-subclassification"><span class="toc-section-number">2.3.2</span>  Propensity score with subclassification</a></li>
   </ul></li>
-  <li><a href="#sec-Appendix" id="toc-sec-Appendix" class="nav-link" data-scroll-target="#sec-Appendix"><span class="toc-section-number">2.4</span>  付録：推定結果の保存と表示</a>
-  <ul class="collapse">
-  <li><a href="#dot-and-whisker-plotによる可視化" id="toc-dot-and-whisker-plotによる可視化" class="nav-link" data-scroll-target="#dot-and-whisker-plotによる可視化"><span class="toc-section-number">2.4.1</span>  Dot-and-Whisker plotによる可視化</a></li>
-  </ul></li>
+  <li><a href="#sec-Appendix" id="toc-sec-Appendix" class="nav-link" data-scroll-target="#sec-Appendix"><span class="toc-section-number">2.4</span>  付録：Dot-and-Whisker plotによる可視化</a></li>
   </ul>
 </nav>
     </div>
@@ -255,6 +252,7 @@ div.csl-indent {
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
@@ -298,10 +296,9 @@ div.csl-indent {
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Data_Python <span class="op">=</span> pd.read_csv(<span class="st">'ExampleData/Example.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Data_Python <span class="op">=</span> pd.read_csv(<span class="st">'ExampleData/Example.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -363,8 +360,8 @@ Distance       -1.3301973 14787</code></pre>
 Dep. Variable:                  Price   R-squared:                       0.425
 Model:                            OLS   Adj. R-squared:                  0.425
 Method:                 Least Squares   F-statistic:                     1197.
-Date:                Mon, 31 Oct 2022   Prob (F-statistic):               0.00
-Time:                        20:29:18   Log-Likelihood:                -67666.
+Date:                Tue, 03 Jan 2023   Prob (F-statistic):               0.00
+Time:                        15:17:06   Log-Likelihood:                -67666.
 No. Observations:               14793   AIC:                         1.353e+05
 Df Residuals:                   14787   BIC:                         1.354e+05
 Df Model:                           5                                         
@@ -637,12 +634,14 @@ Distance       -1.1647137 264.7544</code></pre>
 </section>
 </section>
 <section id="sec-Appendix" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="sec-Appendix"><span class="header-section-number">2.4</span> 付録：推定結果の保存と表示</h2>
-<section id="dot-and-whisker-plotによる可視化" class="level3" data-number="2.4.1">
-<h3 data-number="2.4.1" class="anchored" data-anchor-id="dot-and-whisker-plotによる可視化"><span class="header-section-number">2.4.1</span> Dot-and-Whisker plotによる可視化</h3>
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-Appendix"><span class="header-section-number">2.4</span> 付録：Dot-and-Whisker plotによる可視化</h2>
 <ul>
 <li>Dot-and-Whisker図により点推定量と信頼区間を可視化</li>
 </ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fit.m <span class="ot">&lt;-</span> <span class="fu">matchit</span>(Reform <span class="sc">~</span> TradeQ <span class="sc">+</span> Size <span class="sc">+</span> BuildYear <span class="sc">+</span> Distance,</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> Data_R,</span>
@@ -695,6 +694,9 @@ Distance       -1.1647137 264.7544</code></pre>
 <p><img src="ParameterEstimation_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</div>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
@@ -711,7 +713,6 @@ Imbens, Guido W. 2015. <span>“Matching Methods in Practice: Three Examples.”
 Lin, Winston. 2013. <span>“Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining Freedman<span>’</span>s Critique.”</span> <em>The Annals of Applied Statistics</em> 7 (1): 295–318. <a href="https://doi.org/10.1214/12-AOAS583">https://doi.org/10.1214/12-AOAS583</a>.
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -756,7 +757,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
@@ -792,24 +810,42 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>
