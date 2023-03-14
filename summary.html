@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.11) - 5&nbsp; 付録: 記述統計</title>
+<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.11) - 6&nbsp; 付録: 記述統計</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -113,7 +113,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./PreProcess.html" rel="next">
-<link href="./CausalMachineLearning.html" rel="prev">
+<link href="./HeteroDiscover.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -153,7 +153,7 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -193,22 +193,27 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></a>
+  <a href="./Prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></a>
+  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  <a href="./HeteroDiscover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
+  <a href="./summary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -225,10 +230,10 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#設定" id="toc-設定" class="nav-link active" data-scroll-target="#設定"><span class="toc-section-number">5.1</span>  設定</a></li>
-  <li><a href="#sec-Table" id="toc-sec-Table" class="nav-link" data-scroll-target="#sec-Table"><span class="toc-section-number">5.2</span>  記述統計表</a></li>
-  <li><a href="#sec-Histogram" id="toc-sec-Histogram" class="nav-link" data-scroll-target="#sec-Histogram"><span class="toc-section-number">5.3</span>  ヒストグラム</a></li>
-  <li><a href="#sec-Figure" id="toc-sec-Figure" class="nav-link" data-scroll-target="#sec-Figure"><span class="toc-section-number">5.4</span>  バランス確認</a></li>
+  <li><a href="#設定" id="toc-設定" class="nav-link active" data-scroll-target="#設定"><span class="toc-section-number">6.1</span>  設定</a></li>
+  <li><a href="#sec-Table" id="toc-sec-Table" class="nav-link" data-scroll-target="#sec-Table"><span class="toc-section-number">6.2</span>  記述統計表</a></li>
+  <li><a href="#sec-Histogram" id="toc-sec-Histogram" class="nav-link" data-scroll-target="#sec-Histogram"><span class="toc-section-number">6.3</span>  ヒストグラム</a></li>
+  <li><a href="#sec-Figure" id="toc-sec-Figure" class="nav-link" data-scroll-target="#sec-Figure"><span class="toc-section-number">6.4</span>  バランス確認</a></li>
   </ul>
 </nav>
     </div>
@@ -237,7 +242,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-Description" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span></h1>
+<h1 class="title"><span id="sec-Description" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span></h1>
 </div>
 
 
@@ -254,12 +259,12 @@ div.csl-indent {
 
 <ul>
 <li><p>関心のあるグループ <span class="math inline">\((D)\)</span> ごとに記述統計をまとめる</p></li>
-<li><p><a href="#sec-Table">Section&nbsp;<span>5.2</span></a> 記述統計表を作成</p></li>
-<li><p><a href="#sec-Histogram">Section&nbsp;<span>5.3</span></a> ヒストグラムを用いた比較</p></li>
-<li><p><a href="#sec-Figure">Section&nbsp;<span>5.4</span></a> 変数の分布がバランスしているかどうか、図示する</p></li>
+<li><p><a href="#sec-Table">Section&nbsp;<span>6.2</span></a> 記述統計表を作成</p></li>
+<li><p><a href="#sec-Histogram">Section&nbsp;<span>6.3</span></a> ヒストグラムを用いた比較</p></li>
+<li><p><a href="#sec-Figure">Section&nbsp;<span>6.4</span></a> 変数の分布がバランスしているかどうか、図示する</p></li>
 </ul>
-<section id="設定" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="設定"><span class="header-section-number">5.1</span> 設定</h2>
+<section id="設定" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="設定"><span class="header-section-number">6.1</span> 設定</h2>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
 <div class="tab-content">
@@ -288,8 +293,8 @@ div.csl-indent {
 </div>
 </div>
 </section>
-<section id="sec-Table" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="sec-Table"><span class="header-section-number">5.2</span> 記述統計表</h2>
+<section id="sec-Table" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="sec-Table"><span class="header-section-number">6.2</span> 記述統計表</h2>
 <ul>
 <li><span class="math inline">\(D=Reform\)</span> ごとに以下を表示</li>
 </ul>
@@ -817,8 +822,8 @@ Price     count  11012.000000  3781.000000
 </div>
 </div>
 </section>
-<section id="sec-Histogram" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="sec-Histogram"><span class="header-section-number">5.3</span> ヒストグラム</h2>
+<section id="sec-Histogram" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="sec-Histogram"><span class="header-section-number">6.3</span> ヒストグラム</h2>
 <ul>
 <li><span class="math inline">\(D=Reform\)</span> ごとに以下を表示</li>
 </ul>
@@ -863,8 +868,8 @@ Price     count  11012.000000  3781.000000
 </div>
 </div>
 </section>
-<section id="sec-Figure" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="sec-Figure"><span class="header-section-number">5.4</span> バランス確認</h2>
+<section id="sec-Figure" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="sec-Figure"><span class="header-section-number">6.4</span> バランス確認</h2>
 <ul>
 <li><p>異なるDグループ間で、Xの分布の違いを確認</p></li>
 <li><p>Xの平均差/Xの標準偏差を報告 (<span class="citation" data-cites="imbens2015">Imbens (<a href="references.html#ref-imbens2015" role="doc-biblioref">2015</a>)</span> などで推奨)</p></li>
@@ -1038,13 +1043,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./CausalMachineLearning.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></span>
+      <a href="./HeteroDiscover.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./PreProcess.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: データ整備</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">付録: データ整備</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
