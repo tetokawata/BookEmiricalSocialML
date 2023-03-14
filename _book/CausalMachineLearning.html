@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.11) - 4&nbsp; セミパラメトリック推定</title>
+<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.11) - 4&nbsp; セミパラメトリック推定によるパラメタ推定</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -112,7 +112,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./summary.html" rel="next">
+<link href="./HeteroDiscover.html" rel="next">
 <link href="./Prediction.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -152,7 +152,7 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -192,22 +192,27 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></a>
+  <a href="./Prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></a>
+  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  <a href="./HeteroDiscover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -235,7 +240,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-CausalMachine" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></span></h1>
+<h1 class="title"><span id="sec-CausalMachine" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></span></h1>
 </div>
 
 
@@ -367,7 +372,7 @@ Apply cross-fitting: TRUE
 ------------------ Fit summary       ------------------
  Estimates and significance testing of the effect of target variables
        Estimate. Std. Error t value Pr(&gt;|t|)    
-Reform    4.8548     0.4007   12.12   &lt;2e-16 ***
+Reform    4.8926     0.4061   12.05   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -382,7 +387,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>FitPLR_Python.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;doubleml.double_ml_plr.DoubleMLPLR object at 0x13f400040&gt;</code></pre>
+<pre><code>&lt;doubleml.double_ml_plr.DoubleMLPLR object at 0x298446340&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(FitPLR_Python)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -400,7 +405,7 @@ Score function: partialling out
 DML algorithm: dml2
 
 ------------------ Machine learner   ------------------
-Learner ml_g: RandomForestRegressor(n_estimators=500)
+Learner ml_l: RandomForestRegressor(n_estimators=500)
 Learner ml_m: RandomForestRegressor(n_estimators=500)
 
 ------------------ Resampling        ------------------
@@ -409,8 +414,8 @@ No. repeated sample splits: 1
 Apply cross-fitting: True
 
 ------------------ Fit summary       ------------------
-           coef   std err          t         P&gt;|t|     2.5 %    97.5 %
-Reform  4.72997  0.416628  11.352974  7.168234e-30  3.913394  5.546546</code></pre>
+            coef   std err          t         P&gt;|t|     2.5 %   97.5 %
+Reform  5.224552  0.361128  14.467301  1.949731e-47  4.516753  5.93235</code></pre>
 </div>
 </div>
 </div>
@@ -483,7 +488,7 @@ Apply cross-fitting: TRUE
 ------------------ Fit summary       ------------------
  Estimates and significance testing of the effect of target variables
        Estimate. Std. Error t value Pr(&gt;|t|)    
-Reform     4.035      0.434   9.298   &lt;2e-16 ***
+Reform    3.8588     0.4247   9.086   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -499,12 +504,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>FitAIPW_Python.fit()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;doubleml.double_ml_irm.DoubleMLIRM object at 0x174ed18e0&gt;</code></pre>
+<pre><code>&lt;doubleml.double_ml_irm.DoubleMLIRM object at 0x16ba7f430&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>FitAIPW_Python.summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            coef   std err         t         P&gt;|t|     2.5 %    97.5 %
-Reform  4.241805  0.567664  7.472381  7.875634e-14  3.129203  5.354407</code></pre>
+Reform  4.348929  0.545113  7.978028  1.486896e-15  3.280526  5.417331</code></pre>
 </div>
 </div>
 </div>
@@ -662,12 +667,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./Prediction.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./summary.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./HeteroDiscover.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

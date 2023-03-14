@@ -193,22 +193,27 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></a>
+  <a href="./Prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></a>
+  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  <a href="./HeteroDiscover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -282,11 +287,10 @@ div.csl-indent {
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(estimatr) <span class="co"># Estimation with robust standard error</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt) <span class="co"># Matching for preprocess</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Data_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"ExampleData/Example.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(estimatr) <span class="co"># Estimation with robust standard error</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt) <span class="co"># Matching for preprocess</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Data_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"ExampleData/Example.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><p><a href="https://declaredesign.org/r/estimatr/">estimatr</a></p></li>
@@ -360,8 +364,8 @@ Distance       -1.3301973 14787</code></pre>
 Dep. Variable:                  Price   R-squared:                       0.425
 Model:                            OLS   Adj. R-squared:                  0.425
 Method:                 Least Squares   F-statistic:                     1197.
-Date:                Tue, 03 Jan 2023   Prob (F-statistic):               0.00
-Time:                        15:17:06   Log-Likelihood:                -67666.
+Date:                Sun, 12 Mar 2023   Prob (F-statistic):               0.00
+Time:                        14:49:42   Log-Likelihood:                -67666.
 No. Observations:               14793   AIC:                         1.353e+05
 Df Residuals:                   14787   BIC:                         1.354e+05
 Df Model:                           5                                         
@@ -857,7 +861,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./Prediction.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

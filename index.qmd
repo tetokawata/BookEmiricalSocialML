@@ -18,6 +18,8 @@
 
 - [Section -@sec-CausalMachine] セミパラメトリック推定 $+$ 機械学習 による平均差の推定
 
+- [Section -@sec-HeteroDiscover] セミパラメトリック推定 $+$ 機械学習 による条件付き平均差の推定
+
 - [Section -@sec-Description] Treatmentグループ別の記述統計
 
 - [Section -@sec-PreProcess] recipesパッケージを用いた統合的なデータ整備

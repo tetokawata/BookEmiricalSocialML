@@ -1,4 +1,4 @@
-# 予測 {#sec-Prediction}
+# 教師付き学習による母平均モデルの推定 {#sec-Prediction}
 
 - 手持ちのデータと同じ母集団から新しくランダムサンプリングされ、$X$のみが観察できるサンプルについて$Y$の値を予測する。
 
@@ -24,6 +24,10 @@ $$\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]g(x)dx$$
 
 ## 実装
 
+::: {.panel-tabset}
+
+### R
+
 - 以下のPipelineを実装
 
 ```{mermaid}
@@ -44,7 +48,7 @@ flowchart TB
 ```
 
 
-### パッケージ & データ
+#### パッケージ & データ
 
 - ここではpipelinesによるデータ整備は行わない (暫定的)
 
@@ -60,7 +64,7 @@ Raw <- read_csv("ExampleData/Example.csv")
 set.seed(123)
 ```
 
-### 推定タスクの定義
+#### 推定タスクの定義
 
 - 分割数、繰り返し計算回数は最小限に設定
 
@@ -68,8 +72,6 @@ set.seed(123)
 
 ```{r DefineR}
 Task <- as_task_regr(Raw, target = "Price") # Task設定
-
-Group <- partition(Task, ratio = 0.8) # Train/Test分割
 
 R2 <-  msr("regr.rsq") # R2で評価
 
@@ -83,15 +85,21 @@ Tuner <- tnr("grid_search",
 ```
 
 
-### 使用するBuildIn Algorithmを定義
+#### 使用するBuildIn Algorithmを定義
 
 ```{r Learner$}
-SimpleOLS <- lrn("regr.lm", id = "SimpleOLS") # OLS
+SimpleOLS <- lrn(
+  "regr.lm", 
+  id = "SimpleOLS"
+  ) # OLS
 
-RandomForest <- lrn("regr.ranger", id = "RandomForest") # RandomForest
+RandomForest <- lrn(
+  "regr.ranger", 
+  id = "RandomForest"
+  ) # RandomForest
 ```
 
-### PreProcess
+#### PreProcess
 
 - 線形モデルについて、連続変数二乗項と交差項を導入
 
@@ -99,6 +107,7 @@ RandomForest <- lrn("regr.ranger", id = "RandomForest") # RandomForest
 
 ```{r WithPreProcessR}
 Mutate = po("mutate") # データ加工
+
 Mutate$param_set$values$mutation = list(
   Size2 = ~ Size*Size,
   TradeQ2 = ~ TradeQ*TradeQ,
@@ -122,7 +131,7 @@ OLS <- Mutate %>>%
 OLS$id <- "OLS"
 ```
 
-### チューニング付き推定方法の定義
+#### チューニング付き推定方法の定義
 
 - Tree、LASSO アルゴリズムについて、HyperParameterを交差検証により推定する
 
@@ -163,7 +172,7 @@ LASSO <- AutoTuner$new(
 LASSO$id <- "LASSO"
 ```
 
-### SuperLearnerの定義
+#### SuperLearnerの定義
 
 ```{r StackR}
 BaseLearner <- list(
@@ -173,22 +182,55 @@ BaseLearner <- list(
   LASSO
 ) # 個別推定アルゴリズム
 
-SuperLearner <- lrn("regr.lm",
-                    id = "SuperLearner") # 個別予測をまとめるアルゴリズム
+SuperLearner <- lrn(
+  "regr.lm",
+  id = "SuperLearner") # 個別予測をまとめるアルゴリズム
 
-Stacking <- pipeline_stacking(BaseLearner, 
-                              SuperLearner,
-                              use_features = FALSE) |> 
+Stacking <- pipeline_stacking(
+  BaseLearner, 
+  SuperLearner,
+  use_features = FALSE) |> 
   as_learner() # SuperLearnerの定義
 
 Stacking$id <- "Stacking"
 ```
 
-### ベンチマーク・テスト
+
+#### サンプル分割によるテスト
 
 ```{r}
 Design <- benchmark_grid(
-  tasks = list(Task$clone()$filter(Group$train)),
+  tasks = Task,
+  learners = list(
+    OLS,
+    SimpleOLS,
+    LASSO,
+    RandomForest,
+    Tree,
+    Stacking
+  ),
+  resamplings = rsmp(
+    "holdout",
+    ratio = 0.8) # Training(8割)/Test(2割)へ分割
+)
+
+lgr::get_logger("mlr3")$set_threshold("error") # Errorのみを表示
+lgr::get_logger("bbotk")$set_threshold("error") # Errorのみを表示
+future::plan("multisession") # 並列処理
+
+BenchMark <- benchmark(Design)
+
+BenchMark$aggregate(R2)
+```
+
+- RandomForestとStackingはComparableな性能
+
+
+#### 交差推定によるテスト
+
+```{r}
+Design <- benchmark_grid(
+  tasks = Task,
   learners = list(
     OLS,
     SimpleOLS,
@@ -211,15 +253,57 @@ BenchMark$aggregate(R2)
 
 - RandomForestとStackingはComparableな性能
 
-    - とりあえずStackingを採用
-    
-### 最終モデル
+### Python
 
-- Stakingを全TrainingDataで推定
+- OLSとRandom Forestで予測モデルを推定し、交差検証で比較する。
 
-- TestDataで評価
+#### パッケージ & データ
 
-```{r}
-Stacking$train(Task, row_ids = Group$train)
-Stacking$predict(Task, Group$test)$score(R2)
+```{python}
+from sklearn import linear_model
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
+import pandas as pd
+import numpy as np
+
+data = pd.read_csv("ExampleData/Example.csv")
+
+np.random.seed(123) # Fix seed
+
+Y = data['Price']
+
+X = data.drop(
+  'Price',
+  axis = 1)
 ```
+
+#### 使用するアルゴリズム
+
+```{python}
+OLS = linear_model.LinearRegression() # OLS
+
+RF = RandomForestRegressor(
+  n_estimators = 500) # Random Forest
+```
+
+#### 交差推定によるテスト
+
+```{python}
+Folds = KFold(n_splits=5, shuffle = True) # サンプル5分割
+```
+
+- OLS のテスト
+
+```{python}
+np.mean(cross_val_score(OLS, X, Y, cv = Folds))
+```
+
+- Random Forestのテスト
+
+```{python}
+np.mean(cross_val_score(RF, X, Y, cv = Folds))
+```
+
+
+:::

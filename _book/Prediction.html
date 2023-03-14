@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.11) - 3&nbsp; 予測</title>
+<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.11) - 3&nbsp; 教師付き学習による母平均モデルの推定</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -137,7 +137,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -177,22 +177,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Prediction.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></a>
+  <a href="./Prediction.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></a>
+  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  <a href="./HeteroDiscover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
+  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -210,17 +215,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#問題設定" id="toc-問題設定" class="nav-link active" data-scroll-target="#問題設定"><span class="toc-section-number">3.1</span>  問題設定</a></li>
-  <li><a href="#実装" id="toc-実装" class="nav-link" data-scroll-target="#実装"><span class="toc-section-number">3.2</span>  実装</a>
-  <ul class="collapse">
-  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link" data-scroll-target="#パッケージ-データ"><span class="toc-section-number">3.2.1</span>  パッケージ &amp; データ</a></li>
-  <li><a href="#推定タスクの定義" id="toc-推定タスクの定義" class="nav-link" data-scroll-target="#推定タスクの定義"><span class="toc-section-number">3.2.2</span>  推定タスクの定義</a></li>
-  <li><a href="#使用するbuildin-algorithmを定義" id="toc-使用するbuildin-algorithmを定義" class="nav-link" data-scroll-target="#使用するbuildin-algorithmを定義"><span class="toc-section-number">3.2.3</span>  使用するBuildIn Algorithmを定義</a></li>
-  <li><a href="#preprocess" id="toc-preprocess" class="nav-link" data-scroll-target="#preprocess"><span class="toc-section-number">3.2.4</span>  PreProcess</a></li>
-  <li><a href="#チューニング付き推定方法の定義" id="toc-チューニング付き推定方法の定義" class="nav-link" data-scroll-target="#チューニング付き推定方法の定義"><span class="toc-section-number">3.2.5</span>  チューニング付き推定方法の定義</a></li>
-  <li><a href="#superlearnerの定義" id="toc-superlearnerの定義" class="nav-link" data-scroll-target="#superlearnerの定義"><span class="toc-section-number">3.2.6</span>  SuperLearnerの定義</a></li>
-  <li><a href="#ベンチマークテスト" id="toc-ベンチマークテスト" class="nav-link" data-scroll-target="#ベンチマークテスト"><span class="toc-section-number">3.2.7</span>  ベンチマーク・テスト</a></li>
-  <li><a href="#最終モデル" id="toc-最終モデル" class="nav-link" data-scroll-target="#最終モデル"><span class="toc-section-number">3.2.8</span>  最終モデル</a></li>
-  </ul></li>
+  <li><a href="#実装" id="toc-実装" class="nav-link" data-scroll-target="#実装"><span class="toc-section-number">3.2</span>  実装</a></li>
   </ul>
 </nav>
     </div>
@@ -229,7 +224,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-Prediction" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">予測</span></span></h1>
+<h1 class="title"><span id="sec-Prediction" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></span></h1>
 </div>
 
 
@@ -273,6 +268,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="実装" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="実装"><span class="header-section-number">3.2</span> 実装</h2>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <ul>
 <li>以下のPipelineを実装</li>
 </ul>
@@ -302,8 +301,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<section id="パッケージ-データ" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">3.2.1</span> パッケージ &amp; データ</h3>
+<section id="パッケージ-データ" class="level4" data-number="3.2.0.1">
+<h4 data-number="3.2.0.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">3.2.0.1</span> パッケージ &amp; データ</h4>
 <ul>
 <li><p>ここではpipelinesによるデータ整備は行わない (暫定的)</p></li>
 <li><p>追加でlgr (表示するメッセージを操作), future (並列計算) パッケージを使用</p></li>
@@ -318,8 +317,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="推定タスクの定義" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="推定タスクの定義"><span class="header-section-number">3.2.2</span> 推定タスクの定義</h3>
+<section id="推定タスクの定義" class="level4" data-number="3.2.0.2">
+<h4 data-number="3.2.0.2" class="anchored" data-anchor-id="推定タスクの定義"><span class="header-section-number">3.2.0.2</span> 推定タスクの定義</h4>
 <ul>
 <li><p>分割数、繰り返し計算回数は最小限に設定</p>
 <ul>
@@ -329,29 +328,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Task <span class="ot">&lt;-</span> <span class="fu">as_task_regr</span>(Raw, <span class="at">target =</span> <span class="st">"Price"</span>) <span class="co"># Task設定</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Group <span class="ot">&lt;-</span> <span class="fu">partition</span>(Task, <span class="at">ratio =</span> <span class="fl">0.8</span>) <span class="co"># Train/Test分割</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>R2 <span class="ot">&lt;-</span>  <span class="fu">msr</span>(<span class="st">"regr.rsq"</span>) <span class="co"># R2で評価</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>R2 <span class="ot">&lt;-</span>  <span class="fu">msr</span>(<span class="st">"regr.rsq"</span>) <span class="co"># R2で評価</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>CV <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>,<span class="at">folds =</span> <span class="dv">2</span>) <span class="co"># 2分割交差検証</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>CV <span class="ot">&lt;-</span> <span class="fu">rsmp</span>(<span class="st">"cv"</span>,<span class="at">folds =</span> <span class="dv">2</span>) <span class="co"># 2分割交差検証</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Terminal <span class="ot">=</span> <span class="fu">trm</span>(<span class="st">"evals"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">n_evals =</span> <span class="dv">20</span>) <span class="co"># 20回の繰り返し評価</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Tuner <span class="ot">&lt;-</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">resolution =</span> <span class="dv">20</span>) <span class="co"># 20回のグリッドサーチ</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Terminal <span class="ot">=</span> <span class="fu">trm</span>(<span class="st">"evals"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">n_evals =</span> <span class="dv">20</span>) <span class="co"># 20回の繰り返し評価</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Tuner <span class="ot">&lt;-</span> <span class="fu">tnr</span>(<span class="st">"grid_search"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">resolution =</span> <span class="dv">20</span>) <span class="co"># 20回のグリッドサーチ</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="使用するbuildin-algorithmを定義" class="level3" data-number="3.2.3">
-<h3 data-number="3.2.3" class="anchored" data-anchor-id="使用するbuildin-algorithmを定義"><span class="header-section-number">3.2.3</span> 使用するBuildIn Algorithmを定義</h3>
+<section id="使用するbuildin-algorithmを定義" class="level4" data-number="3.2.0.3">
+<h4 data-number="3.2.0.3" class="anchored" data-anchor-id="使用するbuildin-algorithmを定義"><span class="header-section-number">3.2.0.3</span> 使用するBuildIn Algorithmを定義</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>SimpleOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>, <span class="at">id =</span> <span class="st">"SimpleOLS"</span>) <span class="co"># OLS</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>RandomForest <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.ranger"</span>, <span class="at">id =</span> <span class="st">"RandomForest"</span>) <span class="co"># RandomForest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>SimpleOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"regr.lm"</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"SimpleOLS"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># OLS</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>RandomForest <span class="ot">&lt;-</span> <span class="fu">lrn</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"regr.ranger"</span>, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"RandomForest"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># RandomForest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="preprocess" class="level3" data-number="3.2.4">
-<h3 data-number="3.2.4" class="anchored" data-anchor-id="preprocess"><span class="header-section-number">3.2.4</span> PreProcess</h3>
+<section id="preprocess" class="level4" data-number="3.2.0.4">
+<h4 data-number="3.2.0.4" class="anchored" data-anchor-id="preprocess"><span class="header-section-number">3.2.0.4</span> PreProcess</h4>
 <ul>
 <li><p>線形モデルについて、連続変数二乗項と交差項を導入</p>
 <ul>
@@ -360,31 +363,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Mutate <span class="ot">=</span> <span class="fu">po</span>(<span class="st">"mutate"</span>) <span class="co"># データ加工</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Mutate<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>mutation <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Size2 =</span> <span class="sc">~</span> Size<span class="sc">*</span>Size,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">TradeQ2 =</span> <span class="sc">~</span> TradeQ<span class="sc">*</span>TradeQ,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">BuildYear2 =</span> <span class="sc">~</span>BuildYear<span class="sc">*</span>BuildYear,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Distance2 =</span> <span class="sc">~</span>Distance<span class="sc">*</span>Distance,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Size_TradeQ =</span> <span class="sc">~</span>Size<span class="sc">*</span>TradeQ,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Size_BuildYear =</span> <span class="sc">~</span>Size<span class="sc">*</span>BuildYear,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Size_Distance =</span> <span class="sc">~</span> Size<span class="sc">*</span>Distance,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">TradeQ_BuildYear =</span> <span class="sc">~</span>TradeQ<span class="sc">*</span>BuildYear,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">TradeQ_Distance =</span> <span class="sc">~</span>TradeQ<span class="sc">*</span>Distance,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">BuildYear_Distance =</span> <span class="sc">~</span>BuildYear<span class="sc">*</span>Distance</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>) <span class="co"># 二乗項と交差項の作成</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>Scale <span class="ot">=</span> <span class="fu">po</span>(<span class="st">"scale"</span>) <span class="co"># 標準化</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>OLS <span class="ot">&lt;-</span> Mutate <span class="sc">%&gt;&gt;%</span> </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  Scale <span class="sc">%&gt;&gt;%</span> </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>() <span class="co"># 二乗項と交差項を導入したOLS</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>OLS<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="st">"OLS"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Mutate<span class="sc">$</span>param_set<span class="sc">$</span>values<span class="sc">$</span>mutation <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Size2 =</span> <span class="sc">~</span> Size<span class="sc">*</span>Size,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">TradeQ2 =</span> <span class="sc">~</span> TradeQ<span class="sc">*</span>TradeQ,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">BuildYear2 =</span> <span class="sc">~</span>BuildYear<span class="sc">*</span>BuildYear,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Distance2 =</span> <span class="sc">~</span>Distance<span class="sc">*</span>Distance,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Size_TradeQ =</span> <span class="sc">~</span>Size<span class="sc">*</span>TradeQ,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Size_BuildYear =</span> <span class="sc">~</span>Size<span class="sc">*</span>BuildYear,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Size_Distance =</span> <span class="sc">~</span> Size<span class="sc">*</span>Distance,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">TradeQ_BuildYear =</span> <span class="sc">~</span>TradeQ<span class="sc">*</span>BuildYear,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">TradeQ_Distance =</span> <span class="sc">~</span>TradeQ<span class="sc">*</span>Distance,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">BuildYear_Distance =</span> <span class="sc">~</span>BuildYear<span class="sc">*</span>Distance</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>) <span class="co"># 二乗項と交差項の作成</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>Scale <span class="ot">=</span> <span class="fu">po</span>(<span class="st">"scale"</span>) <span class="co"># 標準化</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>OLS <span class="ot">&lt;-</span> Mutate <span class="sc">%&gt;&gt;%</span> </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  Scale <span class="sc">%&gt;&gt;%</span> </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>() <span class="co"># 二乗項と交差項を導入したOLS</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>OLS<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="st">"OLS"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="チューニング付き推定方法の定義" class="level3" data-number="3.2.5">
-<h3 data-number="3.2.5" class="anchored" data-anchor-id="チューニング付き推定方法の定義"><span class="header-section-number">3.2.5</span> チューニング付き推定方法の定義</h3>
+<section id="チューニング付き推定方法の定義" class="level4" data-number="3.2.0.5">
+<h4 data-number="3.2.0.5" class="anchored" data-anchor-id="チューニング付き推定方法の定義"><span class="header-section-number">3.2.0.5</span> チューニング付き推定方法の定義</h4>
 <ul>
 <li><p>Tree、LASSO アルゴリズムについて、HyperParameterを交差検証により推定する</p></li>
 <li><p>探索するHyperParameterの範囲を設定する必要がある</p>
@@ -425,8 +429,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>LASSO<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="st">"LASSO"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="superlearnerの定義" class="level3" data-number="3.2.6">
-<h3 data-number="3.2.6" class="anchored" data-anchor-id="superlearnerの定義"><span class="header-section-number">3.2.6</span> SuperLearnerの定義</h3>
+<section id="superlearnerの定義" class="level4" data-number="3.2.0.6">
+<h4 data-number="3.2.0.6" class="anchored" data-anchor-id="superlearnerの定義"><span class="header-section-number">3.2.0.6</span> SuperLearnerの定義</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>BaseLearner <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  OLS,</span>
@@ -435,22 +439,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  LASSO</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>) <span class="co"># 個別推定アルゴリズム</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>SuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">"regr.lm"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">id =</span> <span class="st">"SuperLearner"</span>) <span class="co"># 個別予測をまとめるアルゴリズム</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>Stacking <span class="ot">&lt;-</span> <span class="fu">pipeline_stacking</span>(BaseLearner, </span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                              SuperLearner,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                              <span class="at">use_features =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>() <span class="co"># SuperLearnerの定義</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>Stacking<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="st">"Stacking"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>SuperLearner <span class="ot">&lt;-</span> <span class="fu">lrn</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"regr.lm"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">"SuperLearner"</span>) <span class="co"># 個別予測をまとめるアルゴリズム</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>Stacking <span class="ot">&lt;-</span> <span class="fu">pipeline_stacking</span>(</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  BaseLearner, </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  SuperLearner,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">use_features =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_learner</span>() <span class="co"># SuperLearnerの定義</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>Stacking<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="st">"Stacking"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="ベンチマークテスト" class="level3" data-number="3.2.7">
-<h3 data-number="3.2.7" class="anchored" data-anchor-id="ベンチマークテスト"><span class="header-section-number">3.2.7</span> ベンチマーク・テスト</h3>
+<section id="サンプル分割によるテスト" class="level4" data-number="3.2.0.7">
+<h4 data-number="3.2.0.7" class="anchored" data-anchor-id="サンプル分割によるテスト"><span class="header-section-number">3.2.0.7</span> サンプル分割によるテスト</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Design <span class="ot">&lt;-</span> <span class="fu">benchmark_grid</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> <span class="fu">list</span>(Task<span class="sc">$</span><span class="fu">clone</span>()<span class="sc">$</span><span class="fu">filter</span>(Group<span class="sc">$</span>train)),</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> Task,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">list</span>(</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    OLS,</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    SimpleOLS,</span>
@@ -459,50 +465,133 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    Tree,</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    Stacking</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamplings =</span> CV</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"error"</span>) <span class="co"># Errorのみを表示</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"bbotk"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"error"</span>) <span class="co"># Errorのみを表示</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(<span class="st">"multisession"</span>) <span class="co"># 並列処理</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>BenchMark <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(Design)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamplings =</span> <span class="fu">rsmp</span>(</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"holdout"</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">ratio =</span> <span class="fl">0.8</span>) <span class="co"># Training(8割)/Test(2割)へ分割</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"error"</span>) <span class="co"># Errorのみを表示</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"bbotk"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"error"</span>) <span class="co"># Errorのみを表示</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(<span class="st">"multisession"</span>) <span class="co"># 並列処理</span></span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>BenchMark<span class="sc">$</span><span class="fu">aggregate</span>(R2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>BenchMark <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(Design)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>BenchMark<span class="sc">$</span><span class="fu">aggregate</span>(R2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   nr      resample_result task_id   learner_id resampling_id iters  regr.rsq
-1:  1 &lt;ResampleResult[21]&gt;     Raw          OLS            cv     2 0.4689119
-2:  2 &lt;ResampleResult[21]&gt;     Raw    SimpleOLS            cv     2 0.4239997
-3:  3 &lt;ResampleResult[21]&gt;     Raw        LASSO            cv     2 0.4450566
-4:  4 &lt;ResampleResult[21]&gt;     Raw RandomForest            cv     2 0.4799319
-5:  5 &lt;ResampleResult[21]&gt;     Raw         Tree            cv     2 0.4375646
-6:  6 &lt;ResampleResult[21]&gt;     Raw     Stacking            cv     2 0.4849559</code></pre>
+1:  1 &lt;ResampleResult[21]&gt;     Raw          OLS       holdout     1 0.2798997
+2:  2 &lt;ResampleResult[21]&gt;     Raw    SimpleOLS       holdout     1 0.2553502
+3:  3 &lt;ResampleResult[21]&gt;     Raw        LASSO       holdout     1 0.2693324
+4:  4 &lt;ResampleResult[21]&gt;     Raw RandomForest       holdout     1 0.3010110
+5:  5 &lt;ResampleResult[21]&gt;     Raw         Tree       holdout     1 0.2777786
+6:  6 &lt;ResampleResult[21]&gt;     Raw     Stacking       holdout     1 0.3027010</code></pre>
 </div>
 </div>
 <ul>
-<li><p>RandomForestとStackingはComparableな性能</p>
-<ul>
-<li>とりあえずStackingを採用</li>
-</ul></li>
+<li>RandomForestとStackingはComparableな性能</li>
 </ul>
 </section>
-<section id="最終モデル" class="level3" data-number="3.2.8">
-<h3 data-number="3.2.8" class="anchored" data-anchor-id="最終モデル"><span class="header-section-number">3.2.8</span> 最終モデル</h3>
+<section id="交差推定によるテスト" class="level4" data-number="3.2.0.8">
+<h4 data-number="3.2.0.8" class="anchored" data-anchor-id="交差推定によるテスト"><span class="header-section-number">3.2.0.8</span> 交差推定によるテスト</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Design <span class="ot">&lt;-</span> <span class="fu">benchmark_grid</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> Task,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">learners =</span> <span class="fu">list</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    OLS,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    SimpleOLS,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    LASSO,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    RandomForest,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    Tree,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    Stacking</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamplings =</span> CV</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"mlr3"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"error"</span>) <span class="co"># Errorのみを表示</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>lgr<span class="sc">::</span><span class="fu">get_logger</span>(<span class="st">"bbotk"</span>)<span class="sc">$</span><span class="fu">set_threshold</span>(<span class="st">"error"</span>) <span class="co"># Errorのみを表示</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(<span class="st">"multisession"</span>) <span class="co"># 並列処理</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>BenchMark <span class="ot">&lt;-</span> <span class="fu">benchmark</span>(Design)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>BenchMark<span class="sc">$</span><span class="fu">aggregate</span>(R2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   nr      resample_result task_id   learner_id resampling_id iters  regr.rsq
+1:  1 &lt;ResampleResult[21]&gt;     Raw          OLS            cv     2 0.4811059
+2:  2 &lt;ResampleResult[21]&gt;     Raw    SimpleOLS            cv     2 0.4371129
+3:  3 &lt;ResampleResult[21]&gt;     Raw        LASSO            cv     2 0.4574360
+4:  4 &lt;ResampleResult[21]&gt;     Raw RandomForest            cv     2 0.4938433
+5:  5 &lt;ResampleResult[21]&gt;     Raw         Tree            cv     2 0.4695227
+6:  6 &lt;ResampleResult[21]&gt;     Raw     Stacking            cv     2 0.5016115</code></pre>
+</div>
+</div>
 <ul>
-<li><p>Stakingを全TrainingDataで推定</p></li>
-<li><p>TestDataで評価</p></li>
+<li>RandomForestとStackingはComparableな性能</li>
+</ul>
+</section>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<ul>
+<li>OLSとRandom Forestで予測モデルを推定し、交差検証で比較する。</li>
+</ul>
+<section id="パッケージ-データ-1" class="level4" data-number="3.2.0.9">
+<h4 data-number="3.2.0.9" class="anchored" data-anchor-id="パッケージ-データ-1"><span class="header-section-number">3.2.0.9</span> パッケージ &amp; データ</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> linear_model</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"ExampleData/Example.csv"</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>) <span class="co"># Fix seed</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> data[<span class="st">'Price'</span>]</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data.drop(</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Price'</span>,</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  axis <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="使用するアルゴリズム" class="level4" data-number="3.2.0.10">
+<h4 data-number="3.2.0.10" class="anchored" data-anchor-id="使用するアルゴリズム"><span class="header-section-number">3.2.0.10</span> 使用するアルゴリズム</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>OLS <span class="op">=</span> linear_model.LinearRegression() <span class="co"># OLS</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>RF <span class="op">=</span> RandomForestRegressor(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  n_estimators <span class="op">=</span> <span class="dv">500</span>) <span class="co"># Random Forest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="交差推定によるテスト-1" class="level4" data-number="3.2.0.11">
+<h4 data-number="3.2.0.11" class="anchored" data-anchor-id="交差推定によるテスト-1"><span class="header-section-number">3.2.0.11</span> 交差推定によるテスト</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Folds <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle <span class="op">=</span> <span class="va">True</span>) <span class="co"># サンプル5分割</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>OLS のテスト</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Stacking<span class="sc">$</span><span class="fu">train</span>(Task, <span class="at">row_ids =</span> Group<span class="sc">$</span>train)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Stacking<span class="sc">$</span><span class="fu">predict</span>(Task, Group<span class="sc">$</span>test)<span class="sc">$</span><span class="fu">score</span>(R2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>np.mean(cross_val_score(OLS, X, Y, cv <span class="op">=</span> Folds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> regr.rsq 
-0.6216389 </code></pre>
+<pre><code>0.45701534421807366</code></pre>
 </div>
 </div>
-
-
+<ul>
+<li>Random Forestのテスト</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>np.mean(cross_val_score(RF, X, Y, cv <span class="op">=</span> Folds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.5162822824693902</code></pre>
+</div>
+</div>
 </section>
+</div>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -647,7 +736,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./CausalMachineLearning.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

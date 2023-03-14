@@ -24,7 +24,6 @@ $$E[Y|D=d,X=x]=\underbrace{\tau}_{Interest\ parameter}\times d+\underbrace{f(x)}
 #| message: false
 #| warning: false
 library(tidyverse)
-library(AER)
 library(estimatr) # Estimation with robust standard error
 library(MatchIt) # Matching for preprocess
 

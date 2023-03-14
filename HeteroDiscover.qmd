@@ -1,0 +1,174 @@
+# 異質性の探索 {#sec-HeteroDiscover}
+
+- 条件付き平均差 $\tau(X)=E[Y|D=1,X]-E[Y|D=0,X]$の(ノンパラメトリックな)推定値を異質性のシグナルとして活用
+
+    - 一般に、条件付きの平均差のノンパラメトリックな推定値について、推定誤差を評価するのが難しいため
+    
+    - 効果の異質性の"シグナル"として使う [@chernozhukov2018generic; @kallus2022treatment]
+    
+    - $E[\tau(X)|\tau(X)\le Median(\tau(X))]$ を推定
+
+- $\tau(X)$ はCausal Forest [@wager2018estimation;@athey2019generalized] で推定
+
+## 設定
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(grf)
+library(DoubleML)
+library(mlr3verse)
+
+Data_R <- read_csv("ExampleData/Example.csv")
+
+Group <- sample(0:1,nrow(Data_R),replace = TRUE)
+
+Y <- Data_R$Price
+
+D <- Data_R$Reform
+
+X <- Data_R |> 
+  select(
+    -Price,
+    -Reform
+  )
+```
+
+- [grf](https://github.com/grf-labs/grf)
+
+```{r}
+EstCF <- causal_forest(
+  X = X[Group == 0,],
+  W = D[Group == 0],
+  Y = Y[Group == 0]
+)
+
+PredTau <- EstCF |> 
+  predict(X)
+
+hist(PredTau$predictions)
+```
+
+```{r}
+Task <- double_ml_data_from_matrix(
+  X = X[Group == 1,],
+  y = Y[Group == 1],
+  d = D[Group == 1]
+)
+
+EstDML <- DoubleMLPLR$new(
+  Task,
+  lrn("regr.lm"),
+  lrn("regr.lm")
+)
+
+EstDML$fit()
+
+EstDML
+```
+
+```{r}
+Q <- quantile(PredTau$predictions,0.5)
+
+Task <- double_ml_data_from_matrix(
+  X = X[Group == 1 & PredTau$predictions >= Q,],
+  y = Y[Group == 1 & PredTau$predictions >= Q],
+  d = D[Group == 1 & PredTau$predictions >= Q]
+)
+
+EstDML <- DoubleMLPLR$new(
+  Task,
+  lrn("regr.lm"),
+  lrn("regr.lm")
+)
+
+EstDML$fit()
+
+EstDML
+```
+
+
+### Python
+
+```{python}
+import pandas as pd
+import sklearn.model_selection  as model_selection
+
+Data_Python = pd.read_csv('ExampleData/Example.csv')
+
+y = Data_Python['Price']
+
+d = Data_Python['Reform']
+
+x = Data_Python.drop(['Price','Reform'],axis=1).values
+
+y_train, y_test,d_train,d_test,x_train,x_test = model_selection.train_test_split(
+  y,
+  d,
+  x,
+  train_size = 0.5
+  )
+```
+
+- [econml](https://econml.azurewebsites.net/)
+
+```{python}
+import econml.dml as dml
+import sklearn.linear_model as Linear
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+est_cf = dml.CausalForestDML(
+    model_y = Linear.LinearRegression(),
+    model_t = Linear.LinearRegression(),
+    n_estimators=2000
+)
+
+est_cf = est_cf.fit(y_train, d_train, X = x_train, W=None)
+
+pred_tau = est_cf.effect(x_test)
+
+fig = plt.figure()
+
+sns.histplot(pred_tau)
+```
+
+```{python}
+import doubleml as DML
+
+Task = DML.DoubleMLData.from_arrays(x_test, y_test, d_test)
+                    
+FitPLR = DML.DoubleMLPLR(
+  Task,
+   Linear.LinearRegression(),
+   Linear.LinearRegression(),
+  n_folds = 2
+  )
+
+FitPLR.fit(store_predictions = True)
+```
+
+```{python}
+import numpy as np
+
+Q = np.quantile(a=pred_tau, q=0.5)
+
+Task = DML.DoubleMLData.from_arrays(x_test[pred_tau >= Q], y_test[pred_tau >= Q], d_test[pred_tau >= Q])
+                    
+FitPLR = DML.DoubleMLPLR(
+  Task,
+   Linear.LinearRegression(),
+   Linear.LinearRegression(),
+  n_folds = 2
+  )
+
+FitPLR.fit(store_predictions = True)
+```
+
+
+:::

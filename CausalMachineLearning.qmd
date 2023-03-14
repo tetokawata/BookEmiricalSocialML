@@ -1,4 +1,4 @@
-# セミパラメトリック推定 {#sec-CausalMachine}
+# セミパラメトリック推定によるパラメタ推定 {#sec-CausalMachine}
 
 -   @chernozhukov2018 を実装する
 
