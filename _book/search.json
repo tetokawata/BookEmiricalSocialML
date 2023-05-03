@@ -53,7 +53,7 @@
     "href": "Prediction.html#問題設定",
     "title": "3  教師付き学習による母平均モデルの推定",
     "section": "3.1 問題設定",
-    "text": "3.1 問題設定\n\n事前に定義する損失関数の母平均 (Population Risk) を最小化するような、予測関数\\(f(X)\\)の推定を目指す。\n\n以下ではMean squared error(MSE)を損失関数として用いる。確率変数\\(Y,X\\)について予測問題は以下のように定義できる\n\n\n\\[\\min_{f(X)}MSE = \\int_{x}E[(Y_i-f(x))^2|X_i=x]\\times g(x)dx\\]\n\n\\(g(x)\\) は\\(x\\)の分布関数\n\n一般に以下の最適化問題の解と一致\n\n\n\\[\\min_{f(X_i)} \\int_{x}E[(\\mu(x)-f(x))^2|X_i=x]g(x)dx\\]\nただし \\(\\mu(x)=E[Y_i|X_i=x]\\)\n- 理想の予測モデルは、 $Y$ の条件付き母平均 (母平均関数)\n\n- 母平均関数を上手く近似する関数 $f(X)$ の推定を目指す\n\n上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forest、およびそれらのSuperLearnerを実装する。"
+    "text": "3.1 問題設定\n\n母平均関数 \\(E[Y|X]\\) を近似する関数 \\(f(X)\\) の推定をする。具体的には、母集団上での二乗誤差最小化を目指す。\n\n\\[\\min_{f(X)} E[(E[Y|X]-f(X))^2]\\]\n\n上記の最適化問題の解を近似する関数 \\(f(X)\\) は、標準的な予測問題において極めて有益である。\n上記問題を具体的に解くアルゴリズムとして、ここでは OLS, ElasticNet, Random Forest、およびそれらのStacking (SuperLearner) を実装する。\n\n\n3.1.1 予測問題\n\n事前に定義する損失関数の母平均 (Population Risk) を最小化するような、予測関数\\(f(X)\\)の推定を目指す。\n\n以下ではMean squared error(MSE)を損失関数として用いる。確率変数\\(Y,X\\)について予測問題は以下のように定義できる\n\n\n\\[\\min_{f(X)}MSE = \\int_{x}E[(Y-f(x))^2|X_i=x]\\times g(x)dx\\]\n\n\\(g(x)\\) は\\(x\\)の分布関数\n\n一般に以下の最適化問題の解と一致\n\n\n\\[\\min_{f(X_i)} \\int_{x}E[(E[Y|X]-f(x))^2|X_i=x]g(x)dx\\]\n\n理想の予測モデルは、 \\(f(X)=E[Y|X]\\)\n\n\\(E[Y|X]\\) を十分に近似する関数を推定できれば、最善に近い予測性能を期待できる"
   },
   {
     "objectID": "Prediction.html#実装",

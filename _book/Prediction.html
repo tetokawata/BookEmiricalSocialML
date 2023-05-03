@@ -201,7 +201,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#問題設定" id="toc-問題設定" class="nav-link active" data-scroll-target="#問題設定"><span class="header-section-number">3.1</span> 問題設定</a></li>
+  <li><a href="#問題設定" id="toc-問題設定" class="nav-link active" data-scroll-target="#問題設定"><span class="header-section-number">3.1</span> 問題設定</a>
+  <ul class="collapse">
+  <li><a href="#予測問題" id="toc-予測問題" class="nav-link" data-scroll-target="#予測問題"><span class="header-section-number">3.1.1</span> 予測問題</a></li>
+  </ul></li>
   <li><a href="#実装" id="toc-実装" class="nav-link" data-scroll-target="#実装"><span class="header-section-number">3.2</span> 実装</a></li>
   </ul>
 </nav>
@@ -235,26 +238,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="問題設定" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="問題設定"><span class="header-section-number">3.1</span> 問題設定</h2>
 <ul>
+<li>母平均関数 <span class="math inline">\(E[Y|X]\)</span> を近似する関数 <span class="math inline">\(f(X)\)</span> の推定をする。具体的には、母集団上での二乗誤差最小化を目指す。</li>
+</ul>
+<p><span class="math display">\[\min_{f(X)} E[(E[Y|X]-f(X))^2]\]</span></p>
+<ul>
+<li><p>上記の最適化問題の解を近似する関数 <span class="math inline">\(f(X)\)</span> は、標準的な予測問題において極めて有益である。</p></li>
+<li><p>上記問題を具体的に解くアルゴリズムとして、ここでは OLS, ElasticNet, Random Forest、およびそれらのStacking (SuperLearner) を実装する。</p></li>
+</ul>
+<section id="予測問題" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="予測問題"><span class="header-section-number">3.1.1</span> 予測問題</h3>
+<ul>
 <li><p>事前に定義する損失関数の母平均 (Population Risk) を最小化するような、予測関数<span class="math inline">\(f(X)\)</span>の推定を目指す。</p>
 <ul>
 <li>以下ではMean squared error(MSE)を損失関数として用いる。確率変数<span class="math inline">\(Y,X\)</span>について予測問題は以下のように定義できる</li>
 </ul></li>
 </ul>
-<p><span class="math display">\[\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]\times g(x)dx\]</span></p>
+<p><span class="math display">\[\min_{f(X)}MSE = \int_{x}E[(Y-f(x))^2|X_i=x]\times g(x)dx\]</span></p>
 <ul>
 <li><p><span class="math inline">\(g(x)\)</span> は<span class="math inline">\(x\)</span>の分布関数</p>
 <ul>
 <li>一般に以下の最適化問題の解と一致</li>
 </ul></li>
 </ul>
-<p><span class="math display">\[\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]g(x)dx\]</span></p>
-<p>ただし <span class="math inline">\(\mu(x)=E[Y_i|X_i=x]\)</span></p>
-<pre><code>- 理想の予測モデルは、 $Y$ の条件付き母平均 (母平均関数)
-
-- 母平均関数を上手く近似する関数 $f(X)$ の推定を目指す</code></pre>
+<p><span class="math display">\[\min_{f(X_i)} \int_{x}E[(E[Y|X]-f(x))^2|X_i=x]g(x)dx\]</span></p>
 <ul>
-<li>上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forest、およびそれらのSuperLearnerを実装する。</li>
+<li><p>理想の予測モデルは、 <span class="math inline">\(f(X)=E[Y|X]\)</span></p>
+<ul>
+<li><span class="math inline">\(E[Y|X]\)</span> を十分に近似する関数を推定できれば、最善に近い予測性能を期待できる</li>
+</ul></li>
 </ul>
+</section>
 </section>
 <section id="実装" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="実装"><span class="header-section-number">3.2</span> 実装</h2>
@@ -306,11 +319,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-annotation="1" data-code-lines="2">教師付き学習のメタパッケージ</span>
+<span data-code-lines="2" data-code-annotation="1" data-code-cell="annotated-cell-1">教師付き学習のメタパッケージ</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-annotation="2" data-code-lines="3">Stacking用</span>
+<span data-code-lines="3" data-code-annotation="2" data-code-cell="annotated-cell-1">Stacking用</span>
 </dd>
 </dl>
 </div>
@@ -343,23 +356,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-annotation="1" data-code-lines="4">推定に用いるデータと結果変数を指定</span>
+<span data-code-lines="4" data-code-annotation="1" data-code-cell="annotated-cell-2">推定に用いるデータと結果変数を指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-annotation="2" data-code-lines="6">R2を評価指標に使用</span>
+<span data-code-lines="6" data-code-annotation="2" data-code-cell="annotated-cell-2">R2を評価指標に使用</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-annotation="3" data-code-lines="8">2分割交差検証を指定</span>
+<span data-code-lines="8" data-code-annotation="3" data-code-cell="annotated-cell-2">2分割交差検証を指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-annotation="4" data-code-lines="12">20個のパラメタセットを検証</span>
+<span data-code-lines="12" data-code-annotation="4" data-code-cell="annotated-cell-2">20個のパラメタセットを検証</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-annotation="5" data-code-lines="14">ランダムサーチで検証するパラメタセットを選ぶ</span>
+<span data-code-lines="14" data-code-annotation="5" data-code-cell="annotated-cell-2">ランダムサーチで検証するパラメタセットを選ぶ</span>
 </dd>
 </dl>
 </div>
@@ -381,11 +394,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-annotation="1" data-code-lines="1,2,3,4">単純なOLS</span>
+<span data-code-lines="1,2,3,4" data-code-annotation="1" data-code-cell="annotated-cell-3">単純なOLS</span>
 </dd>
 <dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-annotation="2" data-code-lines="6,7,8,9">RandomForest</span>
+<span data-code-lines="6,7,8,9" data-code-annotation="2" data-code-cell="annotated-cell-3">RandomForest</span>
 </dd>
 </dl>
 </div>
@@ -427,19 +440,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-annotation="1" data-code-lines="1"><span class="math inline">\(X\)</span> の加工</span>
+<span data-code-lines="1" data-code-annotation="1" data-code-cell="annotated-cell-4"><span class="math inline">\(X\)</span> の加工</span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-annotation="2" data-code-lines="3,4,5,6,7,8,9,10,11,12,13,14">二乗項と交差項を作成</span>
+<span data-code-lines="3,4,5,6,7,8,9,10,11,12,13,14" data-code-annotation="2" data-code-cell="annotated-cell-4">二乗項と交差項を作成</span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-annotation="3" data-code-lines="16">標準化(平均を引き、標準偏差で叙す)</span>
+<span data-code-lines="16" data-code-annotation="3" data-code-cell="annotated-cell-4">標準化(平均を引き、標準偏差で叙す)</span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-annotation="4" data-code-lines="18,19,20,21,23">OLSと結合</span>
+<span data-code-lines="18,19,20,21,23" data-code-annotation="4" data-code-cell="annotated-cell-4">OLSと結合</span>
 </dd>
 </dl>
 </div>
@@ -489,31 +502,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-annotation="1" data-code-lines="2">TuningSpaceを指定したTreeを定義</span>
+<span data-code-lines="2" data-code-annotation="1" data-code-cell="annotated-cell-5">TuningSpaceを指定したTreeを定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-annotation="2" data-code-lines="4,5,6,7,8,9,10">HyperParameter Tuningを指定</span>
+<span data-code-lines="4,5,6,7,8,9,10" data-code-annotation="2" data-code-cell="annotated-cell-5">HyperParameter Tuningを指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-annotation="3" data-code-lines="12">Treeと名づける</span>
+<span data-code-lines="12" data-code-annotation="3" data-code-cell="annotated-cell-5">Treeと名づける</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-annotation="4" data-code-lines="15">TuningSpaceを指定したElasticNetを定義</span>
+<span data-code-lines="15" data-code-annotation="4" data-code-cell="annotated-cell-5">TuningSpaceを指定したElasticNetを定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-annotation="5" data-code-lines="20">二乗項/交差項作成を付与</span>
+<span data-code-lines="20" data-code-annotation="5" data-code-cell="annotated-cell-5">二乗項/交差項作成を付与</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-annotation="6" data-code-lines="22,23,24,25,26,27,28">HyperParameter Tuningを指定</span>
+<span data-code-lines="22,23,24,25,26,27,28" data-code-annotation="6" data-code-cell="annotated-cell-5">HyperParameter Tuningを指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-annotation="7" data-code-lines="30">ElasticNetと名づける</span>
+<span data-code-lines="30" data-code-annotation="7" data-code-cell="annotated-cell-5">ElasticNetと名づける</span>
 </dd>
 </dl>
 </div>
@@ -544,19 +557,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="1" data-code-lines="1,2,3,4,5,6">個別のアルゴリズムの指定</span>
+<span data-code-lines="1,2,3,4,5,6" data-code-annotation="1" data-code-cell="annotated-cell-6">個別のアルゴリズムの指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="2" data-code-lines="8,9,10">集計用アルゴリズムの指定</span>
+<span data-code-lines="8,9,10" data-code-annotation="2" data-code-cell="annotated-cell-6">集計用アルゴリズムの指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="3" data-code-lines="12,13,14,15,16">Stackingの定義</span>
+<span data-code-lines="12,13,14,15,16" data-code-annotation="3" data-code-cell="annotated-cell-6">Stackingの定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-annotation="4" data-code-lines="18">Stackingと名づけ</span>
+<span data-code-lines="18" data-code-annotation="4" data-code-cell="annotated-cell-6">Stackingと名づけ</span>
 </dd>
 </dl>
 </div>
@@ -589,35 +602,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-annotation="1" data-code-lines="1">評価の枠組みを定義</span>
+<span data-code-lines="1" data-code-annotation="1" data-code-cell="annotated-cell-7">評価の枠組みを定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-annotation="2" data-code-lines="2">評価対象のタスク (データと結果変数) を定義</span>
+<span data-code-lines="2" data-code-annotation="2" data-code-cell="annotated-cell-7">評価対象のタスク (データと結果変数) を定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-annotation="3" data-code-lines="3,4,5,6,7,8,9,10">評価対象のアルゴリズムを定義</span>
+<span data-code-lines="3,4,5,6,7,8,9,10" data-code-annotation="3" data-code-cell="annotated-cell-7">評価対象のアルゴリズムを定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-annotation="4" data-code-lines="11">評価方法 (交差検証) を定義</span>
+<span data-code-lines="11" data-code-annotation="4" data-code-cell="annotated-cell-7">評価方法 (交差検証) を定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-annotation="5" data-code-lines="14,15">Errorメッセージのみ表示</span>
+<span data-code-lines="14,15" data-code-annotation="5" data-code-cell="annotated-cell-7">Errorメッセージのみ表示</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-annotation="6" data-code-lines="16">並列処理を指定</span>
+<span data-code-lines="16" data-code-annotation="6" data-code-cell="annotated-cell-7">並列処理を指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-annotation="7" data-code-lines="18">評価を実行</span>
+<span data-code-lines="18" data-code-annotation="7" data-code-cell="annotated-cell-7">評価を実行</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="8">8</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-annotation="8" data-code-lines="20">R2を計算</span>
+<span data-code-lines="20" data-code-annotation="8" data-code-cell="annotated-cell-7">R2を計算</span>
 </dd>
 </dl>
 </div>
@@ -644,43 +657,43 @@ Hidden columns: resample_result</code></pre>
 <section id="パッケージ-データ-1" class="level4" data-number="3.2.0.8">
 <h4 data-number="3.2.0.8" class="anchored" data-anchor-id="パッケージ-データ-1"><span class="header-section-number">3.2.0.8</span> パッケージ &amp; データ</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> linear_model</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"ExampleData/Example.csv"</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>) <span class="co"># Fix seed</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> data[<span class="st">'Price'</span>]</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data.drop(</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Price'</span>,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  axis <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> linear_model</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"ExampleData/Example.csv"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>) <span class="co"># Fix seed</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> data[<span class="st">'Price'</span>]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data.drop(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Price'</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  axis <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="使用するアルゴリズム" class="level4" data-number="3.2.0.9">
 <h4 data-number="3.2.0.9" class="anchored" data-anchor-id="使用するアルゴリズム"><span class="header-section-number">3.2.0.9</span> 使用するアルゴリズム</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>OLS <span class="op">=</span> linear_model.LinearRegression() <span class="co"># OLS</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>RF <span class="op">=</span> RandomForestRegressor(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  n_estimators <span class="op">=</span> <span class="dv">500</span>) <span class="co"># Random Forest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>OLS <span class="op">=</span> linear_model.LinearRegression() <span class="co"># OLS</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>RF <span class="op">=</span> RandomForestRegressor(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  n_estimators <span class="op">=</span> <span class="dv">500</span>) <span class="co"># Random Forest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="交差推定によるテスト" class="level4" data-number="3.2.0.10">
 <h4 data-number="3.2.0.10" class="anchored" data-anchor-id="交差推定によるテスト"><span class="header-section-number">3.2.0.10</span> 交差推定によるテスト</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Folds <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle <span class="op">=</span> <span class="va">True</span>) <span class="co"># サンプル5分割</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Folds <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle <span class="op">=</span> <span class="va">True</span>) <span class="co"># サンプル5分割</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>OLS のテスト</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>np.mean(cross_val_score(OLS, X, Y, cv <span class="op">=</span> Folds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.mean(cross_val_score(OLS, X, Y, cv <span class="op">=</span> Folds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.45701534421807366</code></pre>
 </div>
@@ -689,7 +702,7 @@ Hidden columns: resample_result</code></pre>
 <li>Random Forestのテスト</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>np.mean(cross_val_score(RF, X, Y, cv <span class="op">=</span> Folds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>np.mean(cross_val_score(RF, X, Y, cv <span class="op">=</span> Folds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.5162822824693902</code></pre>
 </div>
