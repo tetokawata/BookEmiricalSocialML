@@ -10,7 +10,7 @@
 
   - 以下ではMean squared error(MSE)を損失関数として用いる。確率変数$Y,X$について予測問題は以下のように定義できる
 
-$$\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]g(x)dx$$
+$$\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]\times g(x)dx$$
 
 - $g(x)$ は$x$の分布関数
 
@@ -19,6 +19,10 @@ $$\min_{f(X)}MSE = \int_{x}E[(Y_i-f(x))^2|X_i=x]g(x)dx$$
 $$\min_{f(X_i)} \int_{x}E[(\mu(x)-f(x))^2|X_i=x]g(x)dx$$
 
 ただし $\mu(x)=E[Y_i|X_i=x]$
+
+    - 理想の予測モデルは、 $Y$ の条件付き母平均 (母平均関数)
+    
+    - 母平均関数を上手く近似する関数 $f(X)$ の推定を目指す
 
 - 上記問題を具体的に解くアルゴリズムとして、ここでは OLS, LASSO, Random Forest、およびそれらのSuperLearnerを実装する。
 
@@ -56,13 +60,17 @@ flowchart TB
 
 ```{r SetUpR}
 library(tidyverse)
-library(mlr3verse) # 機械学習のメタパッケージ
-library(mlr3pipelines) # Stacking用
+library(mlr3verse) # <1>
+library(mlr3pipelines) # <2>
 
 Raw <- read_csv("ExampleData/Example.csv")
 
 set.seed(123)
 ```
+
+1. 教師付き学習のメタパッケージ
+
+2. Stacking用
 
 #### 推定タスクの定義
 
@@ -71,33 +79,49 @@ set.seed(123)
     - 実戦では増やす
 
 ```{r DefineR}
-Task <- as_task_regr(Raw, target = "Price") # Task設定
+Task <- as_task_regr(
+  Raw, 
+  target = "Price",
+  id = "Price") # <1>
 
-R2 <-  msr("regr.rsq") # R2で評価
+R2 <-  msr("regr.rsq") # <2>
 
-CV <- rsmp("cv",folds = 2) # 2分割交差検証
+CV <- rsmp("cv",folds = 2) # <3>
 
-Terminal = trm("evals",
-               n_evals = 20) # 20回の繰り返し評価
+Terminal = trm(
+  "evals",
+  n_evals = 20) # <4>
 
-Tuner <- tnr("grid_search",
-             resolution = 20) # 20回のグリッドサーチ
+Tuner <- tnr("random_search") # <5>
 ```
 
+1. 推定に用いるデータと結果変数を指定
+
+2. R2を評価指標に使用
+
+3. 2分割交差検証を指定
+
+4. 20個のパラメタセットを検証
+
+5. ランダムサーチで検証するパラメタセットを選ぶ
 
 #### 使用するBuildIn Algorithmを定義
 
 ```{r Learner$}
-SimpleOLS <- lrn(
-  "regr.lm", 
-  id = "SimpleOLS"
-  ) # OLS
+SimpleOLS <- lrn( # <1>
+  "regr.lm", # <1>
+  id = "SimpleOLS" # <1>
+  ) # <1>
 
-RandomForest <- lrn(
-  "regr.ranger", 
-  id = "RandomForest"
-  ) # RandomForest
+RandomForest <- lrn( # <2>
+  "regr.ranger", # <2>
+  id = "RandomForest" # <2>
+  ) # <2>
 ```
+
+1. 単純なOLS
+
+2. RandomForest
 
 #### PreProcess
 
@@ -106,34 +130,42 @@ RandomForest <- lrn(
     - [Duflo](https://github.com/demirermert/MLInference/blob/master/NBER_SI_DEV_master_lecture.pdf) のおすすめ
 
 ```{r WithPreProcessR}
-Mutate = po("mutate") # データ加工
+Mutate = po("mutate") # <1>
 
-Mutate$param_set$values$mutation = list(
-  Size2 = ~ Size*Size,
-  TradeQ2 = ~ TradeQ*TradeQ,
-  BuildYear2 = ~BuildYear*BuildYear,
-  Distance2 = ~Distance*Distance,
-  Size_TradeQ = ~Size*TradeQ,
-  Size_BuildYear = ~Size*BuildYear,
-  Size_Distance = ~ Size*Distance,
-  TradeQ_BuildYear = ~TradeQ*BuildYear,
-  TradeQ_Distance = ~TradeQ*Distance,
-  BuildYear_Distance = ~BuildYear*Distance
-) # 二乗項と交差項の作成
+Mutate$param_set$values$mutation = list( # <2>
+  Size2 = ~ Size*Size, # <2>
+  TradeQ2 = ~ TradeQ*TradeQ, # <2>
+  BuildYear2 = ~BuildYear*BuildYear, # <2>
+  Distance2 = ~Distance*Distance, # <2>
+  Size_TradeQ = ~Size*TradeQ, # <2>
+  Size_BuildYear = ~Size*BuildYear, # <2>
+  Size_Distance = ~ Size*Distance, # <2>
+  TradeQ_BuildYear = ~TradeQ*BuildYear, # <2>
+  TradeQ_Distance = ~TradeQ*Distance, # <2>
+  BuildYear_Distance = ~BuildYear*Distance # <2>
+  )  # <2>
 
-Scale = po("scale") # 標準化
+Scale = po("scale") # <3>
 
-OLS <- Mutate %>>% 
-  Scale %>>% 
-  lrn("regr.lm") |> 
-  as_learner() # 二乗項と交差項を導入したOLS
+OLS <- Mutate %>>% # <4>
+  Scale %>>% # <4>
+  lrn("regr.lm") |> # <4>
+  as_learner() # <4>
 
-OLS$id <- "OLS"
+OLS$id <- "OLS" # <4>
 ```
+
+1. $X$ の加工
+
+2. 二乗項と交差項を作成
+
+3. 標準化(平均を引き、標準偏差で叙す)
+
+4. OLSと結合
 
 #### チューニング付き推定方法の定義
 
-- Tree、LASSO アルゴリズムについて、HyperParameterを交差検証により推定する
+- Tree、ElasticNet (LASSO/Ridge) アルゴリズムについて、HyperParameterを交差検証により推定する
 
 - 探索するHyperParameterの範囲を設定する必要がある
 
@@ -141,117 +173,125 @@ OLS$id <- "OLS"
 
 ```{r TunedLearnerR}
 Tree <- lrn("regr.rpart") |> 
-  lts()
+  lts() # <1>
 
-Tree <- AutoTuner$new(
-  learner = Tree,
-  resampling = CV,
-  measure = R2,
-  terminator = Terminal,
-  tuner = Tuner
-  )
+Tree <- AutoTuner$new( # <2>
+  learner = Tree, # <2>
+  resampling = CV, # <2>
+  measure = R2, # <2>
+  terminator = Terminal, # <2>
+  tuner = Tuner # <2>
+  ) # <2>
 
-Tree$id <- "Tree"
+Tree$id <- "Tree" # <3>
 
-LASSO <- lrn("regr.glmnet") |> 
-  lts()
+RegulizedLinear <- lrn("regr.glmnet") |> 
+  lts() # <4>
 
-LASSO <- Mutate %>>% 
+RegulizedLinear <- Mutate %>>% 
   Scale %>>% 
-  LASSO |> 
-  as_learner()
+  RegulizedLinear |> 
+  as_learner() # <5>
 
-LASSO <- AutoTuner$new(
-  learner = LASSO,
-  resampling = CV,
-  measure = R2,
-  terminator = Terminal,
-  tuner = Tuner
-  )
+RegulizedLinear <- AutoTuner$new( # <6>
+  learner = RegulizedLinear, # <6>
+  resampling = CV, # <6>
+  measure = R2, # <6>
+  terminator = Terminal, # <6>
+  tuner = Tuner # <6>
+  ) # <6>
 
-LASSO$id <- "LASSO"
+RegulizedLinear$id <- "ElasticNet" # <7>
 ```
+
+1. TuningSpaceを指定したTreeを定義
+
+2. HyperParameter Tuningを指定
+
+3. Treeと名づける
+
+4. TuningSpaceを指定したElasticNetを定義
+
+5. 二乗項/交差項作成を付与
+
+6. HyperParameter Tuningを指定
+
+7. ElasticNetと名づける
 
 #### SuperLearnerの定義
 
 ```{r StackR}
-BaseLearner <- list(
-  OLS,
-  RandomForest,
-  Tree,
-  LASSO
-) # 個別推定アルゴリズム
+BaseLearner <- list( # <1>
+  OLS, # <1>
+  RandomForest, # <1>
+  Tree, # <1>
+  RegulizedLinear # <1>
+  ) # <1>
 
-SuperLearner <- lrn(
-  "regr.lm",
-  id = "SuperLearner") # 個別予測をまとめるアルゴリズム
+SuperLearner <- lrn( # <2>
+  "regr.lm", # <2>
+  id = "SuperLearner") # <2>
 
-Stacking <- pipeline_stacking(
-  BaseLearner, 
-  SuperLearner,
-  use_features = FALSE) |> 
-  as_learner() # SuperLearnerの定義
+Stacking <- pipeline_stacking( # <3>
+  BaseLearner,  # <3>
+  SuperLearner, # <3>
+  use_features = FALSE) |>  # <3>
+  as_learner() # <3>
 
-Stacking$id <- "Stacking"
+Stacking$id <- "Stacking" # <4>
 ```
 
+1. 個別のアルゴリズムの指定
 
-#### サンプル分割によるテスト
+2. 集計用アルゴリズムの指定
+
+3. Stackingの定義
+
+4. Stackingと名づけ
+
+#### 交差推定による評価
 
 ```{r}
-Design <- benchmark_grid(
-  tasks = Task,
-  learners = list(
-    OLS,
-    SimpleOLS,
-    LASSO,
-    RandomForest,
-    Tree,
-    Stacking
-  ),
-  resamplings = rsmp(
-    "holdout",
-    ratio = 0.8) # Training(8割)/Test(2割)へ分割
-)
+Design <- benchmark_grid( # <1>
+  tasks = Task, # <2>
+  learners = list( # <3>
+    OLS, # <3>
+    SimpleOLS, # <3>
+    RegulizedLinear, # <3>
+    RandomForest, # <3>
+    Tree, # <3>
+    Stacking # <3>
+  ), # <3>
+  resamplings = CV # <4>
+  )
 
-lgr::get_logger("mlr3")$set_threshold("error") # Errorのみを表示
-lgr::get_logger("bbotk")$set_threshold("error") # Errorのみを表示
-future::plan("multisession") # 並列処理
+lgr::get_logger("mlr3")$set_threshold("error") # <5>
+lgr::get_logger("bbotk")$set_threshold("error") # <5>
+future::plan("multisession") # <6>
 
-BenchMark <- benchmark(Design)
+BenchMark <- benchmark(Design) # <7>
 
-BenchMark$aggregate(R2)
+BenchMark$aggregate(R2) # <8>
 ```
+
+1. 評価の枠組みを定義
+
+2. 評価対象のタスク (データと結果変数) を定義
+
+3. 評価対象のアルゴリズムを定義
+
+4. 評価方法 (交差検証) を定義
+
+5. Errorメッセージのみ表示
+
+6. 並列処理を指定
+
+7. 評価を実行
+
+8. R2を計算
 
 - RandomForestとStackingはComparableな性能
 
-
-#### 交差推定によるテスト
-
-```{r}
-Design <- benchmark_grid(
-  tasks = Task,
-  learners = list(
-    OLS,
-    SimpleOLS,
-    LASSO,
-    RandomForest,
-    Tree,
-    Stacking
-  ),
-  resamplings = CV
-)
-
-lgr::get_logger("mlr3")$set_threshold("error") # Errorのみを表示
-lgr::get_logger("bbotk")$set_threshold("error") # Errorのみを表示
-future::plan("multisession") # 並列処理
-
-BenchMark <- benchmark(Design)
-
-BenchMark$aggregate(R2)
-```
-
-- RandomForestとStackingはComparableな性能
 
 ### Python
 
