@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.3.340">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,9 +17,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -46,48 +47,19 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -101,8 +73,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -143,6 +114,7 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -151,11 +123,16 @@ div.csl-indent {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./summary.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -163,77 +140,87 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">R/Pythonによる比較・因果推論・予測研究 (ver 0.12)</a> 
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">準備</span></a>
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">準備</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ParameterEstimation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></a>
+  <a href="./ParameterEstimation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Prediction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></a>
+  <a href="./Prediction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></a>
+  <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./HeteroDiscover.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></a>
+  <a href="./HeteroDiscover.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></a>
+  <a href="./summary.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a>
+  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">付録: データ整備</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#設定" id="toc-設定" class="nav-link active" data-scroll-target="#設定"><span class="toc-section-number">6.1</span>  設定</a></li>
-  <li><a href="#sec-Table" id="toc-sec-Table" class="nav-link" data-scroll-target="#sec-Table"><span class="toc-section-number">6.2</span>  記述統計表</a></li>
-  <li><a href="#sec-Histogram" id="toc-sec-Histogram" class="nav-link" data-scroll-target="#sec-Histogram"><span class="toc-section-number">6.3</span>  ヒストグラム</a></li>
-  <li><a href="#sec-Figure" id="toc-sec-Figure" class="nav-link" data-scroll-target="#sec-Figure"><span class="toc-section-number">6.4</span>  バランス確認</a></li>
+  <li><a href="#設定" id="toc-設定" class="nav-link active" data-scroll-target="#設定"><span class="header-section-number">6.1</span> 設定</a></li>
+  <li><a href="#sec-Table" id="toc-sec-Table" class="nav-link" data-scroll-target="#sec-Table"><span class="header-section-number">6.2</span> 記述統計表</a></li>
+  <li><a href="#sec-Histogram" id="toc-sec-Histogram" class="nav-link" data-scroll-target="#sec-Histogram"><span class="header-section-number">6.3</span> ヒストグラム</a></li>
+  <li><a href="#sec-Figure" id="toc-sec-Figure" class="nav-link" data-scroll-target="#sec-Figure"><span class="header-section-number">6.4</span> バランス確認</a></li>
   </ul>
 </nav>
     </div>
@@ -242,7 +229,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-Description" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span></h1>
+<h1 class="title"><span id="sec-Description" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span></h1>
 </div>
 
 
@@ -265,7 +252,7 @@ div.csl-indent {
 </ul>
 <section id="設定" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="設定"><span class="header-section-number">6.1</span> 設定</h2>
-<div class="panel-tabset">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
@@ -298,7 +285,7 @@ div.csl-indent {
 <ul>
 <li><span class="math inline">\(D=Reform\)</span> ごとに以下を表示</li>
 </ul>
-<div class="panel-tabset">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
@@ -316,7 +303,7 @@ div.csl-indent {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#pzvffjxqqy) .gt_table {
+#pzvffjxqqy .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -341,7 +328,7 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_heading {
+#pzvffjxqqy .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -353,12 +340,12 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_caption {
+#pzvffjxqqy .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#pzvffjxqqy) .gt_title {
+#pzvffjxqqy .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -370,7 +357,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-:where(#pzvffjxqqy) .gt_subtitle {
+#pzvffjxqqy .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -382,13 +369,13 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-:where(#pzvffjxqqy) .gt_bottom_border {
+#pzvffjxqqy .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_col_headings {
+#pzvffjxqqy .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -403,7 +390,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_col_heading {
+#pzvffjxqqy .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -423,7 +410,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-:where(#pzvffjxqqy) .gt_column_spanner_outer {
+#pzvffjxqqy .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -435,15 +422,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-:where(#pzvffjxqqy) .gt_column_spanner_outer:first-child {
+#pzvffjxqqy .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#pzvffjxqqy) .gt_column_spanner_outer:last-child {
+#pzvffjxqqy .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#pzvffjxqqy) .gt_column_spanner {
+#pzvffjxqqy .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -455,7 +442,7 @@ div.csl-indent {
   width: 100%;
 }
 
-:where(#pzvffjxqqy) .gt_group_heading {
+#pzvffjxqqy .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -481,7 +468,7 @@ div.csl-indent {
   text-align: left;
 }
 
-:where(#pzvffjxqqy) .gt_empty_group_heading {
+#pzvffjxqqy .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -496,15 +483,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-:where(#pzvffjxqqy) .gt_from_md > :first-child {
+#pzvffjxqqy .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#pzvffjxqqy) .gt_from_md > :last-child {
+#pzvffjxqqy .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#pzvffjxqqy) .gt_row {
+#pzvffjxqqy .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -523,7 +510,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-:where(#pzvffjxqqy) .gt_stub {
+#pzvffjxqqy .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -536,7 +523,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#pzvffjxqqy) .gt_stub_row_group {
+#pzvffjxqqy .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -550,11 +537,11 @@ div.csl-indent {
   vertical-align: top;
 }
 
-:where(#pzvffjxqqy) .gt_row_group_first td {
+#pzvffjxqqy .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#pzvffjxqqy) .gt_summary_row {
+#pzvffjxqqy .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -564,16 +551,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#pzvffjxqqy) .gt_first_summary_row {
+#pzvffjxqqy .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_first_summary_row.thick {
+#pzvffjxqqy .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#pzvffjxqqy) .gt_last_summary_row {
+#pzvffjxqqy .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -583,7 +570,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_grand_summary_row {
+#pzvffjxqqy .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -593,7 +580,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#pzvffjxqqy) .gt_first_grand_summary_row {
+#pzvffjxqqy .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -603,11 +590,11 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_striped {
+#pzvffjxqqy .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-:where(#pzvffjxqqy) .gt_table_body {
+#pzvffjxqqy .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -616,7 +603,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_footnotes {
+#pzvffjxqqy .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -630,7 +617,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_footnote {
+#pzvffjxqqy .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -639,7 +626,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#pzvffjxqqy) .gt_sourcenotes {
+#pzvffjxqqy .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -653,7 +640,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-:where(#pzvffjxqqy) .gt_sourcenote {
+#pzvffjxqqy .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -661,112 +648,130 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-:where(#pzvffjxqqy) .gt_left {
+#pzvffjxqqy .gt_left {
   text-align: left;
 }
 
-:where(#pzvffjxqqy) .gt_center {
+#pzvffjxqqy .gt_center {
   text-align: center;
 }
 
-:where(#pzvffjxqqy) .gt_right {
+#pzvffjxqqy .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#pzvffjxqqy) .gt_font_normal {
+#pzvffjxqqy .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#pzvffjxqqy) .gt_font_bold {
+#pzvffjxqqy .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#pzvffjxqqy) .gt_font_italic {
+#pzvffjxqqy .gt_font_italic {
   font-style: italic;
 }
 
-:where(#pzvffjxqqy) .gt_super {
+#pzvffjxqqy .gt_super {
   font-size: 65%;
 }
 
-:where(#pzvffjxqqy) .gt_footnote_marks {
+#pzvffjxqqy .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#pzvffjxqqy) .gt_asterisk {
+#pzvffjxqqy .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#pzvffjxqqy) .gt_indent_1 {
+#pzvffjxqqy .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#pzvffjxqqy) .gt_indent_2 {
+#pzvffjxqqy .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#pzvffjxqqy) .gt_indent_3 {
+#pzvffjxqqy .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#pzvffjxqqy) .gt_indent_4 {
+#pzvffjxqqy .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#pzvffjxqqy) .gt_indent_5 {
+#pzvffjxqqy .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table">
-  
-  <thead class="gt_col_headings">
-    <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="<strong>Characteristic</strong>"><strong>Characteristic</strong></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>0</strong>, N = 11,012<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>0</strong>, N = 11,012<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="<strong>1</strong>, N = 3,781<sup class=&quot;gt_footnote_marks&quot;>1</sup>"><strong>1</strong>, N = 3,781<sup class="gt_footnote_marks">1</sup></th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="label" class="gt_row gt_left">TradeQ</td>
-<td headers="stat_1" class="gt_row gt_center"></td>
-<td headers="stat_2" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td headers="stat_1" class="gt_row gt_center">2,864 (26%)</td>
-<td headers="stat_2" class="gt_row gt_center">963 (25%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
-<td headers="stat_1" class="gt_row gt_center">2,940 (27%)</td>
-<td headers="stat_2" class="gt_row gt_center">967 (26%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
-<td headers="stat_1" class="gt_row gt_center">2,682 (24%)</td>
-<td headers="stat_2" class="gt_row gt_center">914 (24%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
-<td headers="stat_1" class="gt_row gt_center">2,526 (23%)</td>
-<td headers="stat_2" class="gt_row gt_center">937 (25%)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">Size</td>
-<td headers="stat_1" class="gt_row gt_center">45 (25, 65)</td>
-<td headers="stat_2" class="gt_row gt_center">50 (35, 65)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">BuildYear</td>
-<td headers="stat_1" class="gt_row gt_center">2,006 (1,998, 2,012)</td>
-<td headers="stat_2" class="gt_row gt_center">1,995 (1,984, 2,003)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">Distance</td>
-<td headers="stat_1" class="gt_row gt_center">6.0 (4.0, 9.0)</td>
-<td headers="stat_2" class="gt_row gt_center">7.0 (4.0, 10.0)</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">Price</td>
-<td headers="stat_1" class="gt_row gt_center">31 (22, 50)</td>
-<td headers="stat_2" class="gt_row gt_center">34 (24, 48)</td></tr>
-  </tbody>
-  
-  <tfoot class="gt_footnotes">
-    <tr>
-      <td class="gt_footnote" colspan="3"><sup class="gt_footnote_marks">1</sup> n (%); Median (IQR)</td>
-    </tr>
-  </tfoot>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
+<thead class="gt_col_headings">
+<tr class="header">
+<th id="<strong>Characteristic</strong>" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Characteristic</strong></th>
+<th id="<strong>0</strong>, N = 11,012<sup class=&quot;gt_footnote_marks&quot;>1</sup>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>0</strong>, N = 11,012<sup>1</sup></th>
+<th id="<strong>1</strong>, N = 3,781<sup class=&quot;gt_footnote_marks&quot;>1</sup>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>1</strong>, N = 3,781<sup>1</sup></th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">TradeQ</td>
+<td class="gt_row gt_center" headers="stat_1"></td>
+<td class="gt_row gt_center" headers="stat_2"></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
+<td class="gt_row gt_center" headers="stat_1">2,864 (26%)</td>
+<td class="gt_row gt_center" headers="stat_2">963 (25%)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
+<td class="gt_row gt_center" headers="stat_1">2,940 (27%)</td>
+<td class="gt_row gt_center" headers="stat_2">967 (26%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
+<td class="gt_row gt_center" headers="stat_1">2,682 (24%)</td>
+<td class="gt_row gt_center" headers="stat_2">914 (24%)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
+<td class="gt_row gt_center" headers="stat_1">2,526 (23%)</td>
+<td class="gt_row gt_center" headers="stat_2">937 (25%)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">Size</td>
+<td class="gt_row gt_center" headers="stat_1">45 (25, 65)</td>
+<td class="gt_row gt_center" headers="stat_2">50 (35, 65)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">BuildYear</td>
+<td class="gt_row gt_center" headers="stat_1">2,006 (1,998, 2,012)</td>
+<td class="gt_row gt_center" headers="stat_2">1,995 (1,984, 2,003)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">Distance</td>
+<td class="gt_row gt_center" headers="stat_1">6.0 (4.0, 9.0)</td>
+<td class="gt_row gt_center" headers="stat_2">7.0 (4.0, 10.0)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">Price</td>
+<td class="gt_row gt_center" headers="stat_1">31 (22, 50)</td>
+<td class="gt_row gt_center" headers="stat_2">34 (24, 48)</td>
+</tr>
+</tbody><tfoot class="gt_footnotes">
+<tr class="even">
+<td colspan="3" class="gt_footnote"><sup>1</sup> n (%); Median (IQR)</td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -827,7 +832,7 @@ Price     count  11012.000000  3781.000000
 <ul>
 <li><span class="math inline">\(D=Reform\)</span> ごとに以下を表示</li>
 </ul>
-<div class="panel-tabset">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
@@ -874,7 +879,7 @@ Price     count  11012.000000  3781.000000
 <li><p>異なるDグループ間で、Xの分布の違いを確認</p></li>
 <li><p>Xの平均差/Xの標準偏差を報告 (<span class="citation" data-cites="imbens2015">Imbens (<a href="references.html#ref-imbens2015" role="doc-biblioref">2015</a>)</span> などで推奨)</p></li>
 </ul>
-<div class="panel-tabset">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Python</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
@@ -900,8 +905,8 @@ Price     count  11012.000000  3781.000000
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-imbens2015" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-imbens2015" class="csl-entry" role="listitem">
 Imbens, Guido W. 2015. <span>“Matching Methods in Practice: Three Examples.”</span> <em>The Journal of Human Resources</em> 50 (2): 373–419. <a href="https://www.jstor.org/stable/24735990">https://www.jstor.org/stable/24735990</a>.
 </div>
 </div>
@@ -935,9 +940,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1002,6 +1021,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
