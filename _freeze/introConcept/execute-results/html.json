@@ -1,0 +1,15 @@
+{
+  "hash": "b7d553533ed110018ff9f90c0fea7fe0",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# 概念整理 {#sec-IntroduceConcept}\n\n- 本ページでは、 現代的データ分析における基本概念を紹介する。\n特に推定対象 (Estimand) と データから推定された関数 (Estimator) を分離して定義することの重要性を強調する。\nEstimandとEstimatorを接続するために、\"仮想的な事例の集団\" (母集団) を導入する。\n\n## Estimator\n\n- データから分析者が指定した計算手順によって算出された値や関数を、Estimatorと呼ぶ。またこの計算手順をアルゴリズムと呼ぶ。\n\n- 例: 平均アルゴリズム\n\n\n::: {.cell}\n\n```{.r .cell-code}\nData = tibble::tibble(\n  Y = c(9,10,21,18)\n  ) # Data\n\nData # Show data\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n# A tibble: 4 × 1\n      Y\n  <dbl>\n1     9\n2    10\n3    21\n4    18\n```\n\n\n:::\n\n```{.r .cell-code}\nmean(Data$Y) # Apply Mean Algorithm\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 14.5\n```\n\n\n:::\n:::\n\n\n## Estimand\n\n- 同じAlgorithmを用いたとしても、Estimatorの値は、一般に算出に用いたデータの特徴によって決定される。\nデータの特徴は確率的に決定されるため、Estimatorの値もまた確率的に決定されると表現できる。\n\n- データの事例は、分析者が母集団から確率的に選ばれると想定する。\nまたEstimandは、母集団の特徴として定義する。\n分析者は、母集団およびEstimandを直接観察できないと想定する。\n\n## 例: 平均賃金の推定\n\n- 母集団における賃金 $Y$ の分布 $=f(Y)$\n    \n- Estimand $=$ 母集団における平均賃金 $E[Y]=\\int Y f(Y)dY$\n    \n- データ $=$ 確率関数 $f(Y)$ に従って発生した$N$個の事例の集合 $[Y_1,..,Y_N]$\n    \n- Estimator $=$ 例えばデータにおける平均賃金 $\\sum_i Y_i/N$\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

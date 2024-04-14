@@ -1,0 +1,16 @@
+{
+  "hash": "d8e4dcf0a67503e963d79e3c9d58217d",
+  "result": {
+    "markdown": "# R準備 {#sec-IntroduceR}\n\n- 本ページでは、tidyverseパッケージの利用を前提とし、pipe演算子を用いたコード例を示す\n\n## tidyverse\n\n- データ整備・可視化等の関数群を提供する（メタ）パッケージ\n\n  - [公式ページ](https://www.tidyverse.org/learn/)\n\n## nativeなpipe演算子\n\n- R version 4.1からpipe演算子が、追加パッケージなしで利用可能になった\n\n  - Tools -> Global option -> Code -> \"Use native pipe operator\" をチェックする\n  \n  - Ctr + Shift + mがショートカット\n  \n  - 現状、magrittrパッケージが提供するpipe (%>%)に比べて、機能が限定されている\n\n- pipe演算子：二つの入力X1,X2から出力Yを得る関数fについて、pipe演算子を用いると、Y <- X1 |> f(X2)と書き換えられる\n\n- pipe演算子を使わない場合、ある出力結果を入力として用いるためには、複数のobjectを作成する必要があり煩雑\n\n\n::: {.cell}\n\n```{.r .cell-code}\nn <- rnorm(100) # 標準正規分布から100個値を取得し、nと名付ける\n\nhist(n)　# nを用いてヒストグラムを描画\n```\n\n::: {.cell-output-display}\n![](introR_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n\n- pipe演算子を使うと以下のようになる\n\n\n::: {.cell}\n\n```{.r .cell-code}\nrnorm(100) |> \n  hist()\n```\n\n::: {.cell-output-display}\n![](introR_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "introR_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
