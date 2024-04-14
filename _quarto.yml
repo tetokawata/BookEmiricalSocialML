@@ -7,7 +7,9 @@ book:
   date: "3/14/2023"
   chapters:
     - index.qmd
-    - intro.qmd
+    - introConcept.qmd
+    - introR.qmd
+    - ols4blp.qmd
     - ParameterEstimation.qmd
     - Prediction.qmd
     - CausalMachineLearning.qmd

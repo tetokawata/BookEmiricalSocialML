@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.340">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.12) - 3&nbsp; 教師付き学習による母平均モデルの推定</title>
+<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.12) - 5&nbsp; 教師付き学習による母平均モデルの推定</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -81,7 +81,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -90,8 +96,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script src="site_libs/quarto-diagram/mermaid.min.js"></script>
@@ -101,6 +109,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 </head>
 
 <body class="nav-sidebar floating">
@@ -109,13 +144,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Prediction.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Prediction.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -124,7 +159,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">R/Pythonによる比較・因果推論・予測研究 (ver 0.12)</a> 
@@ -145,44 +180,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">準備</span></span></a>
+  <a href="./introConcept.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">概念整理</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">R準備</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols4blp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">OLS for BLP</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ParameterEstimation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./Prediction.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./CausalMachineLearning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./HeteroDiscover.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">異質性の探索</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">異質性の探索</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./PreProcess.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">付録: データ整備</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">付録: データ整備</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -194,18 +241,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#問題設定" id="toc-問題設定" class="nav-link active" data-scroll-target="#問題設定"><span class="header-section-number">3.1</span> 問題設定</a>
+  <li><a href="#問題設定" id="toc-問題設定" class="nav-link active" data-scroll-target="#問題設定"><span class="header-section-number">5.1</span> 問題設定</a>
   <ul class="collapse">
-  <li><a href="#予測問題" id="toc-予測問題" class="nav-link" data-scroll-target="#予測問題"><span class="header-section-number">3.1.1</span> 予測問題</a></li>
+  <li><a href="#予測問題" id="toc-予測問題" class="nav-link" data-scroll-target="#予測問題"><span class="header-section-number">5.1.1</span> 予測問題</a></li>
   </ul></li>
-  <li><a href="#実装" id="toc-実装" class="nav-link" data-scroll-target="#実装"><span class="header-section-number">3.2</span> 実装</a></li>
+  <li><a href="#実装" id="toc-実装" class="nav-link" data-scroll-target="#実装"><span class="header-section-number">5.2</span> 実装</a></li>
   </ul>
 </nav>
     </div>
@@ -214,7 +261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-Prediction" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></span></h1>
+<h1 class="title"><span id="sec-Prediction" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">教師付き学習による母平均モデルの推定</span></span></h1>
 </div>
 
 
@@ -227,7 +274,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <ul>
 <li><p>手持ちのデータと同じ母集団から新しくランダムサンプリングされ、<span class="math inline">\(X\)</span>のみが観察できるサンプルについて<span class="math inline">\(Y\)</span>の値を予測する。</p>
@@ -235,8 +284,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>データ分割を用いたモデル選択、評価を行う</li>
 </ul></li>
 </ul>
-<section id="問題設定" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="問題設定"><span class="header-section-number">3.1</span> 問題設定</h2>
+<section id="問題設定" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="問題設定"><span class="header-section-number">5.1</span> 問題設定</h2>
 <ul>
 <li>母平均関数 <span class="math inline">\(E[Y|X]\)</span> を近似する関数 <span class="math inline">\(f(X)\)</span> の推定をする。具体的には、母集団上での二乗誤差最小化を目指す。</li>
 </ul>
@@ -245,8 +294,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>上記の最適化問題の解を近似する関数 <span class="math inline">\(f(X)\)</span> は、標準的な予測問題において極めて有益である。</p></li>
 <li><p>上記問題を具体的に解くアルゴリズムとして、ここでは OLS, ElasticNet, Random Forest、およびそれらのStacking (SuperLearner) を実装する。</p></li>
 </ul>
-<section id="予測問題" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1" class="anchored" data-anchor-id="予測問題"><span class="header-section-number">3.1.1</span> 予測問題</h3>
+<section id="予測問題" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="予測問題"><span class="header-section-number">5.1.1</span> 予測問題</h3>
 <ul>
 <li><p>事前に定義する損失関数の母平均 (Population Risk) を最小化するような、予測関数<span class="math inline">\(f(X)\)</span>の推定を目指す。</p>
 <ul>
@@ -269,8 +318,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 </section>
-<section id="実装" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="実装"><span class="header-section-number">3.2</span> 実装</h2>
+<section id="実装" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="実装"><span class="header-section-number">5.2</span> 実装</h2>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Python</a></li></ul>
 <div class="tab-content">
@@ -278,9 +327,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>以下のPipelineを実装</li>
 </ul>
-<div class="cell">
+<div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
+<p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
   A[データとパッケージの読み込み] --&gt; B[予測タスクの定義/サンプル分割]
@@ -298,11 +348,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   E --&gt; F[Testデータによる評価]
 </pre>
 </div>
+<p></p></figure><p></p>
 </div>
 </div>
 </div>
-<section id="パッケージ-データ" class="level4" data-number="3.2.0.1">
-<h4 data-number="3.2.0.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">3.2.0.1</span> パッケージ &amp; データ</h4>
+<section id="パッケージ-データ" class="level4" data-number="5.2.0.1">
+<h4 data-number="5.2.0.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">5.2.0.1</span> パッケージ &amp; データ</h4>
 <ul>
 <li><p>ここではpipelinesによるデータ整備は行わない (暫定的)</p></li>
 <li><p>追加でlgr (表示するメッセージを操作), future (並列計算) パッケージを使用</p></li>
@@ -319,18 +370,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="2" data-code-annotation="1" data-code-cell="annotated-cell-1">教師付き学習のメタパッケージ</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">教師付き学習のメタパッケージ</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="3" data-code-annotation="2" data-code-cell="annotated-cell-1">Stacking用</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="2">Stacking用</span>
 </dd>
 </dl>
 </div>
 </div>
 </section>
-<section id="推定タスクの定義" class="level4" data-number="3.2.0.2">
-<h4 data-number="3.2.0.2" class="anchored" data-anchor-id="推定タスクの定義"><span class="header-section-number">3.2.0.2</span> 推定タスクの定義</h4>
+<section id="推定タスクの定義" class="level4" data-number="5.2.0.2">
+<h4 data-number="5.2.0.2" class="anchored" data-anchor-id="推定タスクの定義"><span class="header-section-number">5.2.0.2</span> 推定タスクの定義</h4>
 <ul>
 <li><p>分割数、繰り返し計算回数は最小限に設定</p>
 <ul>
@@ -356,30 +407,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="4" data-code-annotation="1" data-code-cell="annotated-cell-2">推定に用いるデータと結果変数を指定</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="1">推定に用いるデータと結果変数を指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="6" data-code-annotation="2" data-code-cell="annotated-cell-2">R2を評価指標に使用</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="6" data-code-annotation="2">R2を評価指標に使用</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="8" data-code-annotation="3" data-code-cell="annotated-cell-2">2分割交差検証を指定</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="8" data-code-annotation="3">2分割交差検証を指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="12" data-code-annotation="4" data-code-cell="annotated-cell-2">20個のパラメタセットを検証</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="12" data-code-annotation="4">20個のパラメタセットを検証</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-lines="14" data-code-annotation="5" data-code-cell="annotated-cell-2">ランダムサーチで検証するパラメタセットを選ぶ</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="14" data-code-annotation="5">ランダムサーチで検証するパラメタセットを選ぶ</span>
 </dd>
 </dl>
 </div>
 </div>
 </section>
-<section id="使用するbuildin-algorithmを定義" class="level4" data-number="3.2.0.3">
-<h4 data-number="3.2.0.3" class="anchored" data-anchor-id="使用するbuildin-algorithmを定義"><span class="header-section-number">3.2.0.3</span> 使用するBuildIn Algorithmを定義</h4>
+<section id="使用するbuildin-algorithmを定義" class="level4" data-number="5.2.0.3">
+<h4 data-number="5.2.0.3" class="anchored" data-anchor-id="使用するbuildin-algorithmを定義"><span class="header-section-number">5.2.0.3</span> 使用するBuildIn Algorithmを定義</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>SimpleOLS <span class="ot">&lt;-</span> <span class="fu">lrn</span>(</span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"regr.lm"</span>,</span>
@@ -394,18 +445,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="1,2,3,4" data-code-annotation="1" data-code-cell="annotated-cell-3">単純なOLS</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="1,2,3,4" data-code-annotation="1">単純なOLS</span>
 </dd>
 <dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="6,7,8,9" data-code-annotation="2" data-code-cell="annotated-cell-3">RandomForest</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="6,7,8,9" data-code-annotation="2">RandomForest</span>
 </dd>
 </dl>
 </div>
 </div>
 </section>
-<section id="preprocess" class="level4" data-number="3.2.0.4">
-<h4 data-number="3.2.0.4" class="anchored" data-anchor-id="preprocess"><span class="header-section-number">3.2.0.4</span> PreProcess</h4>
+<section id="preprocess" class="level4" data-number="5.2.0.4">
+<h4 data-number="5.2.0.4" class="anchored" data-anchor-id="preprocess"><span class="header-section-number">5.2.0.4</span> PreProcess</h4>
 <ul>
 <li><p>線形モデルについて、連続変数二乗項と交差項を導入</p>
 <ul>
@@ -440,26 +491,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="1" data-code-annotation="1" data-code-cell="annotated-cell-4"><span class="math inline">\(X\)</span> の加工</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="1" data-code-annotation="1"><span class="math inline">\(X\)</span> の加工</span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="3,4,5,6,7,8,9,10,11,12,13,14" data-code-annotation="2" data-code-cell="annotated-cell-4">二乗項と交差項を作成</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="3,4,5,6,7,8,9,10,11,12,13,14" data-code-annotation="2">二乗項と交差項を作成</span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="16" data-code-annotation="3" data-code-cell="annotated-cell-4">標準化(平均を引き、標準偏差で叙す)</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="16" data-code-annotation="3">標準化(平均を引き、標準偏差で叙す)</span>
 </dd>
 <dt data-target-cell="annotated-cell-4" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="18,19,20,21,23" data-code-annotation="4" data-code-cell="annotated-cell-4">OLSと結合</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="18,19,20,21,23" data-code-annotation="4">OLSと結合</span>
 </dd>
 </dl>
 </div>
 </div>
 </section>
-<section id="チューニング付き推定方法の定義" class="level4" data-number="3.2.0.5">
-<h4 data-number="3.2.0.5" class="anchored" data-anchor-id="チューニング付き推定方法の定義"><span class="header-section-number">3.2.0.5</span> チューニング付き推定方法の定義</h4>
+<section id="チューニング付き推定方法の定義" class="level4" data-number="5.2.0.5">
+<h4 data-number="5.2.0.5" class="anchored" data-anchor-id="チューニング付き推定方法の定義"><span class="header-section-number">5.2.0.5</span> チューニング付き推定方法の定義</h4>
 <ul>
 <li><p>Tree、ElasticNet (LASSO/Ridge) アルゴリズムについて、HyperParameterを交差検証により推定する</p></li>
 <li><p>探索するHyperParameterの範囲を設定する必要がある</p>
@@ -502,38 +553,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="2" data-code-annotation="1" data-code-cell="annotated-cell-5">TuningSpaceを指定したTreeを定義</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="2" data-code-annotation="1">TuningSpaceを指定したTreeを定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="4,5,6,7,8,9,10" data-code-annotation="2" data-code-cell="annotated-cell-5">HyperParameter Tuningを指定</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="4,5,6,7,8,9,10" data-code-annotation="2">HyperParameter Tuningを指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="12" data-code-annotation="3" data-code-cell="annotated-cell-5">Treeと名づける</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="12" data-code-annotation="3">Treeと名づける</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="15" data-code-annotation="4" data-code-cell="annotated-cell-5">TuningSpaceを指定したElasticNetを定義</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="15" data-code-annotation="4">TuningSpaceを指定したElasticNetを定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-lines="20" data-code-annotation="5" data-code-cell="annotated-cell-5">二乗項/交差項作成を付与</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="20" data-code-annotation="5">二乗項/交差項作成を付与</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-lines="22,23,24,25,26,27,28" data-code-annotation="6" data-code-cell="annotated-cell-5">HyperParameter Tuningを指定</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="22,23,24,25,26,27,28" data-code-annotation="6">HyperParameter Tuningを指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-lines="30" data-code-annotation="7" data-code-cell="annotated-cell-5">ElasticNetと名づける</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="30" data-code-annotation="7">ElasticNetと名づける</span>
 </dd>
 </dl>
 </div>
 </div>
 </section>
-<section id="superlearnerの定義" class="level4" data-number="3.2.0.6">
-<h4 data-number="3.2.0.6" class="anchored" data-anchor-id="superlearnerの定義"><span class="header-section-number">3.2.0.6</span> SuperLearnerの定義</h4>
+<section id="superlearnerの定義" class="level4" data-number="5.2.0.6">
+<h4 data-number="5.2.0.6" class="anchored" data-anchor-id="superlearnerの定義"><span class="header-section-number">5.2.0.6</span> SuperLearnerの定義</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-6-1" class="code-annotation-target"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>BaseLearner <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>  OLS,</span>
@@ -557,26 +608,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="1,2,3,4,5,6" data-code-annotation="1" data-code-cell="annotated-cell-6">個別のアルゴリズムの指定</span>
+<span data-code-cell="annotated-cell-6" data-code-lines="1,2,3,4,5,6" data-code-annotation="1">個別のアルゴリズムの指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="8,9,10" data-code-annotation="2" data-code-cell="annotated-cell-6">集計用アルゴリズムの指定</span>
+<span data-code-cell="annotated-cell-6" data-code-lines="8,9,10" data-code-annotation="2">集計用アルゴリズムの指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="12,13,14,15,16" data-code-annotation="3" data-code-cell="annotated-cell-6">Stackingの定義</span>
+<span data-code-cell="annotated-cell-6" data-code-lines="12,13,14,15,16" data-code-annotation="3">Stackingの定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="18" data-code-annotation="4" data-code-cell="annotated-cell-6">Stackingと名づけ</span>
+<span data-code-cell="annotated-cell-6" data-code-lines="18" data-code-annotation="4">Stackingと名づけ</span>
 </dd>
 </dl>
 </div>
 </div>
 </section>
-<section id="交差推定による評価" class="level4" data-number="3.2.0.7">
-<h4 data-number="3.2.0.7" class="anchored" data-anchor-id="交差推定による評価"><span class="header-section-number">3.2.0.7</span> 交差推定による評価</h4>
+<section id="交差推定による評価" class="level4" data-number="5.2.0.7">
+<h4 data-number="5.2.0.7" class="anchored" data-anchor-id="交差推定による評価"><span class="header-section-number">5.2.0.7</span> 交差推定による評価</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-7-1" class="code-annotation-target"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>Design <span class="ot">&lt;-</span> <span class="fu">benchmark_grid</span>(</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tasks =</span> Task,</span>
@@ -602,35 +653,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-lines="1" data-code-annotation="1" data-code-cell="annotated-cell-7">評価の枠組みを定義</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="1" data-code-annotation="1">評価の枠組みを定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-lines="2" data-code-annotation="2" data-code-cell="annotated-cell-7">評価対象のタスク (データと結果変数) を定義</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="2" data-code-annotation="2">評価対象のタスク (データと結果変数) を定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-lines="3,4,5,6,7,8,9,10" data-code-annotation="3" data-code-cell="annotated-cell-7">評価対象のアルゴリズムを定義</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="3,4,5,6,7,8,9,10" data-code-annotation="3">評価対象のアルゴリズムを定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-lines="11" data-code-annotation="4" data-code-cell="annotated-cell-7">評価方法 (交差検証) を定義</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="11" data-code-annotation="4">評価方法 (交差検証) を定義</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-lines="14,15" data-code-annotation="5" data-code-cell="annotated-cell-7">Errorメッセージのみ表示</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="14,15" data-code-annotation="5">Errorメッセージのみ表示</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="6">6</dt>
 <dd>
-<span data-code-lines="16" data-code-annotation="6" data-code-cell="annotated-cell-7">並列処理を指定</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="16" data-code-annotation="6">並列処理を指定</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="7">7</dt>
 <dd>
-<span data-code-lines="18" data-code-annotation="7" data-code-cell="annotated-cell-7">評価を実行</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="18" data-code-annotation="7">評価を実行</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="8">8</dt>
 <dd>
-<span data-code-lines="20" data-code-annotation="8" data-code-cell="annotated-cell-7">R2を計算</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="20" data-code-annotation="8">R2を計算</span>
 </dd>
 </dl>
 </div>
@@ -654,8 +705,8 @@ Hidden columns: resample_result</code></pre>
 <ul>
 <li>OLSとRandom Forestで予測モデルを推定し、交差検証で比較する。</li>
 </ul>
-<section id="パッケージ-データ-1" class="level4" data-number="3.2.0.8">
-<h4 data-number="3.2.0.8" class="anchored" data-anchor-id="パッケージ-データ-1"><span class="header-section-number">3.2.0.8</span> パッケージ &amp; データ</h4>
+<section id="パッケージ-データ-1" class="level4" data-number="5.2.0.8">
+<h4 data-number="5.2.0.8" class="anchored" data-anchor-id="パッケージ-データ-1"><span class="header-section-number">5.2.0.8</span> パッケージ &amp; データ</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> linear_model</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
@@ -675,8 +726,8 @@ Hidden columns: resample_result</code></pre>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  axis <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="使用するアルゴリズム" class="level4" data-number="3.2.0.9">
-<h4 data-number="3.2.0.9" class="anchored" data-anchor-id="使用するアルゴリズム"><span class="header-section-number">3.2.0.9</span> 使用するアルゴリズム</h4>
+<section id="使用するアルゴリズム" class="level4" data-number="5.2.0.9">
+<h4 data-number="5.2.0.9" class="anchored" data-anchor-id="使用するアルゴリズム"><span class="header-section-number">5.2.0.9</span> 使用するアルゴリズム</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>OLS <span class="op">=</span> linear_model.LinearRegression() <span class="co"># OLS</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -684,8 +735,8 @@ Hidden columns: resample_result</code></pre>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  n_estimators <span class="op">=</span> <span class="dv">500</span>) <span class="co"># Random Forest</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="交差推定によるテスト" class="level4" data-number="3.2.0.10">
-<h4 data-number="3.2.0.10" class="anchored" data-anchor-id="交差推定によるテスト"><span class="header-section-number">3.2.0.10</span> 交差推定によるテスト</h4>
+<section id="交差推定によるテスト" class="level4" data-number="5.2.0.10">
+<h4 data-number="5.2.0.10" class="anchored" data-anchor-id="交差推定によるテスト"><span class="header-section-number">5.2.0.10</span> 交差推定によるテスト</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Folds <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle <span class="op">=</span> <span class="va">True</span>) <span class="co"># サンプル5分割</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -795,10 +846,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -808,8 +858,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -822,6 +881,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -865,6 +1043,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -890,6 +1069,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -951,17 +1156,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./ParameterEstimation.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></span>
+      <a href="./ParameterEstimation.html" class="pagination-link  aria-label=" &lt;span="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">線形モデルによるパラメータの推定</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./CausalMachineLearning.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./CausalMachineLearning.html" class="pagination-link" aria-label="<span class='chapter-number'>6</span>&nbsp; <span class='chapter-title'>セミパラメトリック推定によるパラメタ推定</span>">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">セミパラメトリック推定によるパラメタ推定</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 
