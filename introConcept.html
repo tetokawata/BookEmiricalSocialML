@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.12) - 9&nbsp; 付録: データ整備</title>
+<title>R/Pythonによる比較・因果推論・予測研究 (ver 0.12) - 1&nbsp; 概念整理</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
-<link href="./summary.html" rel="prev">
+<link href="./introR.html" rel="next">
+<link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -103,6 +103,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -115,7 +144,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./PreProcess.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">付録: データ整備</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./introConcept.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">概念整理</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -148,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./introConcept.html" class="sidebar-item-text sidebar-link">
+  <a href="./introConcept.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">概念整理</span></span></a>
   </div>
 </li>
@@ -196,7 +225,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link active">
+  <a href="./PreProcess.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">付録: データ整備</span></span></a>
   </div>
 </li>
@@ -216,8 +245,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#パッケージ-データ" id="toc-パッケージ-データ" class="nav-link active" data-scroll-target="#パッケージ-データ"><span class="header-section-number">9.1</span> パッケージ &amp; データ</a></li>
-  <li><a href="#recipes" id="toc-recipes" class="nav-link" data-scroll-target="#recipes"><span class="header-section-number">9.2</span> recipes</a></li>
+  <li><a href="#estimator" id="toc-estimator" class="nav-link active" data-scroll-target="#estimator"><span class="header-section-number">1.1</span> Estimator</a></li>
+  <li><a href="#estimand" id="toc-estimand" class="nav-link" data-scroll-target="#estimand"><span class="header-section-number">1.2</span> Estimand</a></li>
+  <li><a href="#例-平均賃金の推定" id="toc-例-平均賃金の推定" class="nav-link" data-scroll-target="#例-平均賃金の推定"><span class="header-section-number">1.3</span> 例: 平均賃金の推定</a></li>
   </ul>
 </nav>
     </div>
@@ -226,7 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-PreProcess" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">付録: データ整備</span></span></h1>
+<h1 class="title"><span id="sec-IntroduceConcept" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">概念整理</span></span></h1>
 </div>
 
 
@@ -243,37 +273,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="パッケージ-データ" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="パッケージ-データ"><span class="header-section-number">9.1</span> パッケージ &amp; データ</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"CPSSW9204"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <ul>
-<li><p>tidyverse : 個別変数についてのデータ加工関数群を提供</p></li>
-<li><p><a href="https://recipes.tidymodels.org/">recipes</a> : 統合的なデータ加工関数を提供</p></li>
+<li>本ページでは、 現代的データ分析における基本概念を紹介する。 特に推定対象 (Estimand) と データから推定された関数 (Estimator) を分離して定義することの重要性を強調する。 EstimandとEstimatorを接続するために、“仮想的な事例の集団” (母集団) を導入する。</li>
+</ul>
+<section id="estimator" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="estimator"><span class="header-section-number">1.1</span> Estimator</h2>
+<ul>
+<li><p>データから分析者が指定した計算手順によって算出された値や関数を、Estimatorと呼ぶ。またこの計算手順をアルゴリズムと呼ぶ。</p></li>
+<li><p>例: 平均アルゴリズム</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Data <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">21</span>,<span class="dv">18</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># Data</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Data <span class="co"># Show data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 1
+      Y
+  &lt;dbl&gt;
+1     9
+2    10
+3    21
+4    18</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(Data<span class="sc">$</span>Y) <span class="co"># Apply Mean Algorithm</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14.5</code></pre>
+</div>
+</div>
+</section>
+<section id="estimand" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="estimand"><span class="header-section-number">1.2</span> Estimand</h2>
+<ul>
+<li><p>同じAlgorithmを用いたとしても、Estimatorの値は、一般に算出に用いたデータの特徴によって決定される。 データの特徴は確率的に決定されるため、Estimatorの値もまた確率的に決定されると表現できる。</p></li>
+<li><p>データの事例は、分析者が母集団から確率的に選ばれると想定する。 またEstimandは、母集団の特徴として定義する。 分析者は、母集団およびEstimandを直接観察できないと想定する。</p></li>
 </ul>
 </section>
-<section id="recipes" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="recipes"><span class="header-section-number">9.2</span> recipes</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">recipe</span>(earnings <span class="sc">~</span> degree <span class="sc">+</span> year <span class="sc">+</span> gender <span class="sc">+</span> age,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>            CPSSW9204) <span class="sc">|&gt;</span> <span class="co"># 推定式を定義</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_role</span>(degree,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">new_role =</span> <span class="st">"treatment"</span>) <span class="sc">|&gt;</span> <span class="co"># degreeをtreatmentに指定</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_unknown</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数について、欠損値を"unknown"に変更</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_other</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数について、小規模グループを"other"に変更</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 非数値変数をダミー変数に変換</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_indicate_na</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、欠損ダミーを作成</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_median</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、欠損値に中央値を補完</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_nzv</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 数値変数について、 変動が少ない変数を除外</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_corr</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span> <span class="co"># 相関が強い変数を除去</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(CPSSW9204)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="例-平均賃金の推定" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="例-平均賃金の推定"><span class="header-section-number">1.3</span> 例: 平均賃金の推定</h2>
+<ul>
+<li><p>母集団における賃金 <span class="math inline">\(Y\)</span> の分布 <span class="math inline">\(=f(Y)\)</span></p></li>
+<li><p>Estimand <span class="math inline">\(=\)</span> 母集団における平均賃金 <span class="math inline">\(E[Y]=\int Y f(Y)dY\)</span></p></li>
+<li><p>データ <span class="math inline">\(=\)</span> 確率関数 <span class="math inline">\(f(Y)\)</span> に従って発生した<span class="math inline">\(N\)</span>個の事例の集合 <span class="math inline">\([Y_1,..,Y_N]\)</span></p></li>
+<li><p>Estimator <span class="math inline">\(=\)</span> 例えばデータにおける平均賃金 <span class="math inline">\(\sum_i Y_i/N\)</span></p></li>
+</ul>
 
 
 </section>
@@ -690,13 +734,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./summary.html" class="pagination-link" aria-label="付録: 記述統計">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">付録: 記述統計</span></span>
+      <a href="./index.html" class="pagination-link" aria-label="Preface">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./introR.html" class="pagination-link" aria-label="R準備">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">R準備</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
